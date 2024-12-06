@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class UserController extends Controller
+{
+    public function login(Request $request) {
+        $incomingFields = $request->validate([
+            'loginname' => 'required',
+            'loginpassword' => 'required'
+        ]);
+
+        if (Auth::attempt(['name' => $incomingFields['loginname'], 'password' => $incomingFields['loginpassword']])) {
+            $request->session()->regenerate();
+            return redirect('/');
+        }
+
+        return back()->withErrors([
+            'loginname' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
+    public function logout() {
+        Auth::logout();
+        return redirect('/');
+    }
+
+    public function register(Request $request) {
+        $incomingFields = $request->validate([
+            'name' => ['required', 'min:3', 'max:10', Rule::unique('users', 'name')],
+            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => ['required'],
+            'contact' => ['required'],
+            'address' => ['required']
+        ]);
+
+        $incomingFields['password'] = bcrypt($incomingFields['password']);
+        $user = User::create($incomingFields);
+        Auth::login($user);
+        return redirect('/');   
+    }
+
+    // Profile edit method
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('profile', compact('user'));
+    }
+
+    // Profile update method
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'contact' => 'required|string|max:15',
+            'address' => 'required|string|max:255',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->contact = $request->contact;
+        $user->address = $request->address;
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+    }
+}
