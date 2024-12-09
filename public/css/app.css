@@ -174,6 +174,9 @@ header {
 
         img {
             width: 30px;
+            &:hover {
+                filter: invert(70%) sepia(9%) saturate(1957%) hue-rotate(81deg) brightness(90%) contrast(83%);
+            }
         }
     }
 }
@@ -321,6 +324,10 @@ footer {
     &:hover {
         transform: scale(1.05);
     }
+    
+    &:hover img {
+        opacity: 0.7;
+    }
 
     .add-to-cart:hover {
         background-color: #85b590;
@@ -332,9 +339,7 @@ footer {
         cursor: pointer;
     }
 
-    &:hover img {
-        opacity: 0.7;
-    }
+    
 
     img {
         height: 150px;
@@ -450,3 +455,9 @@ h2 {
 }
 
 /* login and register page end */
+
+/* profile page */
+.text-danger {
+    color: red;
+}
+/* profile page end */

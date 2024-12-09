@@ -1,14 +1,11 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AdminController;
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
-//Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
 
 
@@ -43,3 +40,22 @@ Route::middleware('auth')->group(function () {
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
+
+
+// check role (admin/staff/driver)
+
+Route::get('admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.post');
+Route::post('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+Route::middleware(['auth:employee', 'role:admin'])->group(function () {
+    Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});
+
+Route::middleware(['auth:employee', 'role:staff'])->group(function () {
+    Route::get('staff/dashboard', [AdminController::class, 'dashboard'])->name('staff.dashboard');
+});
+
+Route::middleware(['auth:employee', 'role:driver'])->group(function () {
+    Route::get('driver/dashboard', [AdminController::class, 'dashboard'])->name('driver.dashboard');
+});
