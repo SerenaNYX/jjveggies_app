@@ -9,9 +9,7 @@ use App\Http\Controllers\AdminController;
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
 
 
-Route::get('/product', function () {
-    return view('product');
-});
+Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
 
 Route::get('/loginpage', function () { 
     return view('loginpage');
@@ -19,10 +17,6 @@ Route::get('/loginpage', function () {
 
 Route::get('/registerpage', function () { 
     return view('registerpage');
-});
-
-Route::get('/index', function () { 
-    return view('index');
 });
 
 Route::post('/register', [UserController::class, 'register']);
@@ -33,13 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [UserController::class, 'update'])->name('profile.update');
 });
 
-/*Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
-    Route::resource('products', ProductController::class);
-});*/
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
 
 
 // check role (admin/staff/driver)

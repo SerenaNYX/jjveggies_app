@@ -6,6 +6,17 @@
             <h1 class="text-center">Our Products</h1>
             <p class="section-description text-center">Explore our wide range of fresh vegetables and fruits available for you.</p>
 
+            <!-- Display Categories for Filtering -->
+            <div class="categories text-center">
+                <a href="{{ route('product.show') }}" class="category-link {{ is_null($categorySlug) ? 'active' : '' }}">All</a>
+                @foreach ($categories as $category)
+                    <a href="{{ route('product.show', ['category' => $category->slug]) }}" class="category-link {{ $categorySlug === $category->slug ? 'active' : '' }}">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            </div>
+
+            <!-- Loop through Products -->
             <div class="products text-center">
                 @foreach ($products as $product)
                     <div class="product">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -72,11 +73,34 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
-
+/*
     public function showProducts()
     {
         $products = Product::all();
         return view('product', compact('products'));
+    }
+
+    public function show(Product $product)
+    {
+        return view('products.show', compact('product'));
+    }*/
+
+    public function showProducts(Request $request)
+    {
+        $categorySlug = $request->query('category'); // Retrieve the category from the query parameters
+        $category = Category::where('slug', $categorySlug)->first();
+        $categories = Category::all(); // Retrieve all categories
+
+        if ($category) {
+            // Filter products by the selected category
+            $products = Product::where('category_id', $category->id)->get();
+        } else {
+            // Include all products, including those without a category
+            $products = Product::all();
+        }
+
+        // Pass the variables to the view
+        return view('product', compact('products', 'categories', 'categorySlug'));
     }
 
     public function show(Product $product)
