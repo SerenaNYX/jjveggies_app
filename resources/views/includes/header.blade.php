@@ -41,10 +41,16 @@
                 </a>
             </div>
             <ul>
-                <li><a href="/product">Shop</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#"><img src={{ asset('img/cart.png') }} alt=""></a></li>
+                @guest
+                    <li><a href="/product">Shop</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                @else
+                    <li><a href="/product">Shop</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#"><img src={{ asset('img/cart.png') }} alt=""></a></li>
+                @endguest
             </ul>
         </div> <!-- end top-nav -->
         

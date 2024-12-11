@@ -32,7 +32,7 @@
                     <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
                     <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
                     <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
-                    <button class="add-to-cart"><img src="{{ asset('img/cart.png') }}" alt="Add to Cart"></button>
+                    <button class="add-to-cart"><img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart"></button>
                 </div>
             @endforeach
         </div> <!-- end products -->

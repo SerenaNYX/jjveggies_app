@@ -237,11 +237,10 @@ header {
             bottom: 10px;
             right: 10px;
             padding: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: (#85b590, 0.1);
             border: none;
             cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.3s;
+            /*transition: opacity 0.3s;*/
             border-radius: 50%;
         }
 
@@ -331,7 +330,7 @@ footer {
 
     .add-to-cart:hover {
         background-color: #85b590;
-        transform: scale(1.02);
+     /*    transform: scale(1.02); */
     }
     .add-to-cart {
         background-color: #a9c2ae;
