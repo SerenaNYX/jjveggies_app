@@ -6,6 +6,10 @@
     .container {
       max-width: 960px;
     }
+
+    .products {
+      grid-template-columns: repeat(3,1fr);
+    }
   }
   
   /* Medium Devices, Desktops */
@@ -73,6 +77,10 @@
     footer .footer-content ul {
       margin: 20px auto;
       width: 60%;
+    }
+
+    .products {
+      grid-template-columns: repeat(2,1fr);
     }
   }
   
