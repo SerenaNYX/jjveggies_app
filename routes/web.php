@@ -46,6 +46,11 @@ Route::middleware(['auth:employee', 'role:staff'])->group(function () {
     Route::get('staff/dashboard', [AdminController::class, 'dashboard'])->name('staff.dashboard');
 });
 
+Route::prefix('staff')->name('staff.')->middleware('auth:employee', 'role:staff')->group(function () {
+    Route::resource('products', \App\Http\Controllers\Staff\ProductController::class);
+});
+
+
 Route::middleware(['auth:employee', 'role:driver'])->group(function () {
     Route::get('driver/dashboard', [AdminController::class, 'dashboard'])->name('driver.dashboard');
 });

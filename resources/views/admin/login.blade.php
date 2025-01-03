@@ -19,7 +19,7 @@
         .container {
             border: 2px solid #ddd;
             border-radius: 10px;
-            max-width: 1200px;
+            max-width: 450px;
             margin: 40px auto 40px;
             padding: 0 20px 35px;
         }
