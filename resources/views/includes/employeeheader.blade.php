@@ -135,7 +135,8 @@
                         <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables"> 
                     </a>
                 </li>
-                <li><a href="#">Manage Users</a></li>
+                <li><a href="{{ route('admin.employees.index') }}">Manage Users</a></li>
+                <li><a href="{{ route('admin.products.index') }}">Manage Products</a></li>
                 <li><a href="#">Generate Report</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'staff')
                 <li><a href="{{ route('staff.dashboard') }}">

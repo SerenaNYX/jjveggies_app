@@ -14,7 +14,7 @@
             @endforeach
         </select>
         
-        <a href="{{ route('staff.products.create') }}" class="button-addproduct">Add New Product</a>
+        <a href="{{ route(Auth::guard('employee')->user()->role . '.products.create') }}" class="button-add">Add New Product</a>
     </div>
    
     <table class="table table-striped table-product">
@@ -37,8 +37,8 @@
                 <td class="category-column">{{ $product->category->name ?? 'Uncategorized' }}</td>
                 <td class="price-column">RM{{ number_format($product->price, 2) }}</td>
                 <td class="actions-column">
-                    <a href="{{ route('staff.products.edit', $product->id) }}" class="button-edit">Edit</a>
-                    <form action="{{ route('staff.products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}" class="button-edit">Edit</a>
+                    <form action="{{ route(Auth::guard('employee')->user()->role . '.products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="button button-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
@@ -53,7 +53,7 @@
 <script>
     function filterByCategory() {
         const selectedCategory = document.getElementById('category-filter').value;
-        window.location.href = `{{ route('staff.products.index') }}?category=${selectedCategory}`;
+        window.location.href = `{{ route(Auth::guard('employee')->user()->role . '.products.index') }}?category=${selectedCategory}`;
     }
 </script>
 @endsection

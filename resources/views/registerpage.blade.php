@@ -40,7 +40,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <input name="contact" type="text" class="form-control" placeholder="Contact Number" value="{{ old('contact') }}">
+                        <input name="password_confirmation" type="password" class="form-control" placeholder="Confirm Password">
+                        @error('password_confirmation')
+                            <p class="error-message">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <input name="contact" type="text" class="form-control" placeholder="Contact Number" value="{{ old('contact') }}" maxlength="15">
                         @error('contact')
                             <p class="error-message">{{ $message }}</p>
                         @enderror

@@ -146,12 +146,31 @@ body {
     align-items: center;
     font-family: 'Roboto', Arial, sans-serif;
     font-size: 16px;
+
+    &:hover {
+        background-color: #c9302c;
+    }
 }
 
-.button-danger:hover {
-    background-color: #c9302c;
+.button-danger2 {
+    width: 120px; 
+    height: 40px;
+    border: 1px solid #ffffff;
+    background-color: #d9ab4f;
     color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 16px;
+
+    &:hover {
+        background-color: #c1953d;
+    }
 }
+
 
 .form-control {
     width: 100%;
@@ -218,7 +237,7 @@ body {
     color: white;
 }
 
-.button-addproduct {
+.button-add {
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -233,10 +252,9 @@ body {
     border-radius: 5px;
     transition: background-color 0.3s, transform 0.3s;
     color: #fff !important;
-}
-
-.button-addproduct:hover {
-    background-color: #587d53;
+    &:hover {
+        background-color: #587d53;
+    }
 }
 
 /* Flexbox container for the category selector and add product button */
@@ -282,7 +300,6 @@ body {
     cursor: pointer;
     font-size: 90%;
 }
-
 /* End of manage-products page */
 
 .form-control {

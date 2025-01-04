@@ -16,6 +16,12 @@ class UserController extends Controller
             'loginpassword' => 'required'
         ]);
 
+        $user = User::where('name', $incomingFields['loginname'])->first();
+
+        if ($user && $user->banned_at) {
+            return back()->withErrors(['loginname' => 'Your account is banned.']);
+        }
+
         if (Auth::attempt(['name' => $incomingFields['loginname'], 'password' => $incomingFields['loginpassword']])) {
             $request->session()->regenerate();
             return redirect('/');
@@ -33,10 +39,10 @@ class UserController extends Controller
 
     public function register(Request $request) {
         $incomingFields = $request->validate([
-            'name' => ['required', 'min:3', 'max:10', Rule::unique('users', 'name')],
+            'name' => ['required', 'min:3', 'max:25', Rule::unique('users', 'name')],
             'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => ['required'],
-            'contact' => ['required'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'contact' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
             'address' => ['required']
         ]);
 
@@ -46,23 +52,21 @@ class UserController extends Controller
         return redirect('/');   
     }
 
-    // Profile edit method
     public function edit()
     {
         $user = Auth::user();
         return view('profile', compact('user'));
     }
 
-    // Profile update method
     public function update(Request $request)
     {
         $user = Auth::user();
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:25',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'contact' => 'required|string|max:15',
+            'contact' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
             'address' => 'required|string|max:255',
         ]);
 
@@ -78,5 +82,19 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+    }
+
+    public function denyCustomer(User $user)
+    {
+        $user->banned_at = now();
+        $user->save();
+        return redirect()->route('admin.employees.index')->with('success', 'Customer access denied successfully.');
+    }
+
+    public function unbanCustomer(User $user)
+    {
+        $user->banned_at = null;
+        $user->save();
+        return redirect()->route('admin.employees.index')->with('success', 'Customer access restored successfully.');
     }
 }
