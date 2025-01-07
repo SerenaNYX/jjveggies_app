@@ -52,6 +52,7 @@ class EmployeeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:employees,email,'.$employee->id,
             'password' => 'nullable|string|min:8|confirmed',
+            'password_confirmation' => 'nullable|string|min:8|same:password',
             'role' => 'required|in:admin,staff,driver',
         ]);
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
 use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
+use App\Http\Controllers\CategoryController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
@@ -40,26 +41,17 @@ Route::middleware(['auth:employee', 'role:admin'])->group(function () {
     Route::resource('admin/products', EmployeeProductController::class, ['as' => 'admin']);
     Route::resource('admin/employees', EmployeeController::class, ['as' => 'admin']);
     
+    Route::resource('admin/categories', CategoryController::class, ['as' => 'admin']);
+
     Route::post('admin/customers/{user}/deny', [EmployeeController::class, 'denyCustomer'])->name('admin.customers.deny');
     Route::post('admin/customers/{user}/unban', [EmployeeController::class, 'unbanCustomer'])->name('admin.customers.unban');
 });
-/*
-Route::middleware(['auth:employee', 'role:admin'])->group(function () {
-    Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::resource('admin/products', EmployeeProductController::class, ['as' => 'admin']);
-    Route::resource('admin/employees', EmployeeController::class, ['as' => 'admin']);
-    Route::delete('admin/customers/{user}/deny', [EmployeeController::class, 'denyCustomer'])->name('admin.customers.deny');
-    Route::post('admin/customers/{user}/unban', [EmployeeController::class, 'unbanCustomer'])->name('admin.customers.unban');
-    Route::get('admin/employees/search', [EmployeeController::class, 'searchEmployees'])->name('admin.employees.search');
-    Route::get('admin/customers/search', [EmployeeController::class, 'searchCustomers'])->name('admin.customers.search');
-});*/
-
-
 
 
 Route::middleware(['auth:employee', 'role:staff'])->group(function () {
     Route::get('staff/dashboard', [AdminController::class, 'dashboard'])->name('staff.dashboard');
     Route::resource('staff/products', EmployeeProductController::class, ['as' => 'staff']);
+    Route::resource('staff/categories', CategoryController::class, ['as' => 'staff']);
 });
 
 Route::middleware(['auth:employee', 'role:driver'])->group(function () {

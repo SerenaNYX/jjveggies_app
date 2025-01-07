@@ -46,7 +46,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <input name="contact" type="text" class="form-control" placeholder="Contact Number" value="{{ old('contact') }}" maxlength="15">
+                        <input name="contact" type="tel" class="form-control" placeholder="Contact Number" value="{{ old('contact')}}" maxlength="12" required oninput="validateContact(this)">
+                        <script>
+                            function validateContact(input) {
+                                input.value = input.value.replace(/[^0-9]/g, '');
+                            }
+                        </script>
+
                         @error('contact')
                             <p class="error-message">{{ $message }}</p>
                         @enderror

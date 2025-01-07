@@ -3,6 +3,15 @@
 @section('content')
 <div class="container">
     <h1>Edit Employee</h1>
+    @if ($errors->any())
+        <div class="error-message">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form action="{{ route('admin.employees.update', $employee) }}" method="POST">
         @csrf
         @method('PUT')
@@ -31,6 +40,7 @@
                 <option value="driver" {{ $employee->role == 'driver' ? 'selected' : '' }}>Driver</option>
             </select>
         </div>
+        <br>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

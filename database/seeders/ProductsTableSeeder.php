@@ -129,6 +129,57 @@ class ProductsTableSeeder extends Seeder
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
+            [
+                'category_id' => 2,
+                'name' => 'Avocado', 
+                'slug' => Str::slug('Avocado'),
+                'image' => 'img/fruits/avocado.jpg',
+                'price' => 10.50,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 2,
+                'name' => 'Mandarin Oranges',
+                'slug' => Str::slug('Mandarin Oranges'),
+                'image' => 'img/fruits/mandarinorange.jpg',
+                'price' => 9.90,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Cabbages',
+                'slug' => Str::slug('Cabbages'),
+                'image' => 'img/vegetables/cabbage.jpg',
+                'price' => 3.70,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Pak Choy',
+                'slug' => Str::slug('Pak Choy'),
+                'image' => 'img/vegetables/pakchoy.jpg',
+                'price' => 2.90,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Bitter Gourd',
+                'slug' => Str::slug('Bitter Gourd'),
+                'image' => 'img/vegetables/bittergours.jpg',
+                'price' => 2.90,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+
         ];
 
         DB::table('products')->insert($products);

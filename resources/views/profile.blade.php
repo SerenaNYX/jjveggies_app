@@ -31,7 +31,14 @@
 
         <div class="form-group">
             <label for="contact">Contact</label>
-            <input type="text" name="contact" id="contact" class="form-control" value="{{ old('contact', $user->contact) }}" required>
+        <!--    <input type="text" name="contact" id="contact" class="form-control" value="{{ old('contact', $user->contact) }}" maxlength="15" required> -->
+            <input type="tel" name="contact" id="contact" class="form-control" value="{{ old('contact', $user->contact) }}" maxlength="12" required oninput="validateContact(this)">
+            <script>
+                function validateContact(input) {
+                    input.value = input.value.replace(/[^0-9]/g, '');
+                }
+            </script>
+
             @error('contact')
                 <span class="text-danger">{{ $message }}</span>
             @enderror

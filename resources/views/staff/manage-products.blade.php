@@ -4,7 +4,12 @@
 <div class="container">
     <h1 class="text-center">Manage Products</h1>
 
+
+    <!-- Search Bar and Category Filter -->
     <div class="flex-container mb-4">
+        <!-- Search Form -->
+        <input type="text" id="searchQuery" class="form-control" placeholder="Search for products..." onkeyup="searchProducts()">
+        <!-- Category Filter -->
         <select id="category-filter" class="form-control-category" onchange="filterByCategory()">
             <option value="">All Categories</option>
             @foreach ($categories as $category)
@@ -13,11 +18,14 @@
                 </option>
             @endforeach
         </select>
-        
+
         <a href="{{ route(Auth::guard('employee')->user()->role . '.products.create') }}" class="button-add">Add New Product</a>
+        <a href="{{ route(Auth::guard('employee')->user()->role . '.categories.index') }}" class="button-add">Manage Categories</a>
+
     </div>
-   
-    <table class="table table-striped table-product">
+
+    <!-- Product Table -->
+    <table class="table table-striped table-product" id="productTable">
         <thead>
             <tr>
                 <th class="number-column">#</th>
@@ -51,9 +59,51 @@
 </div>
 
 <script>
-    function filterByCategory() {
-        const selectedCategory = document.getElementById('category-filter').value;
-        window.location.href = `{{ route(Auth::guard('employee')->user()->role . '.products.index') }}?category=${selectedCategory}`;
+// Function to search products
+function searchProducts() {
+    var query = document.getElementById('searchQuery').value.toLowerCase();
+
+    // Filter products table
+    var productRows = document.getElementById('productTable').getElementsByTagName('tr');
+    for (var i = 1; i < productRows.length; i++) {
+        var name = productRows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+        var category = productRows[i].getElementsByTagName('td')[3].textContent.toLowerCase();
+        
+        if (name.includes(query) || category.includes(query)) {
+            productRows[i].style.display = '';
+        } else {
+            productRows[i].style.display = 'none';
+        }
     }
+}
+
+// Function to filter by category
+function filterByCategory() {
+    const selectedCategory = document.getElementById('category-filter').value;
+    const searchQuery = document.getElementById('searchQuery').value;
+
+    // Update URL with search and category parameters
+    let url = `{{ route(Auth::guard('employee')->user()->role . '.products.index') }}`;
+
+    // Add the category filter if selected
+    if (selectedCategory) {
+        url += `?category=${selectedCategory}`;
+    }
+
+    // Add the search query if it exists
+    if (searchQuery) {
+        // If the category is already in the URL, append the search parameter; otherwise, create it
+        if (url.includes('?')) {
+            url += `&search=${searchQuery}`;
+        } else {
+            url += `?search=${searchQuery}`;
+        }
+    }
+
+    // Redirect to the filtered page
+    window.location.href = url;
+}
+
 </script>
+
 @endsection

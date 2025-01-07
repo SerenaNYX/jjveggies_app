@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h1 class="text-center">Edit Product</h1>
-    <form action="{{ route('staff.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+    <form id="productForm" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-group">
@@ -37,4 +37,23 @@
         <button type="submit" class="button">Update Product</button>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('productForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let actionUrl = '';
+            @if (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'admin')
+                actionUrl = '{{ route('admin.products.update', $product->id) }}';
+            @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'staff')
+                actionUrl = '{{ route('staff.products.update', $product->id) }}';
+            @endif
+
+            form.action = actionUrl;
+            form.submit();
+        });
+    });
+</script>
 @endsection

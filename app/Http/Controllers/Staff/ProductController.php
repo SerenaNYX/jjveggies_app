@@ -30,23 +30,33 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'category_id' => 'nullable|exists:categories,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $product = new Product($request->all());
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-            $product->image = '/storage/' . $imagePath;
-        }
-        $product->save();
+    $product = new Product($request->all());
 
-        return redirect()->route('staff.products.index')->with('success', 'Product added successfully');
+    // Handle image upload
+    if ($request->hasFile('image')) {
+        // Store the image in the public/img folder
+        $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
+        $product->image = 'storage/' . $imagePath; // Save relative path to the DB
     }
+
+    $product->save();
+
+    // Redirecting based on the user role
+    $role = auth()->user()->role;
+    $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
+    return redirect()->route($route)->with('success', 'Product added successfully');
+}
+
+
+
 
     public function edit(Product $product)
     {
@@ -55,26 +65,38 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Product $product)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'category_id' => 'nullable|exists:categories,id',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $product->update($request->all());
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-            $product->image = '/storage/' . $imagePath;
-        }
+    // Update product data
+    $product->update($request->except('image')); // Keep the previous image if not updating
 
-        return redirect()->route('staff.products.index')->with('success', 'Product updated successfully');
+    if ($request->hasFile('image')) {
+        // Store the new image in the public/img folder
+        $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
+        $product->image = 'storage/' . $imagePath; // Save relative path to the DB
     }
+
+    $product->save();
+
+    // Redirecting based on the user role
+    $role = auth()->user()->role;
+    $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
+    return redirect()->route($route)->with('success', 'Product updated successfully');
+}
+
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('staff.products.index')->with('success', 'Product deleted successfully');
+
+        $role = auth()->user()->role;
+        $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
+        return redirect()->route($route)->with('success', 'Product deleted successfully');
     }
 }

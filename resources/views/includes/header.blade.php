@@ -10,29 +10,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
-    <style>
-        #go-to-top {
-            display: none; /* Hidden by default */
-            position: fixed; /* Fixed/sticky position */
-            bottom: 20px; /* Place the button at the bottom */
-            right: 30px; /* Place the button 30px from the right */
-            z-index: 99; /* Make sure it does not overlap */
-            border: none; /* Remove borders */
-            outline: none; /* Remove outline */
-            background-color: #63966b; /* Set a background color */
-            color: white; /* Text color */
-            cursor: pointer; /* Add a mouse pointer on hover */
-            padding: 15px; /* Some padding */
-            border-radius: 50px; /* Rounded corners */
-            font-size: 18px; /* Increase font size */
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        #go-to-top:hover {
-            background-color: #44684a; /* Add a dark-grey background on hover */
-        }
-    </style>
+    
 </head>
 <body>
     <header>
