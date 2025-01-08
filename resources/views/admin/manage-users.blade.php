@@ -11,8 +11,6 @@
         <input type="text" id="searchQuery" class="form-control" placeholder="Search for users..." onkeyup="searchUsers()">
     </div>
 
-    
-
     <!-- Employee Table (Initially Visible) -->
     <div id="employeesSection">
         <h2>Employees</h2>
@@ -41,12 +39,20 @@
                         <td>{{ $employee->email }}</td>
                         <td>{{ $employee->role }}</td>
                         <td>
-                            <a href="{{ route('admin.employees.edit', $employee) }}" class="button-edit">Edit</a>
-                            <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="button-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                            </form>
+                            @if($employee->name == 'Admin User') <!-- Disable Edit button for "Admin User" -->
+                                <button class="button-edit" style="background-color: gray" disabled>Edit</button>
+                            @else
+                                <a href="{{ route('admin.employees.edit', $employee) }}" class="button-edit">Edit</a>
+                            @endif
+                            @if($employee->name == 'Admin User') <!-- Disable the delete button for Admin User -->
+                                <button class="button-danger" style="background-color: gray" disabled>Delete</button>
+                            @else
+                                <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="button-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

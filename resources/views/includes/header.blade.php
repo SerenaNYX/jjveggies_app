@@ -50,6 +50,7 @@
                     <li><a href="/product">Shop</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
+                    <li><a href="#">Rewards</a></li>
                     <li><a href="#"><img src={{ asset('img/cart.png') }} alt=""></a></li>
                 @endguest
             </ul>

@@ -14,6 +14,10 @@
             <label for="price">Product Price</label>
             <input type="text" id="price" name="price" class="form-control" value="{{ $product->price }}" required>
         </div>
+        <div class="form-group"> 
+            <label for="quantity">Quantity</label> 
+            <input type="number" id="quantity" name="quantity" class="form-control" value="{{ isset($product) ? $product->quantity : '' }}" required> 
+        </div>
         <div class="form-group">
             <label for="category_id">Category</label>
             <select id="category_id" name="category_id" class="form-control">
@@ -25,7 +29,7 @@
         </div>
         <div class="form-group">
             <label for="description">Product Description</label>
-            <textarea id="description" name="description" class="form-control" rows="4" style="resize: none;" required>{{ $product->description }}</textarea>
+            <textarea id="description" name="description" class="form-control" rows="4" style="resize: none;">{{ $product->description }}</textarea>
         </div>
         <div class="form-group">
             <label for="image">Product Image</label>

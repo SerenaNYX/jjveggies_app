@@ -10,15 +10,23 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'image', 'details', 'price', 'category_id', 'description'];
+    protected $fillable = [
+        'name', 
+        'slug', 
+        'image', 
+        'price', 
+        'quantity', 
+        'category_id', 
+        'description'
+    ];
 
-    // Define the relationship with the Category model
+    // Relationship with the Category model
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Add a scope to filter products by category
+    // Scope to filter products by category
     public function scopeCategory($query, $categoryId)
     {
         if ($categoryId) {
@@ -48,8 +56,7 @@ class Product extends Model
             }
         });
     }
-
-    // Method to generate a unique slug
+    
     protected static function generateUniqueSlug($name, $productId = null)
     {
         $slug = Str::slug($name);

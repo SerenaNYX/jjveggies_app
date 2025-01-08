@@ -19,11 +19,18 @@ class UsersTableSeeder extends Seeder
                 'name' => 'Serena',
                 'email' => 'serena@example.com',
                 'password' => Hash::make('password'),
-                'contact' => '01123456789',
-                'address' => '123, My House',
+                'contact' => '0115479225',
+                'address' => '123, My House, Johor',
                 'remember_token' => Str::random(10),
             ],
-            // Add more users as needed
+            [
+                'name' => 'Saera',
+                'email' => 'saera@example.com',
+                'password' => Hash::make('password'),
+                'contact' => '0174215779',
+                'address' => '456, My House, Johor',
+                'remember_token' => Str::random(10),
+            ],
         ];
 
         DB::table('users')->insert($users);

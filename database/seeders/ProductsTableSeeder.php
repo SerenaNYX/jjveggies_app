@@ -25,6 +25,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Sample Vegetables'),
                 'image' => 'img/vegetables/vegetables.png',
                 'price' => 99.99, 
+                'quantity' => 99,
                 'description' => 'This is just a sample.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -35,6 +36,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Brocolli'),
                 'image' => 'img/vegetables/broccoli.jpg',
                 'price' => 2.50, 
+                'quantity' => 50,
                 'description' => 'Fresh broccoli description.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -45,6 +47,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Carrot'),
                 'image' => 'img/vegetables/carrot.jpg',
                 'price' => 1.90, 
+                'quantity' => 97,
                 'description' => 'Carrots! Description here.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -55,6 +58,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Spring Onion'),
                 'image' => 'img/vegetables/springonion.jpg',
                 'price' => 1.20, 
+                'quantity' => 60,
                 'description' => 'Spring onions for sale.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -65,6 +69,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Shallot'),
                 'image' => 'img/vegetables/shallot.webp',
                 'price' => 1.50, 
+                'quantity' => 57,
                 'description' => 'Shallots, anyone?', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -75,6 +80,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Ginger'),
                 'image' => 'img/vegetables/ginger.jpg',
                 'price' => 1.90, 
+                'quantity' => 87,
                 'description' => 'GINGERRRRR.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -85,6 +91,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Strawberry'),
                 'image' => 'img/fruits/strawberry.jpg',
                 'price' => 14.90, 
+                'quantity' => 56,
                 'description' => 'Cameron Strawberries.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -95,6 +102,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Black Pepper'),
                 'image' => 'img/condiments/blackpepper.jpg',
                 'price' => 10.90, 
+                'quantity' => 68,
                 'description' => 'Dried black pepper.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -105,6 +113,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Ground Black Pepper'),
                 'image' => 'img/condiments/groundblackpepper.jpg',
                 'price' => 10.90, 
+                'quantity' => 64,
                 'description' => 'Ground black pepper.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -115,6 +124,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('White Pepper'),
                 'image' => 'img/condiments/whitepepper.jpg',
                 'price' => 10.90, 
+                'quantity' => 57,
                 'description' => 'Dried white pepper.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -125,6 +135,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Ground White Pepper'),
                 'image' => 'img/condiments/groundwhitepepper.jpg',
                 'price' => 10.90, 
+                'quantity' => 74,
                 'description' => 'Ground white pepper.', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -135,6 +146,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Avocado'),
                 'image' => 'img/fruits/avocado.jpg',
                 'price' => 10.50,
+                'quantity' => 39,
                 'description' => '', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -145,6 +157,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Mandarin Oranges'),
                 'image' => 'img/fruits/mandarinorange.jpg',
                 'price' => 9.90,
+                'quantity' => 99,
                 'description' => '', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -155,6 +168,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Cabbages'),
                 'image' => 'img/vegetables/cabbage.jpg',
                 'price' => 3.70,
+                'quantity' => 103,
                 'description' => '', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -165,6 +179,7 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Pak Choy'),
                 'image' => 'img/vegetables/pakchoy.jpg',
                 'price' => 2.90,
+                'quantity' => 93,
                 'description' => '', 
                 'created_at' => now(), 
                 'updated_at' => now()
@@ -173,19 +188,76 @@ class ProductsTableSeeder extends Seeder
                 'category_id' => 1,
                 'name' => 'Bitter Gourd',
                 'slug' => Str::slug('Bitter Gourd'),
-                'image' => 'img/vegetables/bittergours.jpg',
+                'image' => 'img/vegetables/bittergourd.jpg',
                 'price' => 2.90,
+                'quantity' => 37,
                 'description' => '', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
 
+            //CLEARANCE
+            [
+                'category_id' => 4,
+                'name' => 'Mandarin Oranges (Clearance)',
+                'slug' => Str::slug('Mandarin Oranges (Clearance)'),
+                'image' => 'img/fruits/mandarinorange.jpg',
+                'price' => 4.90,
+                'quantity' => 19,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 4,
+                'name' => 'Avocado (Clearance)', 
+                'slug' => Str::slug('Avocado (Clearance)'),
+                'image' => 'img/fruits/avocado.jpg',
+                'price' => 4.50,
+                'quantity' => 9,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 4,
+                'name' => 'Bitter Gourd (Clearance)',
+                'slug' => Str::slug('Bitter Gourd (Clearance)'),
+                'image' => 'img/vegetables/bittergourd.jpg',
+                'price' => 1.50,
+                'quantity' => 7,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 4,
+                'name' => 'Cabbages (Clearance)',
+                'slug' => Str::slug('Cabbages (Clearance)'),
+                'image' => 'img/vegetables/cabbage.jpg',
+                'price' => 1.70,
+                'quantity' => 23,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 4,
+                'name' => 'Pak Choy (Clearance)',
+                'slug' => Str::slug('Pak Choy (Clearance)'),
+                'image' => 'img/vegetables/pakchoy.jpg',
+                'price' => 1.30,
+                'quantity' => 12,
+                'description' => '', 
+                'created_at' => now(), 
+                'updated_at' => now()
+            ],
+            
+
         ];
 
         DB::table('products')->insert($products);
     }
-
-
 
 
  /*   public function run()

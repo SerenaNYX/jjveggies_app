@@ -36,8 +36,12 @@
                     <button class="btn btn-primary">Log in</button>
                 </form>
                     <div style="font-size: 15px;">
-                        <br>No account yet?
-                        <a href="/registerpage">Register now!</a>
+                        <br>
+                        <a href="#" style="color:goldenrod;">Forgot password?</a>
+                    </div>
+                    <div style="font-size: 15px;">
+                        No account yet?
+                        <a href="/registerpage" style="color:green;">Register now!</a>
                     </div>
             </div>
         @endauth

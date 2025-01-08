@@ -33,6 +33,7 @@
                 <th class="name-column">Name</th>
                 <th class="category-column">Category</th>
                 <th class="price-column">Price</th>
+                <th class="quantity-column">Quantity</th>
                 <th class="actions-column">Actions</th>
             </tr>
         </thead>
@@ -44,6 +45,7 @@
                 <td class="name-column">{{ $product->name }}</td>
                 <td class="category-column">{{ $product->category->name ?? 'Uncategorized' }}</td>
                 <td class="price-column">RM{{ number_format($product->price, 2) }}</td>
+                <td class="quantity-column">{{ $product->quantity }}</td> <!-- TODO: add styling width to quantity -->
                 <td class="actions-column">
                     <a href="{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}" class="button-edit">Edit</a>
                     <form action="{{ route(Auth::guard('employee')->user()->role . '.products.destroy', $product->id) }}" method="POST" style="display:inline-block;">

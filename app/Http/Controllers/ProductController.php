@@ -13,6 +13,24 @@ class ProductController extends Controller
         $products = Product::all();
         return view('products.index', compact('products'));
     }
+    
+/*
+    public function index(Request $request)
+    {
+        // Get all products (eager load the category)
+        $products = Product::with('category')->get();
+
+        // Fetch products in the "Clearance" category
+        $clearanceProducts = Product::with('category')
+            ->whereHas('category', function ($query) {
+                $query->where('name', 'Clearance'); // Make sure the category is 'Clearance'
+            })
+            ->get();
+
+        // Pass both the featured and clearance products to the view
+        return view('welcome', compact('products', 'clearanceProducts'));
+    }*/
+
 
     public function create()
     {
@@ -73,17 +91,6 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
-/*
-    public function showProducts()
-    {
-        $products = Product::all();
-        return view('product', compact('products'));
-    }
-
-    public function show(Product $product)
-    {
-        return view('products.show', compact('product'));
-    }*/
 
     public function showProducts(Request $request)
     {

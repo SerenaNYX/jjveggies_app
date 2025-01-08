@@ -13,6 +13,10 @@
             <label for="price">Product Price</label>
             <input type="text" id="price" name="price" class="form-control" required>
         </div>
+        <div class="form-group"> 
+            <label for="quantity">Quantity</label> 
+            <input type="number" id="quantity" name="quantity" class="form-control" value="{{ isset($product) ? $product->quantity : '' }}" required> 
+        </div>
         <div class="form-group">
             <label for="category_id">Category</label>
             <select id="category_id" name="category_id" class="form-control">
