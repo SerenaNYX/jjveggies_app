@@ -7,7 +7,12 @@
             <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
             <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
             <p>{{ $product->description }}</p>
-            <button class="add-to-cart"><img src="{{ asset('img/cart.png') }}" alt="Add to Cart"></button>
+            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
+                @csrf
+                <button type="submit" class="add-to-cart2">
+                    <img src="{{ asset('img/cart.png') }}" alt="Add to Cart">
+                </button>
+            </form>
         </div>
     </div>
 @endsection

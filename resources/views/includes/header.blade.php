@@ -10,7 +10,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -51,7 +52,7 @@
                     <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
                     <li><a href="#">Rewards</a></li>
-                    <li><a href="#"><img src={{ asset('img/cart.png') }} alt=""></a></li>
+                    <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt=""></a></li>
                 @endguest
             </ul>
         </div> <!-- end top-nav -->

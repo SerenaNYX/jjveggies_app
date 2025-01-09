@@ -32,7 +32,14 @@
                     <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
                     <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
                     <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
-                    <button class="add-to-cart"><img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart"></button>
+
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
+                        @csrf
+                        <button type="submit" class="add-to-cart">
+                            <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart">
+                        </button>
+                    </form>
+        
                 </div>
             @endforeach
         </div> <!-- end featured section -->
@@ -48,9 +55,12 @@
                             <div class="product-name">{{ $product->name }}</div>
                         </a>
                         <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
-                        <button class="add-to-cart">
-                            <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart">
-                        </button>
+                        <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
+                            @csrf
+                            <button type="submit" class="add-to-cart">
+                                <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart">
+                            </button>
+                        </form>
                     </div>
                 @endif
             @endforeach

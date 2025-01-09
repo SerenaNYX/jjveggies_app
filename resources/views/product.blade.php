@@ -3,8 +3,8 @@
 @section('content')
     <div class="product-catalog">
         <div class="container">
-            <div class="row">
-                <div class="col-12">
+            <div class="row"> <!-- is row class needed? -->
+                <div class="col-12"> <!-- remove this div -->
                     <h1 class="text-center">Our Products</h1>
                     <p class="section-description text-center">Explore our wide range of fresh vegetables and fruits available for you.</p>
                 </div>
@@ -22,7 +22,7 @@
                     @endforeach
                 </div>
                 <!-- Products Section -->
-                <div class="col-md-9 products text-center">
+                <div class="col-md-9 products text-center"> <!-- is col-md-9 needed? -->
                     @foreach ($products as $product)
                         <div class="product">
                             <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>

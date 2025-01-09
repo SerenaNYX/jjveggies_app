@@ -2,12 +2,14 @@
 
 use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
-use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
+use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
@@ -56,4 +58,28 @@ Route::middleware(['auth:employee', 'role:staff'])->group(function () {
 
 Route::middleware(['auth:employee', 'role:driver'])->group(function () {
     Route::get('driver/dashboard', [AdminController::class, 'dashboard'])->name('driver.dashboard');
+});
+
+
+
+Route::middleware('auth')->group(function () {
+
+    // Show the cart items page
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+    // Add an item to the cart
+    Route::post('/cart/add/{id}', [CartItemController::class, 'add'])->name('cart.add');
+
+    // Remove an item from the cart
+    Route::delete('/cart/remove/{id}', [CartItemController::class, 'remove'])->name('cart.remove');
+
+    // Update the quantity of an item in the cart
+    Route::post('/cart/update/{id}', [CartItemController::class, 'update'])->name('cart.update');
+
+    // Clear all items in the cart
+   // Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    // Proceed to checkout (Optional, but useful for navigating to the checkout process)
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+
 });
