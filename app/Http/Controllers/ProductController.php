@@ -110,6 +110,16 @@ class ProductController extends Controller
         return view('product', compact('products', 'categories', 'categorySlug'));
     }
 
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    $products = Product::where('name', 'LIKE', "%$query%")->get();
+    $categories = Category::all();
+
+    return view('product', compact('products', 'categories'))->with('categorySlug', null);
+}
+
+
     public function show(Product $product)
     {
         return view('products.show', compact('product'));

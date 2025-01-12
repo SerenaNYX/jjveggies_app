@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Middleware\CheckRole;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
@@ -8,22 +10,50 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
 use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
 Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
-Route::get('/loginpage', function () { 
+Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+
+Route::get('/login', function () {
     return view('loginpage');
-});
+})->name('login');
+Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/login', [UserController::class, 'login']);
 Route::get('/registerpage', function () { 
     return view('registerpage');
 });
-
 Route::post('/register', [UserController::class, 'register']);
-Route::post('/logout', [UserController::class, 'logout']);
-Route::post('/login', [UserController::class, 'login']);
+
+/*
+// Email Verification
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return view('auth.verify-success');
+ //   return redirect('/');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('/verify-success', function () {
+    return view('auth.verify-success');
+})->name('verify.success');
+
+
+Route::post('/email/verification-notification', function (Request $request) {
+//    $request->user()->sendEmailVerificationNotification();
+ 
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+*/ 
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [UserController::class, 'update'])->name('profile.update');
@@ -31,6 +61,20 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    // Update the quantity of an item in the cart
+    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+
+   // Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/cart/destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
 
 
 // Employee Routes
@@ -60,26 +104,10 @@ Route::middleware(['auth:employee', 'role:driver'])->group(function () {
     Route::get('driver/dashboard', [AdminController::class, 'dashboard'])->name('driver.dashboard');
 });
 
+Route::get('/messages', function () { 
+    return view('message');
+});
 
-
-Route::middleware('auth')->group(function () {
-
-    // Show the cart items page
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-    // Add an item to the cart
-    Route::post('/cart/add/{id}', [CartItemController::class, 'add'])->name('cart.add');
-
-    // Remove an item from the cart
-    Route::delete('/cart/remove/{id}', [CartItemController::class, 'remove'])->name('cart.remove');
-
-    // Update the quantity of an item in the cart
-    Route::post('/cart/update/{id}', [CartItemController::class, 'update'])->name('cart.update');
-
-    // Clear all items in the cart
-   // Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-    // Proceed to checkout (Optional, but useful for navigating to the checkout process)
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-
+Route::get('/about', function () { 
+    return view('about');
 });

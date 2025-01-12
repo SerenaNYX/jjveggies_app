@@ -340,10 +340,10 @@ header {
             display: block;
             opacity: 1;
         }
-
+/*
         &:hover img {
             opacity: 0.7;
-        }
+        }*/
     }
 }
 .add-to-cart2 {
@@ -414,6 +414,7 @@ footer {
 }
 
 .product {
+    padding-top: 30px;
     background-color: #f9f9f9;
     padding: 20px;
     border: 1px solid #b5b5b5;
@@ -426,10 +427,10 @@ footer {
         transform: scale(1.05);
     }
     
-    &:hover img {
+  /*  &:hover img {
         opacity: 0.7;
     }
-
+*/
     .add-to-cart:hover {
         background-color: #85b590;
      /*    transform: scale(1.02); */
@@ -449,8 +450,40 @@ footer {
         width: 12%; 
         height: 12%; 
     }
-
 }
+
+.search-container { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.search-bar {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 400px;
+}
+
+.button-search {
+    width: 120px;
+    font-size: 15px;
+    padding: 10px 20px;
+    border: none;
+    text-decoration: none;
+    background-color: #73a26c;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
+        background-color: #587d53;
+    }
+}
+
+
 /* product page content end */
 
 /* product page-categories */
@@ -576,7 +609,7 @@ h2 {
 
 /* Cart Styles */
 .cart-container {
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
@@ -636,6 +669,46 @@ h2 {
 }
 .btn-remove:hover {
     background-color: #bf3232;
+}
+
+.btn-quantity {
+    width: 30px;
+    height: 30px;
+    background-color: #beccc0;
+    color: #3e5e43;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.btn-quantity:hover {
+    background-color: #63966b;
+}
+.cart-quantity {
+    border: solid 1px;
+    border-color: #63966b;
+    border-radius: 5px;
+    height: 32px;
+}
+
+.checkbox-quantity {
+    width: 18px;
+    height: 18px;
+/*   
+    border-radius: 50%;
+    accent-color: #4CAF50;*/
+    cursor: pointer;
+}
+
+.column-image {
+    width: ;
+}
+.column-product {
+    width: ;
+}
+.column-quantity {
+    width: ;
 }
 
 /* end of cart */

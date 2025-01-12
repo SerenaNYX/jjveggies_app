@@ -37,7 +37,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/broccoli.jpg',
                 'price' => 2.50, 
                 'quantity' => 50,
-                'description' => 'Fresh broccoli description.', 
+                'description' => 'Per pcs', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -48,7 +48,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/carrot.jpg',
                 'price' => 1.90, 
                 'quantity' => 97,
-                'description' => 'Carrots! Description here.', 
+                'description' => 'Per 300g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -59,7 +59,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/springonion.jpg',
                 'price' => 1.20, 
                 'quantity' => 60,
-                'description' => 'Spring onions for sale.', 
+                'description' => 'Per 200g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -70,7 +70,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/shallot.webp',
                 'price' => 1.50, 
                 'quantity' => 57,
-                'description' => 'Shallots, anyone?', 
+                'description' => 'Per 200g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -81,7 +81,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/ginger.jpg',
                 'price' => 1.90, 
                 'quantity' => 87,
-                'description' => 'GINGERRRRR.', 
+                'description' => 'Per 200g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -92,7 +92,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/fruits/strawberry.jpg',
                 'price' => 14.90, 
                 'quantity' => 56,
-                'description' => 'Cameron Strawberries.', 
+                'description' => 'Per pack', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -103,7 +103,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/condiments/blackpepper.jpg',
                 'price' => 10.90, 
                 'quantity' => 68,
-                'description' => 'Dried black pepper.', 
+                'description' => 'Per 400g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -114,7 +114,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/condiments/groundblackpepper.jpg',
                 'price' => 10.90, 
                 'quantity' => 64,
-                'description' => 'Ground black pepper.', 
+                'description' => 'Per 400g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -125,7 +125,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/condiments/whitepepper.jpg',
                 'price' => 10.90, 
                 'quantity' => 57,
-                'description' => 'Dried white pepper.', 
+                'description' => 'Per 400g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -136,7 +136,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/condiments/groundwhitepepper.jpg',
                 'price' => 10.90, 
                 'quantity' => 74,
-                'description' => 'Ground white pepper.', 
+                'description' => 'Per 400g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -147,7 +147,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/fruits/avocado.jpg',
                 'price' => 10.50,
                 'quantity' => 39,
-                'description' => '', 
+                'description' => 'Per 500g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -156,9 +156,9 @@ class ProductsTableSeeder extends Seeder
                 'name' => 'Mandarin Oranges',
                 'slug' => Str::slug('Mandarin Oranges'),
                 'image' => 'img/fruits/mandarinorange.jpg',
-                'price' => 9.90,
+                'price' => 18.90,
                 'quantity' => 99,
-                'description' => '', 
+                'description' => 'Per box', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -169,7 +169,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/cabbage.jpg',
                 'price' => 3.70,
                 'quantity' => 103,
-                'description' => '', 
+                'description' => 'Per 400g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -180,7 +180,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/pakchoy.jpg',
                 'price' => 2.90,
                 'quantity' => 93,
-                'description' => '', 
+                'description' => 'Per pack', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -191,7 +191,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/bittergourd.jpg',
                 'price' => 2.90,
                 'quantity' => 37,
-                'description' => '', 
+                'description' => 'Per 200g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -202,9 +202,9 @@ class ProductsTableSeeder extends Seeder
                 'name' => 'Mandarin Oranges (Clearance)',
                 'slug' => Str::slug('Mandarin Oranges (Clearance)'),
                 'image' => 'img/fruits/mandarinorange.jpg',
-                'price' => 4.90,
+                'price' => 8.90,
                 'quantity' => 19,
-                'description' => '', 
+                'description' => 'Per box', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -215,7 +215,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/fruits/avocado.jpg',
                 'price' => 4.50,
                 'quantity' => 9,
-                'description' => '', 
+                'description' => 'Per 500g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -237,7 +237,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/cabbage.jpg',
                 'price' => 1.70,
                 'quantity' => 23,
-                'description' => '', 
+                'description' => 'Per 200g', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],
@@ -248,7 +248,7 @@ class ProductsTableSeeder extends Seeder
                 'image' => 'img/vegetables/pakchoy.jpg',
                 'price' => 1.30,
                 'quantity' => 12,
-                'description' => '', 
+                'description' => 'Per pack', 
                 'created_at' => now(), 
                 'updated_at' => now()
             ],

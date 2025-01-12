@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CartItemController extends Controller
 {
+    public function index()
+    {
+        $user_id = Auth::id();
+        $cart = Cart::firstOrCreate(['user_id' => $user_id]);
+        $cartItems = $cart->items;
+
+        return view('cart', compact('cartItems'));
+    }
     public function add(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -61,28 +69,35 @@ class CartItemController extends Controller
     }*/
 
     public function update(Request $request, $id)
-    {
-        $user_id = Auth::id();
-        $cart = Cart::firstOrCreate(['user_id' => $user_id]);
+{
+    $user_id = Auth::id();
+    $cart = Cart::firstOrCreate(['user_id' => $user_id]);
+    $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
 
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
-        if ($cartItem) {
-            $quantity = $request->input('quantity');
+    if ($cartItem) {
+        // Validate the quantity input
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
 
-            if ($quantity > 0) {
-                $cartItem->quantity = $quantity;
-                $product = $cartItem->product;
+        // Get the updated quantity
+        $quantity = $request->input('quantity');
+        
+        // Update the cart item in the database
+        $cartItem->quantity = $quantity;
+        $cartItem->save(); // Save changes to the database
 
-                $cartItem->save();
-
-                return response()->json(['success' => true]);
-            } else {
-                return response()->json(['success' => false, 'message' => 'Invalid quantity']);
-            }
-        } else {
-            return response()->json(['success' => false, 'message' => 'Cart item not found']);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Quantity updated successfully',
+            'quantity' => $quantity,
+            'subtotal' => number_format($cartItem->product->price * $quantity, 2)
+        ]);
     }
+
+    return response()->json(['success' => false, 'message' => 'Cart item not found']);
+}
+
 
     public function destroy($id)
     {

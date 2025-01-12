@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
 </head>
 <body>
@@ -18,7 +21,7 @@
         <div class="account">
             @guest
                 <div class="login">
-                    <a href="/loginpage">Login</a>
+                    <a href="/login">Login</a>
                 </div>
                 <div class="signup">
                     <a href="/registerpage">Sign Up</a>
@@ -44,13 +47,16 @@
             </div>
             <ul>
                 @guest
+                    <li></li>
+                    <li></li>
+                    <li></li>
                     <li><a href="/product">Shop</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="/about">About</a></li>
+                <!--    <li><a href="#">Contact</a></li> -->
                 @else
                     <li><a href="/product">Shop</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/messages">Message</a></li>
                     <li><a href="#">Rewards</a></li>
                     <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt=""></a></li>
                 @endguest

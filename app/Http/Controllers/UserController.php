@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -48,8 +49,17 @@ class UserController extends Controller
 
         $incomingFields['password'] = bcrypt($incomingFields['password']);
         $user = User::create($incomingFields);
+/*
+        event(new Registered($user));
+    //    $user->sendEmailVerificationNotification();
+
+        return redirect('/email/verify')->with('success', 'Registration successful. Please verify your email and log in.');
+
+    //    return redirect('/email/verify')->with('message', 'Please verify your email address.');
+    */    
         Auth::login($user);
         return redirect('/');   
+        
     }
 
     public function edit()
@@ -97,4 +107,5 @@ class UserController extends Controller
         $user->save();
         return redirect()->route('admin.employees.index')->with('success', 'Customer access restored successfully.');
     }
+
 }

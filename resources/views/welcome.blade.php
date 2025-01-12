@@ -28,7 +28,7 @@
         <!-- featured section -->
         <div class="products text-center" id="featured-section">
             @foreach ($products as $product)
-                <div class="product">
+                <div class="product" data-description="{{ $product->description }}">
                     <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
                     <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
                     <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
@@ -47,7 +47,7 @@
         <div class="products text-center" id="clearance-section">
             @foreach ($products as $product)
                 @if($product->category->name == 'Clearance')
-                    <div class="product">
+                    <div class="product" data-description="{{ $product->description }}">
                         <a href="{{ route('products.show', $product->id) }}">
                             <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
                         </a>
@@ -114,3 +114,61 @@ function showClearance() {
     document.getElementById('featured-button').classList.remove('active');
 }
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // AJAX search handling
+        $('#searchForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get the search query
+            let query = $('#searchInput').val();
+
+            // Make the AJAX request
+            $.ajax({
+                url: '{{ route('product.show') }}', // The same route used for products
+                type: 'GET',
+                data: { query: query }, // Send the search query
+                success: function(response) {
+                    // Update the products section with the new content
+                    $('#productsList').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching products:', error);
+                }
+            });
+        });
+
+        // Hover to show description
+        $('.product').hover(function() {
+            var description = $(this).data('description');
+            var descriptionElement = $('<div class="product-description"></div>').text(description);
+            $(this).append(descriptionElement);
+        }, function() {
+            $(this).find('.product-description').remove();
+        });
+    });
+</script>
+
+<style>
+    .product {
+        position: relative;
+    }
+    .product-description {
+        height: 45px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .product:hover .product-description {
+        opacity: 1;
+    }
+</style>

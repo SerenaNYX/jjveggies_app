@@ -38,7 +38,7 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart')->with('success', 'Product added to cart!');
+        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 
     public function remove(Request $request, $id)
@@ -51,17 +51,8 @@ class CartController extends Controller
             $cartItem->delete();
         }
 
-        return redirect()->route('cart')->with('success', 'Product removed from cart!');
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
     }
-/*
-    public function clear()
-    {
-        $user_id = Auth::id();
-        $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cart->items()->delete();
-
-        return redirect()->route('cart.index')->with('success', 'Cart cleared!');
-    }*/
 
     public function update(Request $request, $id)
     {
@@ -70,20 +61,41 @@ class CartController extends Controller
         $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
 
         if ($cartItem) {
-            $cartItem->quantity = $request->quantity;
+            // Validate the quantity input
+            $request->validate([
+                'quantity' => 'required|integer|min:1',
+            ]);
+
+            $quantity = $request->input('quantity');
+
+            // Update the quantity in the database
+            $cartItem->quantity = $quantity;
             $cartItem->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Quantity updated successfully',
+                'quantity' => $quantity,
+                'subtotal' => number_format($cartItem->product->price * $quantity, 2)
+            ]);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => false, 'message' => 'Cart item not found']);
     }
 
+    public function checkout(Request $request)
+    {
+        $selectedItems = $request->input('selected_items', []);
+        $cartItems = CartItem::whereIn('id', $selectedItems)->get();
 
-/*
-    public function checkout(Request $request) 
-    { 
-        $selectedItems = $request->input('selected_items', []); 
-        $cartItems = CartItem::whereIn('id', $selectedItems)->get(); 
-        return view('checkout.index', compact('cartItems')); 
-    }*/
+        return view('checkout.index', compact('cartItems'));
+    }
 
+    public function destroy($id)
+    {
+        $cartItem = CartItem::findOrFail($id);
+        $cartItem->delete();
+
+        return redirect()->route('cart.index')->with('success', 'Cart item deleted successfully.');
+    }
 }
