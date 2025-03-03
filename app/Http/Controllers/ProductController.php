@@ -14,6 +14,7 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
     
+    
 /*
     public function index(Request $request)
     {
@@ -91,8 +92,7 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
-
-    public function showProducts(Request $request)
+/*    public function showProducts(Request $request)
     {
         $categorySlug = $request->query('category'); // Retrieve the category from the query parameters
         $category = Category::where('slug', $categorySlug)->first();
@@ -107,6 +107,31 @@ class ProductController extends Controller
         }
 
         // Pass the variables to the view
+        return view('product', compact('products', 'categories', 'categorySlug'));
+    }*/
+
+    public function showProducts(Request $request)
+    {
+        $categorySlug = $request->query('category');
+        $category = Category::where('slug', $categorySlug)->first();
+        $categories = Category::all();
+
+        $perPage = 12; // Number of products to load per scroll
+        $page = $request->get('page', 1); // Get the current page number
+
+        if ($category) {
+            $products = Product::where('category_id', $category->id)->paginate($perPage, ['*'], 'page', $page);
+        } else {
+            $products = Product::paginate($perPage, ['*'], 'page', $page);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'products' => $products->items(),
+                'next_page_url' => $products->nextPageUrl()
+            ]);
+        }
+
         return view('product', compact('products', 'categories', 'categorySlug'));
     }
 
@@ -125,9 +150,27 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function welcomeProducts()
+   /* public function welcomeProducts()
     {
-        $products = Product::all();
+        $products = Product::paginate(8);
         return view('welcome', compact('products'));
+    }*/
+
+    public function welcomeProducts(Request $request)
+    {
+        $products = Product::whereDoesntHave('category', function ($query) {
+            $query->where('name', 'Clearance');
+        })->paginate(8);
+    
+        $clearanceProducts = Product::whereHas('category', function ($query) {
+            $query->where('name', 'Clearance');
+        })->paginate(8);
+    
+        if ($request->ajax()) {
+            return view('welcome', compact('products', 'clearanceProducts'));
+        }
+    
+        return view('welcome', compact('products', 'clearanceProducts'));
     }
+
 }

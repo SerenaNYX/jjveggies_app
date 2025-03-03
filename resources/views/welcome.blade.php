@@ -20,57 +20,38 @@
 <div class="welcomeproduct-section">
     <div class="container">
         <h1 class="text-center">Vegetables & Fruits</h1>
-        <!--<p class="section-description1 text-center">Browse vegetables and fruits in this section.</p>-->
         <div class="text-center button-container">
             <button id="featured-button" class="button active" onclick="showFeatured()">Featured</button>
             <button id="clearance-button" class="button" onclick="showClearance()">Clearance</button>
         </div>
-        <!-- featured section -->
-        <div class="products text-center" id="featured-section">
-            @foreach ($products as $product)
-                <div class="product" data-description="{{ $product->description }}">
-                    <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
-                    <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
-                    <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
 
-                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
-                        @csrf
-                        <button type="submit" class="add-to-cart">
-                            <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart">
-                        </button>
-                    </form>
-        
-                </div>
-            @endforeach
-        </div> <!-- end featured section -->
-        <!-- clearance section -->
-        <div class="products text-center" id="clearance-section">
-            @foreach ($products as $product)
-                @if($product->category->name == 'Clearance')
-                    <div class="product" data-description="{{ $product->description }}">
-                        <a href="{{ route('products.show', $product->id) }}">
-                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
-                        </a>
-                        <a href="{{ route('products.show', $product->id) }}">
-                            <div class="product-name">{{ $product->name }}</div>
-                        </a>
-                        <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
-                        <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
-                            @csrf
-                            <button type="submit" class="add-to-cart">
-                                <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart">
-                            </button>
-                        </form>
-                    </div>
-                @endif
-            @endforeach
-        </div> <!-- end clearance-section -->
-        
-        <div class="text-center button-container">
-            <a href="#" class="button">View more products</a>
+        <!-- Featured Section -->
+        <div class="products text-center" id="featured-section">
+            @include('partials.welcomeproducts', ['products' => $products])
+        </div> <!-- End Featured Section -->
+
+        <!-- Featured Pagination -->
+        <div class="pagination" id="featured-pagination">
+            {{ $products->links('vendor.pagination.default') }}
+        </div>
+
+        <!-- Clearance Section -->
+        <div class="products text-center" id="clearance-section" style="display: none;">
+            @include('partials.welcomeproducts', ['products' => $clearanceProducts])
+        </div> <!-- End Clearance Section -->
+
+        <!-- Clearance Pagination -->
+        <div class="pagination" id="clearance-pagination" style="display: none;">
+            {{ $clearanceProducts->links('vendor.pagination.default') }}
         </div>
     </div>
-
+</div>
+        
+        <div class="text-center button-container">
+            <a href="/product" class="button">View more products</a>
+        </div>
+    </div>
+<!--
     <div class="blog-section">
         <div class="container">
             <h1 class="text-center">Learn more about us</h1>
@@ -91,7 +72,7 @@
                     <a href="#"><img src="img/logo.jpg" alt="blog image"></a>
                     <a href="#"><h2 class="blog-title">J&J Vegetables</h2></a>
                     <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est ullam, ipsa quasi?</div>
-                </div>
+                </div>-->
             </div> <!-- end blog-posts -->
         </div> <!-- end container -->
     </div> <!-- end blog-section -->
@@ -99,20 +80,64 @@
 </div> <!-- end featured-section -->
 @endsection
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-function showFeatured() {
-    document.getElementById('featured-section').style.display = 'grid';
-    document.getElementById('clearance-section').style.display = 'none';
-    document.getElementById('featured-button').classList.add('active');
-    document.getElementById('clearance-button').classList.remove('active');
-}
+    $(document).ready(function() {
+        // Function to handle AJAX pagination
+        function handlePagination(section, pagination) {
+            $(document).on('click', `#${pagination} .pagination a`, function(event) {
+                event.preventDefault(); // Prevent default link behavior
 
-function showClearance() {
-    document.getElementById('featured-section').style.display = 'none';
-    document.getElementById('clearance-section').style.display = 'grid';
-    document.getElementById('clearance-button').classList.add('active');
-    document.getElementById('featured-button').classList.remove('active');
-}
+                // Get the URL from the clicked link
+                let url = $(this).attr('href');
+
+                // Make an AJAX request to fetch the new page
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        // Update the product list and pagination links
+                        $(`#${section}`).html($(response).find(`#${section}`).html());
+                        $(`#${pagination}`).html($(response).find(`#${pagination}`).html());
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching pagination data:', error);
+                    }
+                });
+            });
+        }
+
+        // Initialize AJAX pagination for Featured and Clearance sections
+        handlePagination('featured-section', 'featured-pagination');
+        handlePagination('clearance-section', 'clearance-pagination');
+    });
+</script>
+
+<script>
+    // Function to show the Featured section and hide the Clearance section
+    function showFeatured() {
+        document.getElementById('featured-section').style.display = 'grid';
+        document.getElementById('clearance-section').style.display = 'none';
+        document.getElementById('featured-pagination').style.display = 'block';
+        document.getElementById('clearance-pagination').style.display = 'none';
+        document.getElementById('featured-button').classList.add('active');
+        document.getElementById('clearance-button').classList.remove('active');
+    }
+
+    // Function to show the Clearance section and hide the Featured section
+    function showClearance() {
+        document.getElementById('featured-section').style.display = 'none';
+        document.getElementById('clearance-section').style.display = 'grid';
+        document.getElementById('featured-pagination').style.display = 'none';
+        document.getElementById('clearance-pagination').style.display = 'block';
+        document.getElementById('clearance-button').classList.add('active');
+        document.getElementById('featured-button').classList.remove('active');
+    }
+
+    // Set the Featured section as the default visible section on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        showFeatured(); // Show Featured section by default
+    });
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

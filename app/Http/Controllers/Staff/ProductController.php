@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Staff;
 
-use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -50,7 +51,7 @@ class ProductController extends Controller
     $product->save();
 
     // Redirecting based on the user role
-    $role = auth()->user()->role;
+    $role = Auth::user()->role;
     $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
     return redirect()->route($route)->with('success', 'Product added successfully');
 }
@@ -85,7 +86,7 @@ class ProductController extends Controller
     $product->save();
 
     // Redirecting based on the user role
-    $role = auth()->user()->role;
+    $role = Auth::user()->role;
     $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
     return redirect()->route($route)->with('success', 'Product updated successfully');
 }
@@ -95,7 +96,7 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        $role = auth()->user()->role;
+        $role = Auth::user()->role;
         $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
         return redirect()->route($route)->with('success', 'Product deleted successfully');
     }
