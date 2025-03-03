@@ -22,8 +22,8 @@
                 <form action="/login" method="POST">
                     @csrf
                     <div class="form-group">
-                        <input name="loginname" type="text" class="form-control" placeholder="Name" value="{{ old('loginname') }}">
-                        @error('loginname')
+                        <input name="loginemail" type="text" class="form-control" placeholder="Email" value="{{ old('loginemail') }}">
+                        @error('loginemail')
                             <p class="error-message">{{ $message }}</p>
                         @enderror
                     </div>
@@ -37,7 +37,7 @@
                 </form>
                     <div style="font-size: 15px;">
                         <br>
-                        <a href="#" style="color:goldenrod;">Forgot password?</a>
+                        <a href="{{ route('password.request') }}" style="color:goldenrod;">Forgot password?</a>
                     </div>
                     <div style="font-size: 15px;">
                         No account yet?

@@ -69,7 +69,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_resets', //password_reset_tokens
+            'table' => 'password_reset_tokens', //password_reset_tokens
             'expire' => 60,
         ],
 

@@ -13,23 +13,23 @@ class UserController extends Controller
 {
     public function login(Request $request) {
         $incomingFields = $request->validate([
-            'loginname' => 'required',
+            'loginemail' => 'required',
             'loginpassword' => 'required'
         ]);
 
-        $user = User::where('name', $incomingFields['loginname'])->first();
+        $user = User::where('email', $incomingFields['loginemail'])->first();
 
         if ($user && $user->banned_at) {
-            return back()->withErrors(['loginname' => 'Your account is banned.']);
+            return back()->withErrors(['loginemail' => 'Your account is banned.']);
         }
 
-        if (Auth::attempt(['name' => $incomingFields['loginname'], 'password' => $incomingFields['loginpassword']])) {
+        if (Auth::attempt(['email' => $incomingFields['loginemail'], 'password' => $incomingFields['loginpassword']])) {
             $request->session()->regenerate();
             return redirect('/');
         }
 
         return back()->withErrors([
-            'loginname' => 'The provided credentials do not match our records.',
+            'loginemail' => 'The provided credentials do not match our records.',
         ]);
     }
 
