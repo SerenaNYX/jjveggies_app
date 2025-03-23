@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        /*Schema::create('products', function (Blueprint $table) {
             
             $table->id();
             $table->unsignedBigInteger('category_id')->nullable();
@@ -21,6 +21,17 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->float('price');
             $table->integer('quantity')->default(0);
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });*/
+
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+            $table->string('name');
+            $table->string('slug')->nullable();
+            $table->string('image')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });

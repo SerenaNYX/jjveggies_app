@@ -42,7 +42,7 @@
         <div class="top-nav container">
             <div class="logo">
                 <a href="/">
-                    <img src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables"> J&J Vegetables
+                    <img src="{{ asset('img/J & J Vegetables Marketing (1).png') }}" alt="J&J Vegetables">
                 </a>
             </div>
             <ul>

@@ -12,14 +12,15 @@ class CheckoutController extends Controller
         $selectedItems = $request->input('selected_items', []);
         $totalPrice = $request->input('total_price', 0);
 
-        if(count($selectedItems) > 0) {
-            $cartItems = CartItem::whereIn('id', $selectedItems)->get();
+        if (count($selectedItems) > 0) {
+            // Fetch cart items with their associated product and option
+            $cartItems = CartItem::whereIn('id', $selectedItems)
+                ->with(['product', 'option']) // Load the product and option relationships
+                ->get();
         } else {
             $cartItems = collect();
         }
 
         return view('checkout', compact('cartItems', 'totalPrice'));
     }
-
 }
-

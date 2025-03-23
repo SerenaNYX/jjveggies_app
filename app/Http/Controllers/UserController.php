@@ -68,6 +68,7 @@ class UserController extends Controller
         return view('profile', compact('user'));
     }
 
+    // update in user's profile
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -89,7 +90,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save();
+        $user->save(); // DO NOT REMOVE THIS LINE!!!
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }

@@ -14,11 +14,15 @@ class Product extends Model
         'name', 
         'slug', 
         'image', 
-        'price', 
-        'quantity', 
         'category_id', 
         'description'
     ];
+
+    // Relationship with the ProductOption model
+    public function options()
+    {
+        return $this->hasMany(ProductOption::class);
+    }
 
     // Relationship with the Category model
     public function category()

@@ -3,8 +3,8 @@
 @section('content')
     <div class="product-catalog">
         <div class="container">
-            <div class="row"> <!-- is row class needed? -->
-                <div class="col-12"> <!-- remove this div -->
+            <div class="row">
+                <div class="col-12">
                     <h1 class="text-center">Our Products</h1>
                     <p class="section-description text-center">Explore our wide range of fresh vegetables and fruits available for you.</p>
                 </div>
@@ -16,6 +16,7 @@
                 <button type="submit" class="button-search">Search</button>
             </form>
         </div>
+        <br>
         <div class="products-container">
             <div class="row categories-products-container">
                 <!-- Sidebar for Categories -->
@@ -28,80 +29,107 @@
                     @endforeach
                 </div>
                 <!-- Products Section -->
-                <div class="col-md-9 products text-center"> <!-- is col-md-9 needed? -->
+                <div class="col-md-9 products text-center">
                     @foreach ($products as $product)
                         <div class="product" data-description="{{ $product->description }}">
                             <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
                             <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
-                            <div class="product-price">RM{{ number_format($product->price, 2) }}</div>
-                            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="">
-                                @csrf
-                                <button type="submit" class="add-to-cart" style="width:100%;">
-                                    <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart" style="height: 25px; width: 25px;">
-                                </button>
-                            </form>
+                            <div class="product-price">From RM{{ number_format($product->options->min('price'), 2) }}</div>
+                            <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}" style="width:100%;">
+                                <img src="{{ asset('img/blackcart2.png') }}" alt="Add to Cart" style="height: 25px; width: 25px;">
+                            </button>
                         </div>
                     @endforeach
                 </div>
-            </div> <!-- end row -->
-        </div> <!-- end container -->
-    </div> <!-- end product-catalog -->
-@endsection
+            </div>
+        </div>
+    </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // AJAX search handling
-        $('#searchForm').on('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+    <!-- Modal for Selecting Options -->
+    <div id="optionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
+            <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
+            <h2>Select an Option</h2>
+            <form id="addToCartForm" method="POST" action="">
+                @csrf
+                <input type="hidden" name="product_id" id="modalProductId">
+                <div id="optionsContainer"></div>
+                <button type="submit" class="btn">Add to Cart</button>
+            </form>
+        </div>
+    </div>
 
-            // Get the search query
-            let query = $('#searchInput').val();
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+    // Open modal when "Add to Cart" is clicked
+    $('.add-to-cart').on('click', function() {
+        const productId = $(this).data('product-id');
+        $('#modalProductId').val(productId); // Set the product ID in the form
 
-            // Make the AJAX request
-            $.ajax({
-                url: '{{ route('product.show') }}', // The same route used for products
-                type: 'GET',
-                data: { query: query }, // Send the search query
-                success: function(response) {
-                    // Update the products section with the new content
-                    $('#productsList').html(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching products:', error);
-                }
-            });
-        });
+        // Set the form action dynamically
+        $('#addToCartForm').attr('action', `/cart/add/${productId}`);
 
-        // Hover to show description
-        $('.product').hover(function() {
-            var description = $(this).data('description');
-            var descriptionElement = $('<div class="product-description"></div>').text(description);
-            $(this).append(descriptionElement);
-        }, function() {
-            $(this).find('.product-description').remove();
+        // Fetch options for the selected product
+        $.ajax({
+            url: `/products/${productId}/options`,
+            type: 'GET',
+            success: function(response) {
+                let optionsHtml = '';
+                response.options.forEach(option => {
+                    optionsHtml += `
+                        <div class="option">
+                            <input type="radio" name="option_id" value="${option.id}" id="option${option.id}" required>
+                            <label for="option${option.id}">
+                                ${option.option} - RM${option.price.toFixed(2)} (${option.quantity} in stock)
+                            </label>
+                        </div>
+                    `;
+                });
+                $('#optionsContainer').html(optionsHtml); // Populate options in the modal
+                $('#optionModal').show(); // Show the modal
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching options:', error);
+            }
         });
     });
-</script>
 
-<style>
-    .product {
-        position: relative;
-    }
-    .product-description {
-        height: 45px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        padding: 10px;
-        text-align: center;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-    }
-    .product:hover .product-description {
-        opacity: 1;
-    }
-</style>
+    // Close modal when the "X" button is clicked
+    $('.close').on('click', function() {
+        $('#optionModal').hide();
+    });
+
+    // Close modal when clicking outside the modal
+    $(window).on('click', function(event) {
+        if (event.target === $('#optionModal')[0]) {
+            $('#optionModal').hide();
+        }
+    });
+
+    // Submit the form via AJAX
+    $('#addToCartForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = $(this).serialize(); // Serialize form data
+        const action = $(this).attr('action'); // Get the form action
+
+        $.ajax({
+            url: action, // Use the dynamically set action
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                alert('Product added to cart!');
+                $('#optionModal').hide(); // Hide the modal
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding to cart:', error);
+                alert('Failed to add product to cart.');
+            }
+        });
+    });
+});
+    </script>
+@endsection

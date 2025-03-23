@@ -40,7 +40,7 @@ class CartItemController extends Controller
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 
-    public function remove(Request $request, $id)
+   /* public function remove(Request $request, $id)
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
@@ -51,54 +51,49 @@ class CartItemController extends Controller
         }
 
         return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
+    }*/
+
+    public function remove($id)
+    {
+        $cartItem = CartItem::findOrFail($id); // Find the CartItem by its ID
+        $cartItem->delete();
+    
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
     }
 
-    /*public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $id)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
 
         if ($cartItem) {
-            $cartItem->quantity = $request->quantity;
-            $cartItem->subtotal_price = $cartItem->quantity * $cartItem->product->price;
-            $cartItem->save();
+            // Validate the quantity input
+            $request->validate([
+                'quantity' => 'required|integer|min:1',
+            ]);
+
+            // Get the updated quantity
+            $quantity = $request->input('quantity');
+            
+            // Update the cart item in the database
+            $cartItem->quantity = $quantity;
+            $cartItem->save(); // Save changes to the database
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Quantity updated successfully',
+                'quantity' => $quantity,
+                'subtotal' => number_format($cartItem->product->price * $quantity, 2)
+            ]);
         }
 
-        return response()->json(['success' => true]);
-    }*/
-
-    public function update(Request $request, $id)
-{
-    $user_id = Auth::id();
-    $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-    $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
-
-    if ($cartItem) {
-        // Validate the quantity input
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        // Get the updated quantity
-        $quantity = $request->input('quantity');
-        
-        // Update the cart item in the database
-        $cartItem->quantity = $quantity;
-        $cartItem->save(); // Save changes to the database
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Quantity updated successfully',
-            'quantity' => $quantity,
-            'subtotal' => number_format($cartItem->product->price * $quantity, 2)
-        ]);
+        return response()->json(['success' => false, 'message' => 'Cart item not found']);
     }
 
-    return response()->json(['success' => false, 'message' => 'Cart item not found']);
-}
 
 
+    // destroy() probably not needed??
     public function destroy($id)
     {
         $product = CartItem::findOrFail($id);

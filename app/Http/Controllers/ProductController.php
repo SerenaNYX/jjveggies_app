@@ -4,83 +4,93 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductOption;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('options')->get(); // Load options with products
         return view('products.index', compact('products'));
     }
-    
-    
-/*
-    public function index(Request $request)
-    {
-        // Get all products (eager load the category)
-        $products = Product::with('category')->get();
-
-        // Fetch products in the "Clearance" category
-        $clearanceProducts = Product::with('category')
-            ->whereHas('category', function ($query) {
-                $query->where('name', 'Clearance'); // Make sure the category is 'Clearance'
-            })
-            ->get();
-
-        // Pass both the featured and clearance products to the view
-        return view('welcome', compact('products', 'clearanceProducts'));
-    }*/
-
 
     public function create()
     {
-        return view('products.create');
+        $categories = Category::all();
+        return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'category_id' => 'nullable|exists:categories,id',
             'image' => 'required|image|max:2048',
+            'options' => 'required|array',
+            'options.*.option' => 'required|string',
+            'options.*.price' => 'required|numeric',
+            'options.*.quantity' => 'required|integer',
         ]);
 
+        // Handle image upload
         $imagePath = $request->file('image')->store('public/images');
 
-        Product::create([
+        // Create the product
+        $product = Product::create([
             'name' => $validated['name'],
-            'price' => $validated['price'],
+            'category_id' => $validated['category_id'],
             'image' => $imagePath,
         ]);
+
+        // Save product options
+        foreach ($request->options as $option) {
+            $product->options()->create([
+                'option' => $option['option'],
+                'price' => $option['price'],
+                'quantity' => $option['quantity'],
+            ]);
+        }
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = Category::all();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|max:2048',
+            'options' => 'required|array',
+            'options.*.option' => 'required|string',
+            'options.*.price' => 'required|numeric',
+            'options.*.quantity' => 'required|integer',
         ]);
 
+        // Update product data
+        $product->update($request->only(['name', 'category_id']));
+
+        // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('public/images');
-            $product->update([
-                'name' => $validated['name'],
-                'price' => $validated['price'],
-                'image' => $imagePath,
-            ]);
-        } else {
-            $product->update([
-                'name' => $validated['name'],
-                'price' => $validated['price'],
+            $product->image = $imagePath;
+        }
+
+        $product->save();
+
+        // Update product options
+        $product->options()->delete(); // Remove existing options
+        foreach ($request->options as $option) {
+            $product->options()->create([
+                'option' => $option['option'],
+                'price' => $option['price'],
+                'quantity' => $option['quantity'],
             ]);
         }
 
@@ -92,23 +102,12 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
-/*    public function showProducts(Request $request)
+
+    public function show(Product $product)
     {
-        $categorySlug = $request->query('category'); // Retrieve the category from the query parameters
-        $category = Category::where('slug', $categorySlug)->first();
-        $categories = Category::all(); // Retrieve all categories
-
-        if ($category) {
-            // Filter products by the selected category
-            $products = Product::where('category_id', $category->id)->get();
-        } else {
-            // Include all products, including those without a category
-            $products = Product::all();
-        }
-
-        // Pass the variables to the view
-        return view('product', compact('products', 'categories', 'categorySlug'));
-    }*/
+        $product->load('options'); // Load options for the product
+        return view('products.show', compact('product'));
+    }
 
     public function showProducts(Request $request)
     {
@@ -120,9 +119,9 @@ class ProductController extends Controller
         $page = $request->get('page', 1); // Get the current page number
 
         if ($category) {
-            $products = Product::where('category_id', $category->id)->paginate($perPage, ['*'], 'page', $page);
+            $products = Product::where('category_id', $category->id)->with('options')->paginate($perPage, ['*'], 'page', $page);
         } else {
-            $products = Product::paginate($perPage, ['*'], 'page', $page);
+            $products = Product::with('options')->paginate($perPage, ['*'], 'page', $page);
         }
 
         if ($request->ajax()) {
@@ -136,41 +135,36 @@ class ProductController extends Controller
     }
 
     public function search(Request $request)
-{
-    $query = $request->input('query');
-    $products = Product::where('name', 'LIKE', "%$query%")->get();
-    $categories = Category::all();
-
-    return view('product', compact('products', 'categories'))->with('categorySlug', null);
-}
-
-
-    public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        $query = $request->input('query');
+        $products = Product::where('name', 'LIKE', "%$query%")->with('options')->get();
+        $categories = Category::all();
+
+        return view('product', compact('products', 'categories'))->with('categorySlug', null);
     }
-
-   /* public function welcomeProducts()
-    {
-        $products = Product::paginate(8);
-        return view('welcome', compact('products'));
-    }*/
 
     public function welcomeProducts(Request $request)
     {
         $products = Product::whereDoesntHave('category', function ($query) {
             $query->where('name', 'Clearance');
-        })->paginate(8);
-    
+        })->with('options')->paginate(8);
+
         $clearanceProducts = Product::whereHas('category', function ($query) {
             $query->where('name', 'Clearance');
-        })->paginate(8);
-    
+        })->with('options')->paginate(8);
+
         if ($request->ajax()) {
             return view('welcome', compact('products', 'clearanceProducts'));
         }
-    
+
         return view('welcome', compact('products', 'clearanceProducts'));
     }
 
+    public function getOptions($id)
+    {
+        $product = Product::with('options')->findOrFail($id);
+        return response()->json([
+            'options' => $product->options,
+        ]);
+    }
 }

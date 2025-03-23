@@ -21,6 +21,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
 Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
 Route::get('/search', [ProductController::class, 'search'])->name('product.search');
+Route::get('/products/{id}/options', [ProductController::class, 'getOptions'])->name('product.options');
+
 
 Route::get('/login', function () {
     return view('loginpage');

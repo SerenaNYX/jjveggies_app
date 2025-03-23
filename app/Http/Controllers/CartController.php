@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Product;
+use App\Models\ProductOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,8 +15,8 @@ class CartController extends Controller
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItems = $cart->items;
-
+        $cartItems = $cart->items()->with(['product', 'option'])->get();
+        
         return view('cart', compact('cartItems'));
     }
 
@@ -25,17 +26,47 @@ class CartController extends Controller
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
 
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
-
-        if ($cartItem) {
-            $cartItem->quantity++;
-            $cartItem->save();
-        } else {
-            CartItem::create([
-                'cart_id' => $cart->id,
-                'product_id' => $id,
-                'quantity' => 1,
+        if ($product->options->isNotEmpty()) {
+            $request->validate([
+                'option_id' => 'required|exists:product_options,id',
             ]);
+        }
+
+        if ($request->has('option_id')) {
+            $option = ProductOption::findOrFail($request->option_id);
+
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->where('option_id', $option->id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity++;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'option_id' => $option->id,
+                    'quantity' => 1,
+                ]);
+            }
+        } else {
+            $cartItem = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->whereNull('option_id')
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity++;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                ]);
+            }
         }
 
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
@@ -45,30 +76,28 @@ class CartController extends Controller
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('id', $id)->first();
 
         if ($cartItem) {
             $cartItem->delete();
+            return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
+        return redirect()->route('cart.index')->with('error', 'Product not found in cart!');
     }
 
     public function update(Request $request, $id)
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)->where('id', $id)->first();
 
         if ($cartItem) {
-            // Validate the quantity input
             $request->validate([
                 'quantity' => 'required|integer|min:1',
             ]);
 
             $quantity = $request->input('quantity');
-
-            // Update the quantity in the database
             $cartItem->quantity = $quantity;
             $cartItem->save();
 
@@ -76,7 +105,7 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Quantity updated successfully',
                 'quantity' => $quantity,
-                'subtotal' => number_format($cartItem->product->price * $quantity, 2)
+                'subtotal' => number_format($cartItem->option->price * $quantity, 2),
             ]);
         }
 
@@ -89,13 +118,5 @@ class CartController extends Controller
         $cartItems = CartItem::whereIn('id', $selectedItems)->get();
 
         return view('checkout.index', compact('cartItems'));
-    }
-
-    public function destroy($id)
-    {
-        $cartItem = CartItem::findOrFail($id);
-        $cartItem->delete();
-
-        return redirect()->route('cart.index')->with('success', 'Cart item deleted successfully.');
     }
 }

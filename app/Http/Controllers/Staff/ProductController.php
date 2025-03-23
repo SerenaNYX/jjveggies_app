@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Staff;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductOption;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,9 @@ class ProductController extends Controller
         $categories = Category::all(); // Retrieve all categories
 
         if ($categoryId) {
-            $products = Product::where('category_id', $categoryId)->with('category')->get();
+            $products = Product::where('category_id', $categoryId)->with(['category', 'options'])->get();
         } else {
-            $products = Product::with('category')->get();
+            $products = Product::with(['category', 'options'])->get();
         }
 
         return view('staff.manage-products', compact('products', 'categories')); // Pass categories to the view
@@ -31,66 +32,87 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'price' => 'required|numeric',
-        'category_id' => 'nullable|exists:categories,id',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'options' => 'required|array',
+            'options.*.option' => 'required|string',
+            'options.*.price' => 'required|numeric',
+            'options.*.quantity' => 'required|integer',
+        ]);
 
-    $product = new Product($request->all());
+        $product = new Product($request->only(['name', 'category_id', 'description']));
 
-    // Handle image upload
-    if ($request->hasFile('image')) {
-        // Store the image in the public/img folder
-        $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
-        $product->image = 'storage/' . $imagePath; // Save relative path to the DB
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
+            $product->image = 'storage/' . $imagePath;
+        }
+
+        $product->save();
+
+        // Save product options
+        foreach ($request->options as $option) {
+            $product->options()->create([
+                'option' => $option['option'],
+                'price' => $option['price'],
+                'quantity' => $option['quantity'],
+            ]);
+        }
+
+        // Redirecting based on the user role
+        $role = Auth::user()->role;
+        $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
+        return redirect()->route($route)->with('success', 'Product added successfully');
     }
-
-    $product->save();
-
-    // Redirecting based on the user role
-    $role = Auth::user()->role;
-    $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
-    return redirect()->route($route)->with('success', 'Product added successfully');
-}
-
-
-
 
     public function edit(Product $product)
     {
         $categories = Category::all();
+        $product->load('options'); // Load options for the product
         return view('staff.edit-product', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'price' => 'required|numeric',
-        'category_id' => 'nullable|exists:categories,id',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'options' => 'required|array',
+            'options.*.option' => 'required|string',
+            'options.*.price' => 'required|numeric',
+            'options.*.quantity' => 'required|integer',
+        ]);
 
-    // Update product data
-    $product->update($request->except('image')); // Keep the previous image if not updating
+        // Update product data
+        $product->update($request->only(['name', 'category_id', 'description']));
 
-    if ($request->hasFile('image')) {
-        // Store the new image in the public/img folder
-        $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
-        $product->image = 'storage/' . $imagePath; // Save relative path to the DB
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->storeAs('img', $request->file('image')->getClientOriginalName(), 'public');
+            $product->image = 'storage/' . $imagePath;
+        }
+
+        $product->save();
+
+        // Update product options
+        $product->options()->delete(); // Remove existing options
+        foreach ($request->options as $option) {
+            $product->options()->create([
+                'option' => $option['option'],
+                'price' => $option['price'],
+                'quantity' => $option['quantity'],
+            ]);
+        }
+
+        // Redirecting based on the user role
+        $role = Auth::user()->role;
+        $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
+        return redirect()->route($route)->with('success', 'Product updated successfully');
     }
-
-    $product->save();
-
-    // Redirecting based on the user role
-    $role = Auth::user()->role;
-    $route = $role === 'admin' ? 'admin.products.index' : 'staff.products.index';
-    return redirect()->route($route)->with('success', 'Product updated successfully');
-}
-
 
     public function destroy(Product $product)
     {

@@ -19,7 +19,7 @@
 @section('content')
 <div class="welcomeproduct-section">
     <div class="container">
-        <h1 class="text-center">Vegetables & Fruits</h1>
+        <h1 class="text-center">Our Products</h1>
         <div class="text-center button-container">
             <button id="featured-button" class="button active" onclick="showFeatured()">Featured</button>
             <button id="clearance-button" class="button" onclick="showClearance()">Clearance</button>
@@ -46,11 +46,26 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for Selecting Options -->
+<div id="optionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Select an Option</h2>
+        <form id="addToCartForm" method="POST">
+            @csrf
+            <input type="hidden" name="product_id" id="modalProductId">
+            <div id="optionsContainer"></div>
+            <button type="submit" class="btn">Add to Cart</button>
+        </form>
+    </div>
+</div>
         
         <div class="text-center button-container">
             <a href="/product" class="button">View more products</a>
         </div>
     </div>
+    
 <!--
     <div class="blog-section">
         <div class="container">
@@ -81,6 +96,77 @@
 @endsection
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Open modal when "Add to Cart" is clicked
+        $(document).on('click', '.add-to-cart', function() {
+            const productId = $(this).data('product-id');
+            $('#modalProductId').val(productId); // Set the product ID in the form
+
+            // Set the form action dynamically
+            $('#addToCartForm').attr('action', `/cart/add/${productId}`);
+
+            // Fetch options for the selected product
+            $.ajax({
+                url: `/products/${productId}/options`,
+                type: 'GET',
+                success: function(response) {
+                    let optionsHtml = '';
+                    response.options.forEach(option => {
+                        optionsHtml += `
+                            <div class="option">
+                                <input type="radio" name="option_id" value="${option.id}" id="option${option.id}" required>
+                                <label for="option${option.id}">
+                                    ${option.option} - RM${option.price.toFixed(2)} (${option.quantity} in stock)
+                                </label>
+                            </div>
+                        `;
+                    });
+                    $('#optionsContainer').html(optionsHtml); // Populate options in the modal
+                    $('#optionModal').show(); // Show the modal
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching options:', error);
+                }
+            });
+        });
+
+        // Close modal when the "X" button is clicked
+        $('.close').on('click', function() {
+            $('#optionModal').hide();
+        });
+
+        // Close modal when clicking outside the modal
+        $(window).on('click', function(event) {
+            if (event.target === $('#optionModal')[0]) {
+                $('#optionModal').hide();
+            }
+        });
+
+        // Submit the form via AJAX
+        $('#addToCartForm').on('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = $(this).serialize(); // Serialize form data
+            const action = $(this).attr('action'); // Get the form action
+
+            $.ajax({
+                url: action, // Use the dynamically set action
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    alert('Product added to cart!');
+                    $('#optionModal').hide(); // Hide the modal
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Failed to add product to cart.');
+                }
+            });
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
         // Function to handle AJAX pagination
