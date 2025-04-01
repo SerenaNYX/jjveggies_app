@@ -114,6 +114,12 @@ class ProductController extends Controller
         return redirect()->route($route)->with('success', 'Product updated successfully');
     }
 
+    public function deleteOption(ProductOption $option)
+{
+    $option->delete();
+    return response()->json(['success' => true]);
+}
+
     public function destroy(Product $product)
     {
         $product->delete();

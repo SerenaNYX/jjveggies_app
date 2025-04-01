@@ -20,7 +20,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'serena@example.com',
                 'password' => Hash::make('password'),
                 'contact' => '0115479225',
-                'address' => '123, My House, Johor',
                 'remember_token' => Str::random(10),
             ],
             [
@@ -28,7 +27,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'saera@example.com',
                 'password' => Hash::make('password'),
                 'contact' => '0174215779',
-                'address' => '456, My House, Johor',
                 'remember_token' => Str::random(10),
             ],
         ];

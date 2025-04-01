@@ -10,6 +10,10 @@ class ProductsTableSeeder extends Seeder
 {
     public function run()
     {
+        // TO ADD: 
+        // VEGETABLES: garlic.webp, redchilipadi.webp, greenchilipadi.jpg, coriander.webp, turmeric.webp, cucumber.jpg, japanesecucumber.png, lemongrass.jpg, pumpkin.jpg
+        // FRUITS: pineapple.jpg, lemon.jpg, limaunipis.webp, limaukasturi.png, watermelon.jpg
+        // CONDIMENTS: corianderseed.jpg, turmericpowder.webp, paprikapowder.jpg, cinnamon.webp, cinnamonpowder.jpg
         $products = [
             [
                 'category_id' => 1,
@@ -152,6 +156,177 @@ class ProductsTableSeeder extends Seeder
                 'slug' => Str::slug('Bitter Gourd'),
                 'image' => 'img/vegetables/bittergourd.jpg',
                 'description' => 'Fresh bitter gourd.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Garlic',
+                'slug' => Str::slug('Garlic'),
+                'image' => 'img/vegetables/garlic.webp',
+                'description' => 'Fresh garlic.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Red Chili Padi',
+                'slug' => Str::slug('Red Chili Padi'),
+                'image' => 'img/vegetables/redchilipadi.webp',
+                'description' => 'Fresh red chili padi.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Green Chili Padi',
+                'slug' => Str::slug('Green Chili Padi'),
+                'image' => 'img/vegetables/greenchilipadi.jpg',
+                'description' => 'Fresh green chili padi.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Coriander',
+                'slug' => Str::slug('Coriander'),
+                'image' => 'img/vegetables/coriander.webp',
+                'description' => 'Fresh coriander.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Turmeric',
+                'slug' => Str::slug('Turmeric'),
+                'image' => 'img/vegetables/turmeric.webp',
+                'description' => 'Fresh turmeric.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Cucumber',
+                'slug' => Str::slug('Cucumber'),
+                'image' => 'img/vegetables/cucumber.jpg',
+                'description' => 'Fresh cucumber.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Japanese Cucumber',
+                'slug' => Str::slug('Japanese Cucumber'),
+                'image' => 'img/vegetables/japanesecucumber.png',
+                'description' => 'Fresh Japanese cucumber.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Lemongrass',
+                'slug' => Str::slug('Lemongrass'),
+                'image' => 'img/vegetables/lemongrass.jpg',
+                'description' => 'Fresh lemongrass.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 1,
+                'name' => 'Pumpkin',
+                'slug' => Str::slug('Pumpkin'),
+                'image' => 'img/vegetables/pumpkin.jpg',
+                'description' => 'Fresh pumpkin.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],      
+            [
+                'category_id' => 2,
+                'name' => 'Pineapple',
+                'slug' => Str::slug('Pineapple'),
+                'image' => 'img/fruits/pineapple.jpg',
+                'description' => 'Fresh pineapple.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 2,
+                'name' => 'Lemon',
+                'slug' => Str::slug('Lemon'),
+                'image' => 'img/fruits/lemon.jpg',
+                'description' => 'Fresh lemon.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 2,
+                'name' => 'Limau Nipis',
+                'slug' => Str::slug('Limau Nipis'),
+                'image' => 'img/fruits/limaunipis.webp',
+                'description' => 'Fresh limau nipis.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 2,
+                'name' => 'Limau Kasturi',
+                'slug' => Str::slug('Limau Kasturi'),
+                'image' => 'img/fruits/limaukasturi.png',
+                'description' => 'Fresh limau kasturi.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 2,
+                'name' => 'Watermelon',
+                'slug' => Str::slug('Watermelon'),
+                'image' => 'img/fruits/watermelon.jpg',
+                'description' => 'Fresh watermelon.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],  
+            [
+                'category_id' => 3,
+                'name' => 'Coriander Seed',
+                'slug' => Str::slug('Coriander Seed'),
+                'image' => 'img/condiments/corianderseed.jpg',
+                'description' => 'Whole coriander seeds.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 3,
+                'name' => 'Turmeric Powder',
+                'slug' => Str::slug('Turmeric Powder'),
+                'image' => 'img/condiments/turmericpowder.webp',
+                'description' => 'Ground turmeric powder.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 3,
+                'name' => 'Paprika Powder',
+                'slug' => Str::slug('Paprika Powder'),
+                'image' => 'img/condiments/paprikapowder.jpg',
+                'description' => 'Ground paprika powder.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 3,
+                'name' => 'Cinnamon',
+                'slug' => Str::slug('Cinnamon'),
+                'image' => 'img/condiments/cinnamon.webp',
+                'description' => 'Whole cinnamon sticks.',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'category_id' => 3,
+                'name' => 'Cinnamon Powder',
+                'slug' => Str::slug('Cinnamon Powder'),
+                'image' => 'img/condiments/cinnamonpowder.jpg',
+                'description' => 'Ground cinnamon powder.',
                 'created_at' => now(),
                 'updated_at' => now()
             ],

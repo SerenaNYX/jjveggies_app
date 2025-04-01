@@ -12,10 +12,10 @@
                         <th>Select</th>
                         <th class="column-image">Image</th>
                         <th class="column-product">Product</th>
-                        <th class="column-option">Option</th> <!-- New column for product option -->
+                   <!--     <th class="column-option">Option</th>-->
                         <th class="column-quantity">Quantity</th>
                         <th>Price</th>
-                        <th>Subtotal</th>
+                 <!--       <th>Subtotal</th>-->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -34,22 +34,20 @@
                             <td>
                                 <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70">
                             </td>
-                            <td>{{ $item->product->name }}</td>
-                            <td>{{ $item->option->option }}</td>
+                            <td><strong>{{ $item->product->name }} </strong>({{ $item->option->option }})</td>
+
+                        <!--    <td>{{ $item->product->name }}</td>
+                            <td>{{ $item->option->option }}</td>-->
                             <td>
                                 <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'decrease')">-</button>
                                 <input type="number" class="cart-quantity" id="quantity-{{ $item->id }}" value="{{ $item->quantity }}" min="1" readonly>
                                 <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'increase')">+</button>
                             </td>
                             <td>RM{{ number_format($item->option->price, 2) }}</td>
-                            <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>
-                            <td>                      
-                                <form action="{{ route('cart.remove', $item->id) }}" method="POST" id="remove-form-{{ $item->id }}">
-                                    <p>Item ID: {{ $item->id }}</p> <!--DELETE LATER-->
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
-                                </form>
+                 <!--           <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>-->
+                            <td> 
+                             <!--   <p>Item ID: {{ $item->id }}</p> <!--DELETE LATER-->                    
+                                <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
                             </td>
                         </tr>
                     @endforeach
@@ -72,6 +70,14 @@
 </div>
 
 <script>
+    function removeItem(id) {
+        if (confirm('Are you sure?')) {
+            fetch(`/cart/remove/${id}`, {
+                method: 'DELETE',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            }).then(() => window.location.reload()); // Refresh to update UI
+        }
+    }
 
     // Function to toggle select all checkboxes
     function toggleSelectAll() {
@@ -96,8 +102,10 @@
         // Adjust quantity based on the action
         if (action === 'increase') {
             quantity++;
+            updateTotal();
         } else if (action === 'decrease' && quantity > 1) {
             quantity--;
+            updateTotal();
         }
 
         // Update the quantity field on the frontend
@@ -105,11 +113,10 @@
 
         const price = parseFloat(document.querySelector(`input[name="selected_items[]"][value="${id}"]`).dataset.price); 
         document.getElementById('subtotal-' + id).innerText = 'RM ' + (price * quantity).toFixed(2);
-        updateTotal();
 
         // Send the updated quantity to the server
         fetch(`/cart/update/${id}`, {
-            method: 'POST',
+            method: 'PATCH', // OR SHOULD I USE POST?
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -159,19 +166,6 @@
         updateTotal();
     });
 
-    // Remove item from the cart
-    function removeItem(id) {
-        console.log('Attempting to remove form with ID:', 'remove-form-' + id);
-
-        if (confirm('Are you sure?')) {
-            const form = document.getElementById('remove-form-' + id);
-            if (form) {
-                form.submit();
-            } else {
-                console.error('Form not found for ID: ', id);
-            }
-        }
-    }
 </script>
 
 @endsection

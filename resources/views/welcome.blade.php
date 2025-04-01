@@ -7,7 +7,7 @@
         <p>Welcome to J&J Vegetables online.<br>Buy fresh vegetables from J&J Vegetables. You order, we deliver.</p>
         <div class="hero-buttons">
             <a href="/product" class="button button-white">Shop now</a>
-            <a href="#" class="button button-white">How to order</a>
+        <!--    <a href="#" class="button button-white">How to order</a>-->
         </div>
     </div> <!-- end hero-copy -->
     <div class="hero-image">

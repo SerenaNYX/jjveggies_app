@@ -15,7 +15,11 @@ class CartController extends Controller
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItems = $cart->items()->with(['product', 'option'])->get();
+
+        $cartItems = $cart->items()
+            ->with(['product', 'option'])
+            ->orderBy('updated_at', 'DESC')  // Sort by last modification time
+            ->get();
         
         return view('cart', compact('cartItems'));
     }

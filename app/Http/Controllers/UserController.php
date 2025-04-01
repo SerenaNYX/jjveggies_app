@@ -43,7 +43,7 @@ class UserController extends Controller
             'name' => ['required', 'min:3', 'max:25', Rule::unique('users', 'name')],
             'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'confirmed'],
-            'contact' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
+            'contact' => ['required', 'regex:/^\+?[0-9]{10,15}$/'], // OR use {10,12}
             'address' => ['required']
         ]);
 
@@ -78,13 +78,11 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'contact' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
-            'address' => 'required|string|max:255',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
         $user->contact = $request->contact;
-        $user->address = $request->address;
 
         if ($request->password) {
             $user->password = Hash::make($request->password);

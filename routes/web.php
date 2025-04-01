@@ -7,22 +7,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
 use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
 Route::get('/product', [ProductController::class, 'showProducts'])->name('product.show');
 Route::get('/search', [ProductController::class, 'search'])->name('product.search');
-Route::get('/products/{id}/options', [ProductController::class, 'getOptions'])->name('product.options');
+//Route::get('/products/{id}/options', [ProductController::class, 'getOptions'])->name('product.options');
+Route::get('/products/{id}/options', [ProductController::class, 'getOptions']);
 
+Route::get('/products/autocomplete', [ProductController::class, 'autocomplete'])->name('product.autocomplete');
 
 Route::get('/login', function () {
     return view('loginpage');
@@ -72,6 +76,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [UserController::class, 'update'])->name('profile.update');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/addresses', [AddressController::class, 'index'])->name('address.index');
+    Route::post('/addresses', [AddressController::class, 'store'])->name('address.store');
+    Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('address.update');
+    Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('address.destroy');
+});
+
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
@@ -80,13 +91,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-    // Update the quantity of an item in the cart
-    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Update the quantity of an item in the cart
 
-   // Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
+    // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/cart/destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::get('stripe/payment', [StripeController::class, 'payment'])->name('stripe.payment');
+    Route::get('stripe/payment/success', [StripeController::class, 'success'])->name('stripe.payment.success');
+    Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 });
 
 
@@ -95,11 +107,13 @@ Route::get('admin/login', [AdminController::class, 'showLoginForm'])->name('admi
 Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login.post');
 Route::post('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
+Route::delete('/staff/products/options/{option}', [EmployeeProductController::class, 'deleteOption'])->name('staff.products.options.delete');
+
 Route::middleware(['auth:employee', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::resource('admin/products', EmployeeProductController::class, ['as' => 'admin']);
     Route::resource('admin/employees', EmployeeController::class, ['as' => 'admin']);
-    
+    Route::delete('/staff/products/options/{option}', [EmployeeProductController::class, 'deleteOption'])->name('staff.products.options.delete');
     Route::resource('admin/categories', CategoryController::class, ['as' => 'admin']);
 
     Route::post('admin/customers/{user}/deny', [EmployeeController::class, 'denyCustomer'])->name('admin.customers.deny');

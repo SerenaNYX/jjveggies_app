@@ -115,7 +115,9 @@ class ProductController extends Controller
         $category = Category::where('slug', $categorySlug)->first();
         $categories = Category::all();
 
-        $perPage = 12; // Number of products to load per scroll
+
+        // TODO: PAGINATION IS NOT WORKING!
+        $perPage = 100; // Number of products to load per scroll
         $page = $request->get('page', 1); // Get the current page number
 
         if ($category) {
@@ -143,6 +145,23 @@ class ProductController extends Controller
         return view('product', compact('products', 'categories'))->with('categorySlug', null);
     }
 
+    public function autocomplete(Request $request)
+    {
+        $query = $request->input('query');
+        
+        if (empty($query)) {
+            return response()->json([]);
+        }
+        
+        $products = Product::where('name', 'LIKE', $query.'%')
+            ->orderBy('name')
+            ->limit(10)
+            ->pluck('name')
+            ->toArray();
+        
+        return response()->json($products);
+    }
+
     public function welcomeProducts(Request $request)
     {
         $products = Product::whereDoesntHave('category', function ($query) {
@@ -162,9 +181,18 @@ class ProductController extends Controller
 
     public function getOptions($id)
     {
-        $product = Product::with('options')->findOrFail($id);
+        $product = Product::with('options')->findOrFail($id); // Fetch product with options
         return response()->json([
-            'options' => $product->options,
+            'image' => asset($product->image), // Full URL to the product image
+            'name' => $product->name, // Product name
+            'options' => $product->options->map(function ($option) {
+                return [
+                    'id' => $option->id,
+                    'option' => $option->option,
+                    'price' => $option->price,
+                    'quantity' => $option->quantity,
+                ];
+            }),
         ]);
     }
 }

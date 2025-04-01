@@ -30,7 +30,7 @@
                 <th class="image-column">Image</th>
                 <th class="name-column">Name</th>
                 <th class="category-column">Category</th>
-                <th class="options-column">Options</th> <!-- New column for options -->
+                <th class="options-column">Options</th>
                 <th class="actions-column">Actions</th>
             </tr>
         </thead>

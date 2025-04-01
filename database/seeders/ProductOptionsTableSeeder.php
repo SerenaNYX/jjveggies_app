@@ -201,9 +201,351 @@ class ProductOptionsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
 
-            // Mandarin Oranges (Clearance)
+            // Garlic
             [
                 'product_id' => 17,
+                'option' => '100g',
+                'price' => 1.50,
+                'quantity' => 50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 17,
+                'option' => '200g',
+                'price' => 2.80,
+                'quantity' => 30,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Red Chili Padi
+            [
+                'product_id' => 18,
+                'option' => '50g',
+                'price' => 1.20,
+                'quantity' => 40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 18,
+                'option' => '100g',
+                'price' => 2.30,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Green Chili Padi
+            [
+                'product_id' => 19,
+                'option' => '50g',
+                'price' => 1.00,
+                'quantity' => 45,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 19,
+                'option' => '100g',
+                'price' => 2.00,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Coriander
+            [
+                'product_id' => 20,
+                'option' => '30g',
+                'price' => 0.90,
+                'quantity' => 60,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 20,
+                'option' => '50g',
+                'price' => 1.50,
+                'quantity' => 35,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Turmeric
+            [
+                'product_id' => 21,
+                'option' => '100g',
+                'price' => 1.80,
+                'quantity' => 40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 21,
+                'option' => '200g',
+                'price' => 3.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Cucumber
+            [
+                'product_id' => 22,
+                'option' => '300g',
+                'price' => 2.20,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 22,
+                'option' => '500g',
+                'price' => 3.80,
+                'quantity' => 15,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Japanese Cucumber
+            [
+                'product_id' => 23,
+                'option' => '300g',
+                'price' => 2.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 23,
+                'option' => '500g',
+                'price' => 4.00,
+                'quantity' => 10,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Lemongrass
+            [
+                'product_id' => 24,
+                'option' => '200g',
+                'price' => 2.00,
+                'quantity' => 30,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 24,
+                'option' => '300g',
+                'price' => 3.50,
+                'quantity' => 15,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Pumpkin
+            [
+                'product_id' => 25,
+                'option' => '1kg',
+                'price' => 4.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 25,
+                'option' => '2kg',
+                'price' => 8.50,
+                'quantity' => 10,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Pineapple
+            [
+                'product_id' => 26,
+                'option' => '1 whole',
+                'price' => 5.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 26,
+                'option' => 'Half',
+                'price' => 3.00,
+                'quantity' => 30,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Lemon
+            [
+                'product_id' => 27,
+                'option' => '3 pieces',
+                'price' => 2.50,
+                'quantity' => 40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 27,
+                'option' => '1kg',
+                'price' => 6.50,
+                'quantity' => 15,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Limau Nipis
+            [
+                'product_id' => 28,
+                'option' => '200g',
+                'price' => 1.80,
+                'quantity' => 50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 28,
+                'option' => '400g',
+                'price' => 3.50,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Limau Kasturi
+            [
+                'product_id' => 29,
+                'option' => '200g',
+                'price' => 1.50,
+                'quantity' => 60,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 29,
+                'option' => '400g',
+                'price' => 2.80,
+                'quantity' => 30,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Watermelon
+            [
+                'product_id' => 30,
+                'option' => '1 whole',
+                'price' => 8.00,
+                'quantity' => 15,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 30,
+                'option' => 'Half',
+                'price' => 4.50,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Coriander Seed
+            [
+                'product_id' => 31,
+                'option' => '100g',
+                'price' => 2.00,
+                'quantity' => 40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 31,
+                'option' => '200g',
+                'price' => 3.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Turmeric Powder
+            [
+                'product_id' => 32,
+                'option' => '50g',
+                'price' => 1.80,
+                'quantity' => 50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 32,
+                'option' => '100g',
+                'price' => 3.50,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Paprika Powder
+            [
+                'product_id' => 33,
+                'option' => '50g',
+                'price' => 2.20,
+                'quantity' => 45,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 33,
+                'option' => '100g',
+                'price' => 4.00,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Cinnamon
+            [
+                'product_id' => 34,
+                'option' => '50g',
+                'price' => 2.50,
+                'quantity' => 40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 34,
+                'option' => '100g',
+                'price' => 4.50,
+                'quantity' => 20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Cinnamon Powder
+            [
+                'product_id' => 35,
+                'option' => '50g',
+                'price' => 2.00,
+                'quantity' => 50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 35,
+                'option' => '100g',
+                'price' => 3.80,
+                'quantity' => 25,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Mandarin Oranges (Clearance)
+            [
+                'product_id' => 36,
                 'option' => 'Per box',
                 'price' => 8.90,
                 'quantity' => 19,
@@ -213,7 +555,7 @@ class ProductOptionsTableSeeder extends Seeder
 
             // Avocado (Clearance)
             [
-                'product_id' => 18,
+                'product_id' => 37,
                 'option' => '500g',
                 'price' => 4.50,
                 'quantity' => 9,
@@ -223,7 +565,7 @@ class ProductOptionsTableSeeder extends Seeder
 
             // Bitter Gourd (Clearance)
             [
-                'product_id' => 19,
+                'product_id' => 38,
                 'option' => '200g',
                 'price' => 1.50,
                 'quantity' => 7,
@@ -233,7 +575,7 @@ class ProductOptionsTableSeeder extends Seeder
 
             // Cabbages (Clearance)
             [
-                'product_id' => 20,
+                'product_id' => 39,
                 'option' => '200g',
                 'price' => 1.70,
                 'quantity' => 23,
@@ -243,7 +585,7 @@ class ProductOptionsTableSeeder extends Seeder
 
             // Pak Choy (Clearance)
             [
-                'product_id' => 21,
+                'product_id' => 40,
                 'option' => 'Per pack',
                 'price' => 1.30,
                 'quantity' => 12,

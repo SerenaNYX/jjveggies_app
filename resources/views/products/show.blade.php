@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="product-container">
         <div class="product-detail">
             <h1>{{ $product->name }}</h1>
             <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
@@ -57,4 +57,82 @@
             });
         });
     </script>
+
+
+    <style>
+
+
+.product-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-detail {
+    text-align: center;
+}
+
+.product-detail h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.product-detail img {
+    max-height: 15rem;
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: #6e924a;
+    font-weight: bold;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.add-to-cart-form {
+    margin-top: 20px;
+}
+
+.add-to-cart2 {
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart2 img {
+    height: 2rem;
+    width: auto;
+}
+
+
+#add-to-cart-button:disabled {
+    background-color: #aaa;
+    cursor: default;
+}
+
+    </style>
+
 @endsection

@@ -27,7 +27,6 @@ class CartItem extends Model
         return $this->belongsTo(Cart::class);
     }
 
-    // method to calculate the subtotal based on the option price
     public function getSubtotalAttribute()
     {
         return $this->option->price * $this->quantity;

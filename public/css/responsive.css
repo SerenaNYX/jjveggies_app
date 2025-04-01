@@ -1,5 +1,157 @@
 /*==========  Non-Mobile First Method  ==========*/
 
+/* TODO: header.blade.php */
+@media (max-width: 1024px) {
+  .top-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 65px 0;
+    padding-bottom: 10px;
+  }
+
+  .top-nav ul {
+      justify-content: center;
+      width: 100%;
+  }
+
+  .top-nav ul li {
+      width: 45%;
+      margin: 10px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    padding-bottom: 10px;
+  }
+
+  .account {
+      justify-content: center;
+      position: relative;
+      top: 0;
+      right: 0;
+      padding-top: 10px;
+  }
+
+  .top-nav ul {
+    gap: auto;
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .top-nav ul li {
+      width: 45%;
+      margin: 10px 0;
+      text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .top-nav ul li {
+    font-size: 14px;
+    width: 100%;
+  }
+
+  #go-to-top {
+    padding: 8px 12px;
+    font-size: 16px;
+  }
+}
+
+/* END OF header.blade.php */
+
+
+/* cart.blade.php */
+@media (max-width: 768px) {
+  .cart-container {
+      padding: 10px;
+      overflow-x: auto;
+  }
+
+  .cart-table {
+      width: 100%;
+      display: block;
+      overflow-x: auto;
+  }
+
+  .cart-table th,
+  .cart-table td {
+      font-size: 14px;
+      padding: 8px;
+  }
+
+  .cart-table input[type="number"] {
+      width: 40px;
+  }
+
+  .total-container {
+      flex-direction: column;
+      text-align: center;
+      padding: 15px;
+  }
+
+  .btn-checkout {
+      width: 100%;
+      margin-top: 10px;
+  }
+
+  .btn-remove {
+      padding: 5px 15px;
+      font-size: 14px;
+  }
+
+  .btn-quantity {
+      width: 25px;
+      height: 25px;
+      font-size: 18px;
+  }
+
+  .cart-quantity {
+      height: 28px;
+  }
+
+  .select-all-container {
+      flex-direction: column;
+      gap: 8px;
+  }
+
+  .all-label {
+      font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-table th,
+  .cart-table td {
+      font-size: 12px;
+      padding: 6px;
+  }
+
+  .btn-quantity {
+      width: 22px;
+      height: 22px;
+      font-size: 16px;
+  }
+
+  .btn-remove {
+      padding: 5px 10px;
+      font-size: 12px;
+  }
+
+  .total-container h3 {
+      font-size: 18px;
+  }
+
+  .btn-checkout {
+      font-size: 16px;
+      padding: 8px 20px;
+  }
+}
+
+/* END OF cart.blade.php */
+
 /* Large Devices, Wide Screens */
 
 @media only screen and (max-width: 1200px) {
