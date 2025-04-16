@@ -2,109 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Address;
 use App\Models\CartItem;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
-{/*
+{
     public function index(Request $request)
     {
         $selectedItems = $request->input('selected_items', []);
-        $totalPrice = $request->input('total_price', 0);
-
-        if (count($selectedItems) > 0) {
-            $cartItems = CartItem::whereIn('id', $selectedItems)
-                ->with(['product', 'option'])
-                ->get();
-        } else {
-            $cartItems = collect();
+    
+        if (empty($selectedItems)) {
+            return redirect()->route('cart.index')->with('error', 'No items selected');
         }
 
-        // Get user's addresses, ordered by most recent
-        $addresses = Auth::user()->addresses()->latest()->get();
-        $defaultAddress = $addresses->first();
+        $cartItems = CartItem::whereHas('cart', function($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->whereIn('id', $selectedItems)
+            ->with(['product', 'option'])
+            ->get();
 
-        return view('checkout', compact('cartItems', 'totalPrice', 'addresses', 'defaultAddress'));
-    }
-*/
- /*   public function index(Request $request)
-    {
-        $selectedItems = $request->input('selected_items', []);
-        $totalPrice = $request->input('total_price', 0);
-
-        if (count($selectedItems) > 0) {
-            $cartItems = CartItem::whereIn('id', $selectedItems)
-                ->with(['product', 'option'])
-                ->get();
-        } else {
-            $cartItems = collect();
-        }
-
-        // Redirect to cart if no items are selected or cart is empty
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty or no items selected.');
+            return redirect()->route('cart.index')->with('error', 'Selected items not found');
         }
 
-        // Get user's addresses, ordered by most recent
-        $addresses = Auth::user()->addresses()->latest()->get();
-        $defaultAddress = $addresses->first();
+        $totalPrice = $cartItems->sum(function ($item) {
+            return $item->option->price * $item->quantity;
+        });
 
-        return view('checkout', compact('cartItems', 'totalPrice', 'addresses', 'defaultAddress'));
-    }
-
-    public function processCheckout(Request $request)
-    {
-        $validated = $request->validate([
-            'payment_method' => 'required|in:stripe,fpx,cod',
-            'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
-            'total_price' => 'required|numeric',
-        ]);
-        
-        // Get the selected address
-        $address = Address::find($request->address_id);
-        
-        // Handle different payment methods
-        if (in_array($request->payment_method, ['stripe', 'fpx'])) {
-            return redirect()->route('stripe.payment', [
-                'price' => $request->total_price,
-                'address_id' => $address->id,
-                'payment_method' => $request->payment_method // Pass the payment method
-            ]);
-        }
-        
-        // Handle Cash on Delivery
-        // Create order with the selected address
-        // Clear cart, etc.
-        
-        return redirect()->route('order.success')->with('success', 'Order placed successfully!');
-    }*/
-
-    // In your CheckoutController.php
-    public function index(Request $request)
-    {
-        $selectedItems = $request->input('selected_items', []);
-        $totalPrice = $request->input('total_price', 0);
-
-        if (count($selectedItems) > 0) {
-            $cartItems = CartItem::whereIn('id', $selectedItems)
-                ->with(['product', 'option'])
-                ->get();
-        } else {
-            $cartItems = collect();
-        }
-
-        // Redirect if cart is empty
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty');
-        }
-
-        // Calculate totals with delivery fee
         $deliveryFee = 6.00;
         $grandTotal = $totalPrice + $deliveryFee;
-
-        // Get addresses
         $addresses = Auth::user()->addresses()->latest()->get();
         $defaultAddress = $addresses->first();
 
@@ -114,30 +45,81 @@ class CheckoutController extends Controller
             'deliveryFee',
             'grandTotal',
             'addresses',
-            'defaultAddress'
+            'defaultAddress',
+            'selectedItems'
         ));
     }
 
     public function processCheckout(Request $request)
     {
         $validated = $request->validate([
-            'payment_method' => 'required|in:stripe,fpx,cod',
+            'payment_method' => 'required|in:stripe,fpx',
             'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
-            'grand_total' => 'required|numeric|min:0',
-            'delivery_fee' => 'required|numeric',
+            'selected_items' => 'required|array',
+            'selected_items.*' => 'exists:cart_items,id'
         ]);
-        
+
+        $cartItems = CartItem::whereHas('cart', function($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->whereIn('id', $request->selected_items)
+            ->with(['product', 'option'])
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'No items selected');
+        }
+
+        $subtotal = $cartItems->sum(function($item) {
+            return $item->option->price * $item->quantity;
+        });
+
+        $deliveryFee = 6.00;
+        $grandTotal = $subtotal + $deliveryFee;
+
         // For Stripe/FPX payments
         if (in_array($request->payment_method, ['stripe', 'fpx'])) {
-            // Use grand_total (subtotal + delivery fee)
             return redirect()->route('stripe.payment', [
-                'price' => $request->grand_total,
+                'price' => $grandTotal,
                 'payment_method' => $request->payment_method,
-                'address_id' => $request->address_id
+                'address_id' => $request->address_id,
+                'selected_items' => $request->selected_items
             ]);
         }
-        
-        // For COD - process normally
-        // ... your COD logic ...
+    }
+
+    public function createOrder($addressId, $subtotal, $deliveryFee, $total, $paymentMethod, $paymentStatus, $cartItems)
+    {
+        $address = Address::where('id', $addressId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'address_id' => $address->id,
+            'subtotal' => $subtotal,
+            'delivery_fee' => $deliveryFee,
+            'total' => $total,
+            'payment_method' => $paymentMethod,
+            'payment_status' => $paymentStatus,
+            'status' => 'order_placed'
+        ]);
+
+        foreach ($cartItems as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'option_id' => $item->option_id,
+                'quantity' => $item->quantity,
+                'price' => $item->option->price
+            ]);
+        }
+
+        $order->statusHistory()->create([
+            'status' => 'order_placed',
+            'notes' => 'Order was placed by customer'
+        ]);
+
+        return $order;
     }
 }

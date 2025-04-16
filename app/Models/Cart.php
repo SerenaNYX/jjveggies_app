@@ -9,16 +9,21 @@ class Cart extends Model
 {
     use HasFactory;
 
-    protected $table = 'carts';
+   // protected $table = 'carts';
 
     protected $fillable = ['user_id'];
 
-    public function items()
+    public function user()
     {
-        return $this->hasMany(CartItem::class, 'cart_id');
+        return $this->belongsTo(User::class);
     }
 
-    public function totalCost()
+    public function items()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function totalCost() // IS THIS NEEDED?
     {
         return $this->items->sum(function($item) {
             return $item->product->price * $item->quantity;

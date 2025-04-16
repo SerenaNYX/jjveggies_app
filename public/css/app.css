@@ -710,14 +710,14 @@ h2 {
     padding: 10px 30px;
     font-size: 16px;
     color: #fff;
-    background-color: #589a4b;
+    background-color: #63966b;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .btn:hover {
-    background-color: #257c1b;
+    background-color: #44684a;
 }
 
 .alert {
@@ -875,3 +875,222 @@ h2 {
 */
 
 /* end of cart */
+
+/* order management for employee */
+
+/* Status Dropdown Styles */
+.form-select-sm {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 15px;
+    padding: 6px 12px;
+    border: 1px solid #63966b;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #212121;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2363966b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); /* ARROW */
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    min-width: 120px;
+}
+
+.form-select-sm:hover {
+    border-color: #44684a;
+    box-shadow: 0 0 0 1px #44684a;
+}
+
+.form-select-sm:focus {
+    outline: none;
+    border-color: #44684a;
+    box-shadow: 0 0 0 2px rgba(99, 150, 107, 0.3);
+}
+
+/* Status Badge Styles */
+.badge-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+/*
+.badge-status.order_placed {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.badge-status.preparing {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.badge-status.packed {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-status.delivering {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.badge-status.completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-status.cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+}*/
+
+/* Disabled Dropdown State */
+/*.form-select-sm:disabled {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+}*/
+
+/* Confirmation Dialog Styles */ /* CONFIRMATION STYLE STILL NOT IMPLEMENTED!!!*/
+.confirmation-dialog {
+    background-color: white;
+    border: 1px solid #63966b;
+    border-radius: 5px;
+    padding: 15px;
+    max-width: 300px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.confirmation-dialog p {
+    margin-bottom: 15px;
+    color: #212121;
+}
+
+.confirmation-dialog button {
+    padding: 6px 12px;
+    margin-right: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.confirmation-dialog .confirm-btn {
+    background-color: #63966b;
+    color: white;
+    border: 1px solid #63966b;
+}
+
+.confirmation-dialog .confirm-btn:hover {
+    background-color: #44684a;
+}
+
+.confirmation-dialog .cancel-btn {
+    background-color: white;
+    color: #212121;
+    border: 1px solid #ccc;
+}
+
+.confirmation-dialog .cancel-btn:hover {
+    background-color: #f1f1f1;
+}
+
+/* end of order management by employee */
+
+/* order table for customer in orders/show */
+/* Base Table Styles */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Table Header */
+.order-table thead tr {
+    background-color: #63966b;
+    color: white;
+    text-align: left;
+}
+
+.order-table th {
+    padding: 12px 15px;
+    font-weight: 600;
+}
+
+/* Table Body */
+.order-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    transition: all 0.3s ease;
+}
+
+.order-table tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
+.order-table tbody tr:last-of-type {
+    border-bottom: 2px solid #63966b;
+}
+
+.order-table tbody tr:hover {
+    background-color: #f1f8f1;
+}
+
+.order-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+/* Table Footer */
+.order-table tfoot tr {
+    font-weight: bold;
+    background-color: #f1f8f1;
+}
+
+.order-table tfoot td {
+    padding: 12px 15px;
+}
+
+/* Image Styling */
+.order-table img.img-thumbnail {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+.order-table img.img-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+/* Price Formatting */
+.order-table td {
+    color: #333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .order-table {
+        font-size: 0.8em;
+    }
+    
+    .order-table th,
+    .order-table td {
+        padding: 8px 10px;
+    }
+    
+    .order-table img.img-thumbnail {
+        width: 40px;
+    }
+}
+
+/* end of order table for customer in orders/show */

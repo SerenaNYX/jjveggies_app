@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ProductController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
 use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
+use App\Http\Controllers\Admin\OrderController as EmployeeOrderController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
@@ -93,12 +95,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Update the quantity of an item in the cart
 
-
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::get('stripe/payment', [StripeController::class, 'payment'])->name('stripe.payment');
-    Route::get('stripe/payment/success', [StripeController::class, 'success'])->name('stripe.payment.success');
     Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/stripe/payment', [StripeController::class, 'payment'])->name('stripe.payment');
+    Route::get('/stripe/success', [StripeController::class, 'success'])->name('stripe.success');
+    Route::get('/stripe/cancel', [StripeController::class, 'cancel'])->name('stripe.cancel');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Customer Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 
@@ -137,4 +145,29 @@ Route::get('/messages', function () {
 
 Route::get('/about', function () { 
     return view('about');
+});
+
+
+// EMPLOYEE ORDER MANAGEMENT
+
+// For admin (view only)
+Route::middleware(['auth:employee', 'role:admin'])->group(function () {
+    Route::get('admin/orders', [EmployeeOrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('admin/orders/{order}', [EmployeeOrderController::class, 'show'])->name('admin.orders.show');
+});
+
+// For staff (view and update to preparing/packed)
+Route::middleware(['auth:employee', 'role:staff'])->group(function () {
+    Route::get('staff/orders', [EmployeeOrderController::class, 'index'])->name('staff.orders.index');
+    Route::get('staff/orders/{order}', [EmployeeOrderController::class, 'show'])->name('staff.orders.show');
+    Route::post('staff/orders/{order}/status', [EmployeeOrderController::class, 'updateStatus'])
+         ->name('staff.orders.update-status');
+});
+
+// For driver (view and update to delivering/completed)
+Route::middleware(['auth:employee', 'role:driver'])->group(function () {
+    Route::get('driver/orders', [EmployeeOrderController::class, 'index'])->name('driver.orders.index');
+    Route::get('driver/orders/{order}', [EmployeeOrderController::class, 'show'])->name('driver.orders.show');
+    Route::post('driver/orders/{order}/status', [EmployeeOrderController::class, 'updateStatus'])
+         ->name('driver.orders.update-status');
 });

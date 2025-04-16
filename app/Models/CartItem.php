@@ -9,8 +9,13 @@ class CartItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'cart_items';
+ //   protected $table = 'cart_items';
     protected $fillable = ['cart_id', 'product_id', 'option_id', 'quantity'];
+
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
 
     public function product()
     {
@@ -22,12 +27,7 @@ class CartItem extends Model
         return $this->belongsTo(ProductOption::class);
     }
 
-    public function cart()
-    {
-        return $this->belongsTo(Cart::class);
-    }
-
-    public function getSubtotalAttribute()
+    public function getSubtotalAttribute() // IS THIS NEEDED?
     {
         return $this->option->price * $this->quantity;
     }

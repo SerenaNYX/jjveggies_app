@@ -30,8 +30,11 @@
                 <div class="profile">
                     <a href="/profile">My Profile</a>
                 </div>
+                <div>
+                    <a href="#">Rewards</a>
+                </div>
                 <div class="logout">
-                    <form action="/logout" method="POST" style="display: inline;">
+                    <form action="/logout" method="POST">
                         @csrf
                         <button type="submit" class="logout-button">Logout</button>
                     </form>
@@ -52,12 +55,11 @@
                     <li></li>
                     <li><a href="/product">Shop</a></li>
                     <li><a href="/about">About</a></li>
-                <!--    <li><a href="#">Contact</a></li> -->
                 @else
                     <li><a href="/product">Shop</a></li>
-                    <li><a href="/about">About</a></li>
                     <li><a href="/messages">Message</a></li>
-                    <li><a href="#">Rewards</a></li>
+                 <!--   <li><a href="#">Rewards</a></li>-->
+                    <li><a href="/orders">Orders</a></li>
                     <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt=""></a></li>
                 @endguest
             </ul>

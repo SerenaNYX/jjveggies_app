@@ -5,67 +5,80 @@
 <div class="container">
     <h1 class="text-center">Shopping Cart</h1>
     <div class="cart-container">
-        <form action="{{ route('checkout.index') }}" method="GET">
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th class="column-image">Image</th>
-                        <th class="column-product">Product</th>
-                   <!--     <th class="column-option">Option</th>-->
-                        <th class="column-quantity">Quantity</th>
-                        <th>Price</th>
-                 <!--       <th>Subtotal</th>-->
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($cartItems as $item)
-                        <tr>
-                            <td>
-                                <input type="checkbox" 
-                                    class="checkbox-quantity" 
-                                    name="selected_items[]" 
-                                    value="{{ $item->id }}" 
-                                    data-price="{{ $item->option->price }}"
-                                    data-quantity="{{ $item->quantity }}" 
-                                    onclick="updateTotal()">
-                            </td>
-                            <td>
-                                <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70">
-                            </td>
-                            <td><strong>{{ $item->product->name }} </strong>({{ $item->option->option }})</td>
-
-                        <!--    <td>{{ $item->product->name }}</td>
-                            <td>{{ $item->option->option }}</td>-->
-                            <td>
-                                <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'decrease')">-</button>
-                                <input type="number" class="cart-quantity" id="quantity-{{ $item->id }}" value="{{ $item->quantity }}" min="1" readonly>
-                                <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'increase')">+</button>
-                            </td>
-                            <td>RM{{ number_format($item->option->price, 2) }}</td>
-                 <!--           <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>-->
-                            <td> 
-                             <!--   <p>Item ID: {{ $item->id }}</p> <!--DELETE LATER-->                    
-                                <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <div class="total-container">
-                <div class="select-all-container">
-                    <input type="checkbox" id="select-all-toggle" onclick="toggleSelectAll()"></input>
-                    <label class="all-label">All</label>
-                    <span id="total-selected-items"> - (0 items selected)</span>
+        @if($cartItems->isEmpty())
+            <div class="text-center">
+                <div class="">
+                    <i class="fas fa-shopping-cart fa-5x" style="color: #969696;"></i>
                 </div>
-
-                <h3>Total Price: RM <span id="total-price">0.00</span></h3>
-                <input type="hidden" name="total_price" id="total_price" value="0">
-                <button type="submit" class="btn-checkout" id="checkout-button" disabled>Proceed to Checkout</button>
+                <h3 class="">Your cart is empty!</h3>
+                <p class="">Looks like you haven't added any items yet</p>
+                <a href="{{ route('welcome') }}" class="btn btn-primary btn-lg" style="color:white; font-weight: bold;">
+                    <i class="fas fa-arrow-left"></i>
+                    <label style="cursor: pointer;">Continue Shopping</label>
+                </a>
             </div>
-        </form>
+        @else
+            <form action="{{ route('checkout.index') }}" method="GET">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th><!--Select--></th>
+                            <th class="column-image">Image</th>
+                            <th class="column-product">Product</th>
+                    <!--     <th class="column-option">Option</th>-->
+                            <th class="column-quantity">Quantity</th>
+                            <th>Price (per unit)</th>
+                    <!--       <th>Subtotal</th>-->
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($cartItems as $item)
+                            <tr>
+                                <td>
+                                    <input type="checkbox" 
+                                        class="checkbox-quantity" 
+                                        name="selected_items[]" 
+                                        value="{{ $item->id }}" 
+                                        data-price="{{ $item->option->price }}"
+                                        data-quantity="{{ $item->quantity }}" 
+                                        onclick="updateTotal()">
+                                </td>
+                                <td>
+                                    <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70">
+                                </td>
+                                <td><strong>{{ $item->product->name }} </strong>({{ $item->option->option }})</td>
+
+                            <!--    <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->option->option }}</td>-->
+                                <td>
+                                    <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'decrease')">-</button>
+                                    <input type="number" class="cart-quantity" id="quantity-{{ $item->id }}" value="{{ $item->quantity }}" min="1" readonly>
+                                    <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'increase')">+</button>
+                                </td>
+                                <td>RM{{ number_format($item->option->price, 2) }}</td>
+                    <!--           <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>-->
+                                <td>                  
+                                    <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <div class="total-container">
+                    <div class="select-all-container">
+                        <input type="checkbox" id="select-all-toggle" onclick="toggleSelectAll()"></input>
+                        <label class="all-label">All</label>
+                        <span id="total-selected-items"> - (0 items selected)</span>
+                    </div>
+
+                    <h3>Total Price: RM <span id="total-price">0.00</span></h3>
+                    <input type="hidden" name="total_price" id="total_price" value="0">
+                    <button type="submit" class="btn-checkout" id="checkout-button" disabled>Proceed to Checkout</button>
+                </div>
+            </form>
+        @endif
     </div>
 </div>
 
@@ -94,45 +107,50 @@
     }
 
 
-    // Update quantity and subtotal for all items
     function updateQuantityInCart(id, action) {
         const quantityInput = document.getElementById('quantity-' + id);
         let quantity = parseInt(quantityInput.value);
+        const checkbox = document.querySelector(`input[name="selected_items[]"][value="${id}"]`);
+        const price = parseFloat(checkbox.dataset.price);
 
-        // Adjust quantity based on the action
+        // Adjust quantity based on action
         if (action === 'increase') {
             quantity++;
-            updateTotal();
         } else if (action === 'decrease' && quantity > 1) {
             quantity--;
-            updateTotal();
+        } else {
+            return; // No change needed
         }
 
-        // Update the quantity field on the frontend
-        quantityInput.value = quantity;
-
-        const price = parseFloat(document.querySelector(`input[name="selected_items[]"][value="${id}"]`).dataset.price); 
-        document.getElementById('subtotal-' + id).innerText = 'RM ' + (price * quantity).toFixed(2);
-
-        // Send the updated quantity to the server
+        // Send update to server first
         fetch(`/cart/update/${id}`, {
-            method: 'PATCH', // OR SHOULD I USE POST?
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: JSON.stringify({ quantity: quantity })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                console.log('Cart item updated successfully');
+                // Only update UI after successful server update
+                quantityInput.value = data.quantity;
+                if (document.getElementById('subtotal-' + id)) {
+                    document.getElementById('subtotal-' + id).innerText = 
+                        'RM' + data.subtotal;
+                }
+                updateTotal();
             } else {
-                console.error('Failed to update cart item:', data.message);
+                throw new Error(data.message || 'Update failed');
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('Failed to update quantity. Please try again.');
         });
     }
 

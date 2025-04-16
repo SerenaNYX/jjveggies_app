@@ -103,12 +103,14 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 
+    // SHOW INDIVIDUAL PRODUCTS
     public function show(Product $product)
     {
         $product->load('options'); // Load options for the product
         return view('products.show', compact('product'));
     }
 
+    // SHOW IN PRODUCT PAGE
     public function showProducts(Request $request)
     {
         $categorySlug = $request->query('category');

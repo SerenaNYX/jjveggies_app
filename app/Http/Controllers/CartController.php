@@ -94,7 +94,10 @@ class CartController extends Controller
     {
         $user_id = Auth::id();
         $cart = Cart::firstOrCreate(['user_id' => $user_id]);
-        $cartItem = CartItem::where('cart_id', $cart->id)->where('id', $id)->first();
+        $cartItem = CartItem::where('cart_id', $cart->id)
+            ->where('id', $id)
+            ->with(['option'])
+            ->first();
 
         if ($cartItem) {
             $request->validate([
@@ -109,18 +112,40 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Quantity updated successfully',
                 'quantity' => $quantity,
-                'subtotal' => number_format($cartItem->option->price * $quantity, 2),
+                'subtotal' => number_format($cartItem->option->price * $quantity, 2)
             ]);
         }
 
-        return response()->json(['success' => false, 'message' => 'Cart item not found']);
+        return response()->json([
+            'success' => false, 
+            'message' => 'Cart item not found'
+        ], 404);
     }
 
     public function checkout(Request $request)
-    {
-        $selectedItems = $request->input('selected_items', []);
-        $cartItems = CartItem::whereIn('id', $selectedItems)->get();
+{
+    $request->validate([
+        'selected_items' => 'required|array',
+        'selected_items.*' => 'exists:cart_items,id,user_id,'.Auth::id()
+    ]);
 
-        return view('checkout.index', compact('cartItems'));
+    $cartItems = CartItem::where('user_id', Auth::id())
+        ->whereIn('id', $request->selected_items)
+        ->with(['product', 'option'])
+        ->get();
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'No items selected');
     }
+
+    $totalPrice = $cartItems->sum(function ($item) {
+        return $item->option->price * $item->quantity;
+    });
+
+    return view('checkout.index', [
+        'cartItems' => $cartItems,
+        'totalPrice' => $totalPrice,
+        'selected_items' => $request->selected_items
+    ]);
+}
 }

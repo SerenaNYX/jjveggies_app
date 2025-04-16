@@ -57,12 +57,12 @@
                             <p class="error-message">{{ $message }}</p>
                         @enderror
                     </div>
-                    <div class="form-group">
+               <!--     <div class="form-group">
                         <input name="address" type="text" class="form-control" placeholder="Address" value="{{ old('address') }}">
                         @error('address')
                             <p class="error-message">{{ $message }}</p>
                         @enderror
-                    </div>
+                    </div>-->
                     <button class="btn btn-primary">Register</button>
                 </form>
             </div>

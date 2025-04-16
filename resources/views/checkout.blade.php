@@ -44,6 +44,13 @@
                 @csrf
                 <input type="hidden" name="payment_method" id="payment-method" value="">
                 <input type="hidden" name="total_price" value="{{ $totalPrice }}">
+                <input type="hidden" name="delivery_fee" value="{{ $deliveryFee }}">
+                <input type="hidden" name="grand_total" value="{{ $grandTotal }}">
+                <input type="hidden" name="address_id" id="selected-address-id" value="{{ $defaultAddress->id ?? '' }}">
+                
+                @foreach($selectedItems as $itemId)
+                    <input type="hidden" name="selected_items[]" value="{{ $itemId }}">
+                @endforeach
                 
                 <div class="payment-options">
                     <div class="payment-option">
@@ -67,20 +74,22 @@
                     </div>
                 </div>
                 
-
-        <!-- Address Section -->
+        <!-- Shipping Address Section -->
         <div class="shipping-address-section">
             <h3>Shipping address</h3>
-            <div class="selected-address" id="address-selection-trigger">
+            <div class="selected-address" id="address-selection-trigger" onclick="openAddressModal()">
                 @if($defaultAddress)
                     <p class="address-line">{{ $defaultAddress->address }}</p>
                     <p class="address-line">{{ $defaultAddress->postal_code }}</p>
                     <p class="address-line">{{ $defaultAddress->phone }}</p>
                 @else
-                    <p>No address saved. Please add one.</p>
+                    <p class="text-danger">Please select a shipping address</p>
                 @endif
-                <input type="hidden" name="address_id" id="selected-address-id" value="{{ $defaultAddress ? $defaultAddress->id : '' }}">
             </div>
+            <input type="hidden" name="address_id" id="selected-address-id" 
+                value="{{ $defaultAddress->id ?? '' }}" required>
+          <!--  <button type="button" class="btn btn-sm btn-outline-primary mt-2" 
+                    onclick="openAddressModal()">Change Address</button>-->
         </div>
 
         <!-- Rewards Section -->
@@ -113,37 +122,46 @@
         </div>
 
     </form>
+
+
     <!-- Address Selection Modal -->
     <div class="modal" id="address-modal" style="display:none;">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal" onclick="closeAddressModal()">&times;</span>
             <h3>Select Delivery Address</h3>
-                            
-            <button id="add-new-address-btn" class="button" type="button">Add New Address</button>
+            
+            <button id="add-new-address-btn" class="btn btn-sm btn-primary mb-3" 
+                    onclick="toggleAddressForm()">Add New Address</button>
             
             <!-- New Address Form (initially hidden) -->
             <div id="new-address-form" style="display:none;">
                 <form id="save-address-form">
                     @csrf
                     <div class="form-group">
-                        <label for="new-address">Address</label>
-                        <input type="text" id="new-address" name="address" required>
+                        <label>Address</label>
+                        <input type="text" name="address" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="new-postal-code">Postal Code</label>
-                        <input type="text" id="new-postal-code" name="postal_code" required>
+                        <label>Postal Code</label>
+                        <input type="text" name="postal_code" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="new-phone">Phone</label>
-                        <input type="text" id="new-phone" name="phone" required>
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn">Save Address</button>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save Address</button>
+                        <button type="button" class="btn btn-secondary" style="margin-left: 1rem;"
+                                onclick="toggleAddressForm()">Cancel</button>
+                    </div>
                 </form>
             </div>
 
             <div class="address-list">
                 @foreach($addresses as $address)
-                    <div class="address-option" data-address-id="{{ $address->id }}">
+                    <div class="address-option @if($defaultAddress && $address->id == $defaultAddress->id) active @endif" 
+                        data-address-id="{{ $address->id }}"
+                        onclick="selectAddress(this, {{ $address->id }}, '{{ $address->address }}', '{{ $address->postal_code }}', '{{ $address->phone }}')">
                         <p class="address-line">{{ $address->address }}</p>
                         <p class="address-line">{{ $address->postal_code }}</p>
                         <p class="address-line">{{ $address->phone }}</p>
@@ -158,183 +176,125 @@
 
 
 <script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Address modal handling
-    const modal = document.getElementById('address-modal');
-    const trigger = document.getElementById('address-selection-trigger');
-    const closeModal = document.querySelector('.close-modal');
-    const addNewAddressBtn = document.getElementById('add-new-address-btn');
-    const newAddressForm = document.getElementById('new-address-form');
-    const addressList = document.querySelector('.address-list');
-    
-    // Show modal when address is clicked
-    trigger.addEventListener('click', function(e) {
-        e.preventDefault();
-        modal.style.display = 'block';
-        
-        // Highlight currently selected address
-        const selectedAddressId = document.getElementById('selected-address-id').value;
-        if (selectedAddressId) {
-            document.querySelectorAll('.address-option').forEach(option => {
-                option.classList.remove('active');
-                if (option.getAttribute('data-address-id') === selectedAddressId) {
-                    option.classList.add('active');
-                }
-            });
-        }
-    });
-    
-    // Close modal
-    closeModal.addEventListener('click', function(e) {
-        e.preventDefault();
-        modal.style.display = 'none';
-        newAddressForm.style.display = 'none';
-    });
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            newAddressForm.style.display = 'none';
-        }
-    });
-    
-    // Function to handle address selection
-    function setupAddressSelection(addressOption) {
-        addressOption.addEventListener('click', function(e) {
-            e.preventDefault();
-            const addressId = this.getAttribute('data-address-id');
-            
-            // Remove active class from all address options
-            document.querySelectorAll('.address-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            
-            // Add active class to selected address
-            this.classList.add('active');
-            
-            document.getElementById('selected-address-id').value = addressId;
-            
-            const addressLines = this.querySelectorAll('.address-line');
-            const displayLines = trigger.querySelectorAll('.address-line');
-            
-            addressLines.forEach((line, index) => {
-                if (displayLines[index]) {
-                    displayLines[index].textContent = line.textContent;
-                }
-            });
-            
-            modal.style.display = 'none';
-        });
+    // Address Modal Functions
+    function openAddressModal() {
+        document.getElementById('address-modal').style.display = 'block';
     }
     
-    // Initialize address selection for existing addresses
-    document.querySelectorAll('.address-option').forEach(addressOption => {
-        setupAddressSelection(addressOption);
-    });
+    function closeAddressModal() {
+        document.getElementById('address-modal').style.display = 'none';
+        document.getElementById('new-address-form').style.display = 'none';
+    }
     
-    // Toggle new address form
-    addNewAddressBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        newAddressForm.style.display = newAddressForm.style.display === 'none' ? 'block' : 'none';
-    });
+    function toggleAddressForm() {
+        const form = document.getElementById('new-address-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
     
-    // Save new address via AJAX
-    document.getElementById('save-address-form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    function selectAddress(element, addressId, address, postalCode, phone) {
+        // Update selected address display
+        const trigger = document.getElementById('address-selection-trigger');
+        trigger.innerHTML = `
+            <p class="address-line">${address}</p>
+            <p class="address-line">${postalCode}</p>
+            <p class="address-line">${phone}</p>
+        `;
         
-        fetch('{{ route("address.store") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                address: document.getElementById('new-address').value,
-                postal_code: document.getElementById('new-postal-code').value,
-                phone: document.getElementById('new-phone').value
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update the hidden input
-                document.getElementById('selected-address-id').value = data.address.id;
-                
-                // Update the displayed address
-                const trigger = document.getElementById('address-selection-trigger');
-                trigger.innerHTML = `
-                    <p class="address-line">${data.address.address}</p>
-                    <p class="address-line">${data.address.postal_code}</p>
-                    <p class="address-line">${data.address.phone}</p>
-                    <input type="hidden" name="address_id" id="selected-address-id" value="${data.address.id}">
-                `;
-                
-                // Create new address option
-                const newAddressOption = document.createElement('div');
-                newAddressOption.className = 'address-option active';
-                newAddressOption.setAttribute('data-address-id', data.address.id);
-                newAddressOption.innerHTML = `
-                    <p class="address-line">${data.address.address}</p>
-                    <p class="address-line">${data.address.postal_code}</p>
-                    <p class="address-line">${data.address.phone}</p>
-                `;
-                addressList.appendChild(newAddressOption);
-                
-                // Set up event listener for the new address
-                setupAddressSelection(newAddressOption);
-                
-                // Close both modal and form
-                modal.style.display = 'none';
-                newAddressForm.style.display = 'none';
-                
-                // Reset form
-                document.getElementById('save-address-form').reset();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to save address. Please try again.');
+        // Update hidden input
+        document.getElementById('selected-address-id').value = addressId;
+        
+        // Highlight selected address in modal
+        document.querySelectorAll('.address-option').forEach(opt => {
+            opt.classList.remove('active');
         });
-    });
-});
-
-    // //
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkoutForm = document.getElementById('checkout-form');
-        const paymentMethodInput = document.getElementById('payment-method');
+        element.classList.add('active');
         
-        // Handle payment method selection
+        // Close modal
+        closeAddressModal();
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize address selection for existing addresses
+        document.querySelectorAll('.address-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const addressId = this.getAttribute('data-address-id');
+                const addressLines = this.querySelectorAll('.address-line');
+                
+                selectAddress(
+                    this,
+                    addressId,
+                    addressLines[0].textContent,
+                    addressLines[1].textContent,
+                    addressLines[2].textContent
+                );
+            });
+        });
+    
+        // Save new address via AJAX
+        document.getElementById('save-address-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch('{{ route("address.store") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    address: this.elements.address.value,
+                    postal_code: this.elements.postal_code.value,
+                    phone: this.elements.phone.value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // Refresh to show new address
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to save address'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save address. Please try again.');
+            });
+        });
+    
+        // Payment method selection
+        const paymentMethodInput = document.getElementById('payment-method');
         document.querySelectorAll('input[name="payment_selection"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 paymentMethodInput.value = this.value;
             });
         });
         
-        // Handle form submission
-        checkoutForm.addEventListener('submit', function(e) {
+        // Form submission
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
             const selectedPayment = document.querySelector('input[name="payment_selection"]:checked');
+            const addressId = document.getElementById('selected-address-id').value;
             
             if (!selectedPayment) {
-                e.preventDefault();
                 alert('Please select a payment method');
                 return;
             }
             
-            if (['stripe', 'fpx'].includes(selectedPayment.value)) {
-                e.preventDefault();
-                // Get the GRAND TOTAL (subtotal + delivery fee)
-                const grandTotal = parseFloat("{{ $grandTotal }}");
-                // Include delivery fee in Stripe payment
-                window.location.href = "{{ route('stripe.payment') }}?price=" + grandTotal + 
-                                    "&payment_method=" + selectedPayment.value;
+            if (!addressId) {
+                alert('Please select a shipping address');
+                openAddressModal();
+                return;
             }
-            // COD will submit normally with the form
+            
+            // Set the payment method value
+            paymentMethodInput.value = selectedPayment.value;
+            
+            // Submit the form via POST
+            this.submit();
         });
     });
-</script>
+    </script>
 
 <style>
     .payment-options {

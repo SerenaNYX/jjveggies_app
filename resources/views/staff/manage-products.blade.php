@@ -82,7 +82,6 @@ function searchProducts() {
     }
 }
 
-// Function to filter by category
 function filterByCategory() {
     const selectedCategory = document.getElementById('category-filter').value;
     const searchQuery = document.getElementById('searchQuery').value;
