@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>My Orders</h1>
+    <h1 class="text-center">My Orders</h1>
     
     @if($orders->isEmpty())
         <div class="alert alert-info">

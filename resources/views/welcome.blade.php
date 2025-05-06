@@ -52,6 +52,8 @@
 <div id="optionModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
+        <img id="modalProductImage" src="" alt="Product Image" style="max-width: 50%; height: auto; display:block; margin-left: auto; margin-right: auto;">
+        <div id="modalProductName" class="product-name" style="font-weight: bold; text-align: center;"></div>
         <h2>Select an Option</h2>
         <form id="addToCartForm" method="POST">
             @csrf
@@ -61,6 +63,7 @@
         </form>
     </div>
 </div>
+<div id="notification" class="notification" style="display: none;"></div>
         
         <div class="text-center button-container">
             <a href="/product" class="button">View more products</a>
@@ -100,18 +103,21 @@
 <script>
     $(document).ready(function() {
         // Open modal when "Add to Cart" is clicked
-        $(document).on('click', '.add-to-cart', function() {
+        $('.add-to-cart').on('click', function() {
             const productId = $(this).data('product-id');
             $('#modalProductId').val(productId); // Set the product ID in the form
-
-            // Set the form action dynamically
             $('#addToCartForm').attr('action', `/cart/add/${productId}`);
-
-            // Fetch options for the selected product
+            // Fetch product details and options
             $.ajax({
-                url: `/products/${productId}/options`,
+                url: `/products/${productId}/options`, // Updated endpoint name
                 type: 'GET',
                 success: function(response) {
+                    // Update modal content with product details
+                    $('#modalProductImage').attr('src', response.image); // Set product image
+                    $('#modalProductImage').attr('alt', response.name); // Set alt text for image
+                    $('#modalProductName').text(response.name); // Set product name
+
+                    // Populate options
                     let optionsHtml = '';
                     response.options.forEach(option => {
                         optionsHtml += `
@@ -127,7 +133,7 @@
                     $('#optionModal').show(); // Show the modal
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error fetching options:', error);
+                    console.error('Error fetching product details:', error);
                 }
             });
         });
@@ -156,12 +162,39 @@
                 type: 'POST',
                 data: formData,
                 success: function(response) {
-                    alert('Product added to cart!');
-                    $('#optionModal').hide(); // Hide the modal
+                    // Show notification
+                    const notification = $('#notification');
+                    notification.text('Product added to cart!');
+                    notification.css('display', 'block');
+                    notification.css('opacity', '1');
+                    
+                    // Hide the modal
+                    $('#optionModal').hide();
+                    
+                    // Auto-hide the notification after 2 seconds
+                    setTimeout(function() {
+                        notification.css('opacity', '0');
+                        setTimeout(function() {
+                            notification.css('display', 'none');
+                        }, 500); // Wait for fade out to complete
+                    }, 2000);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error adding to cart:', error);
-                    alert('Failed to add product to cart.');
+
+                    const notification = $('#notification');
+                    notification.text('Failed to add product to cart.');
+                    notification.css('background-color', '#f44336'); // Red color for error
+                    notification.css('display', 'block');
+                    notification.css('opacity', '1');
+                    
+                    setTimeout(function() {
+                        notification.css('opacity', '0');
+                        setTimeout(function() {
+                            notification.css('display', 'none');
+                      //      notification.css('background-color', '#4CAF50');
+                        }, 500);
+                    }, 4000);
                 }
             });
         });

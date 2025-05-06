@@ -18,6 +18,11 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('contact');
+
+            $table->integer('points')->default(0);
+            $table->string('referred_by')->nullable();
+            $table->boolean('has_entered_referral')->default(false);
+
             $table->rememberToken();
             $table->timestamps();
         });

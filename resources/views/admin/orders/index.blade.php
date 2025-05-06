@@ -11,7 +11,7 @@
                 <select class="form-control-category" onchange="window.location.href = this.value">
                     <option value="{{ route(auth('employee')->user()->role . '.orders.index') }}" 
                         {{ !request('status') ? 'selected' : '' }}>All Orders</option>
-                    @foreach(['order_placed', 'preparing', 'packed', 'delivering', 'delivered', 'cancelled'] as $status)
+                    @foreach(['order_placed', 'preparing', 'packed', 'delivering', 'delivered', 'completed', 'cancelled'] as $status)
                         <option value="{{ route(auth('employee')->user()->role . '.orders.index', ['status' => $status]) }}" 
                             {{ request('status') === $status ? 'selected' : '' }}>
                             {{ ucfirst(str_replace('_', ' ', $status)) }}
@@ -58,6 +58,7 @@
                                         $nextStatus = match($order->status) {
                                             'order_placed' => 'preparing',
                                             'preparing' => 'packed',
+                                            'delivered' => 'completed',
                                             default => null
                                         };
                                     @endphp

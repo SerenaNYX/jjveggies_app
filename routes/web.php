@@ -11,15 +11,17 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\EmployeeController as EmployeeController;
-use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
 use App\Http\Controllers\Admin\OrderController as EmployeeOrderController;
+use App\Http\Controllers\Staff\ProductController as EmployeeProductController;
 
 // Customer Routes
 Route::get('/', [ProductController::class, 'welcomeProducts'])->name('welcome');
@@ -170,4 +172,27 @@ Route::middleware(['auth:employee', 'role:driver'])->group(function () {
     Route::get('driver/orders/{order}', [EmployeeOrderController::class, 'show'])->name('driver.orders.show');
     Route::post('driver/orders/{order}/status', [EmployeeOrderController::class, 'updateStatus'])
          ->name('driver.orders.update-status');
+});
+
+
+// Rewards and referrals
+// Referral routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/referral/enter', [ReferralController::class, 'showEnterReferral'])->name('referral.enter');
+    Route::post('/referral/process', [ReferralController::class, 'processReferral'])->name('referral.process');
+    Route::post('/referral/generate', [ReferralController::class, 'generateReferralCode'])->name('referral.generate');
+    
+    // Voucher routes
+    Route::get('/vouchers', [VoucherController::class, 'index'])->name('vouchers.index');
+    Route::post('/vouchers/redeem', [VoucherController::class, 'redeem'])->name('vouchers.redeem');
+    
+    // Checkout voucher route
+    Route::post('/checkout/apply-voucher', [CheckoutController::class, 'applyVoucher'])->name('checkout.apply-voucher');
+    
+    // Order completion route
+    Route::post('/orders/{order}/complete', [OrderController::class, 'completeOrder'])->name('orders.complete');
+
+    Route::get('/vouchers/available', [VoucherController::class, 'availableVouchers'])
+        ->name('vouchers.available')
+        ->middleware('auth');
 });

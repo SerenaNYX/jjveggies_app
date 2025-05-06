@@ -31,7 +31,7 @@
                     <a href="/profile">My Profile</a>
                 </div>
                 <div>
-                    <a href="#">Rewards</a>
+                    <a href="/vouchers">Rewards</a>
                 </div>
                 <div class="logout">
                     <form action="/logout" method="POST">

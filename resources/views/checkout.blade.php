@@ -92,10 +92,16 @@
                     onclick="openAddressModal()">Change Address</button>-->
         </div>
 
-        <!-- Rewards Section -->
-        <div>
-            <h3>Apply reward</h3>
-            <p>No rewards applied</p>
+        <!-- Voucher Section -->
+        <h3>Apply Voucher</h3>
+        <div class="voucher-section">
+            
+            <button type="button" id="select-voucher-btn" class="btn btn-sm btn-primary">Select Voucher</button>
+            <div id="voucher-applied" style="display: none;">
+                <p>Voucher applied: <span id="applied-voucher-code"></span> (-RM<span id="voucher-discount">0</span>)</p>
+                <button type="button" id="remove-voucher-btn" class="btn btn-sm btn-danger">Remove</button>
+            </div>
+            <div id="voucher-message" class="mt-2"></div>
         </div>
 
         <!-- Total Price Section -->
@@ -106,6 +112,9 @@
             
             <span>Delivery Fee:</span>
             <span class="text-right">RM6.00</span>
+
+            <span id="discount-row" style="display: none;">Voucher Discount:</span>
+            <span id="discount-amount" class="text-right" style="display: none;">-RM0.00</span>
             
             <span class="grand-total-label">Total Payment:</span>
             <span class="grand-total text-right">RM{{ number_format($grandTotal, 2) }}</span>
@@ -116,11 +125,15 @@
         <input type="hidden" name="grand_total" value="{{ $grandTotal }}">
 
 
-        <div class="total-container">
+  <!--      <div class="total-container">
             <h3>Total Payment: RM {{ number_format($grandTotal, 2) }}</h3>
             <button type="submit" class="btn-checkout">Complete Checkout</button>
-        </div>
+        </div>-->
 
+        <div class="total-container">
+            <h3>Total Payment: RM <span id="dynamic-grand-total">{{ number_format($grandTotal, 2) }}</span></h3>
+            <button type="submit" class="btn-checkout">Complete Checkout</button>
+        </div>
     </form>
 
 
@@ -170,6 +183,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Voucher modal -->
+    <div class="modal" id="voucher-modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeVoucherModal()">&times;</span>
+            <h3>Select Voucher</h3>
+            <div class="voucher-list">
+                <div id="available-vouchers-container">
+                    <!-- Vouchers will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 </div>
 
@@ -271,30 +298,195 @@
         
         // Form submission
         document.getElementById('checkout-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const selectedPayment = document.querySelector('input[name="payment_selection"]:checked');
-            const addressId = document.getElementById('selected-address-id').value;
-            
-            if (!selectedPayment) {
-                alert('Please select a payment method');
-                return;
-            }
-            
-            if (!addressId) {
-                alert('Please select a shipping address');
-                openAddressModal();
-                return;
-            }
-            
-            // Set the payment method value
-            paymentMethodInput.value = selectedPayment.value;
-            
-            // Submit the form via POST
-            this.submit();
-        });
+    e.preventDefault();
+    
+    const selectedPayment = document.querySelector('input[name="payment_selection"]:checked');
+    const addressId = document.getElementById('selected-address-id').value;
+    const voucherInput = document.querySelector('input[name="voucher_code"]');
+    
+    if (!selectedPayment) {
+        alert('Please select a payment method');
+        return;
+    }
+    
+    if (!addressId) {
+        alert('Please select a shipping address');
+        openAddressModal();
+        return;
+    }
+
+    // Get the current grand total (which includes any voucher discount)
+    const grandTotal = document.querySelector('input[name="grand_total"]').value;
+    
+    // Create a hidden input for the grand total
+    const grandTotalInput = document.createElement('input');
+    grandTotalInput.type = 'hidden';
+    grandTotalInput.name = 'grand_total';
+    grandTotalInput.value = grandTotal;
+    this.appendChild(grandTotalInput);
+    
+    // Add voucher code if exists
+    if (voucherInput) {
+        const voucherClone = voucherInput.cloneNode();
+        this.appendChild(voucherClone);
+    }
+    
+    // Set the payment method value
+    document.getElementById('payment-method').value = selectedPayment.value;
+    
+    // Submit the form
+    this.submit();
+});
     });
     </script>
+
+<script>
+    // Voucher handling
+    // Voucher handling functions
+function openVoucherModal() {
+    fetch('{{ route("vouchers.available") }}')
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(vouchers => {
+            const container = document.getElementById('available-vouchers-container');
+            container.innerHTML = '';
+            
+            if (vouchers.length === 0) {
+                container.innerHTML = '<p>No available vouchers</p>';
+                return;
+            }
+            
+            vouchers.forEach(voucher => {
+                const discount = Number(voucher.discount_amount);
+                const minSpend = Number(voucher.minimum_spend);
+                
+                const voucherEl = document.createElement('div');
+                voucherEl.className = 'voucher-option';
+                voucherEl.innerHTML = `
+                    <div class="voucher-details">
+                        <strong>${voucher.code}</strong>
+                        <p>Discount: RM${discount.toFixed(2)}</p>
+                        <p>Min. Spend: RM${minSpend.toFixed(2)}</p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary" 
+                        onclick="selectVoucher('${voucher.code}', ${discount}, ${minSpend})">
+                        Apply
+                    </button>
+                `;
+                container.appendChild(voucherEl);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('available-vouchers-container').innerHTML = 
+                '<p>Error loading vouchers. Please try again.</p>';
+        });
+    
+    document.getElementById('voucher-modal').style.display = 'block';
+}
+
+function closeVoucherModal() {
+    document.getElementById('voucher-modal').style.display = 'none';
+}
+
+function selectVoucher(code, discount, minSpend) {
+    const grandTotalInput = document.querySelector('input[name="grand_total"]');
+    const originalTotal = parseFloat(grandTotalInput.dataset.originalValue || grandTotalInput.value);
+    
+    // Store original total if not already stored
+    if (!grandTotalInput.dataset.originalValue) {
+        grandTotalInput.dataset.originalValue = originalTotal.toString();
+    }
+
+    // Check minimum spend requirement
+    if (originalTotal < minSpend) {
+        document.getElementById('voucher-message').textContent = 
+            `This voucher requires a minimum spend of RM${minSpend.toFixed(2)}`;
+        document.getElementById('voucher-message').className = 'mt-2 text-danger';
+        return;
+    }
+    
+    // Calculate new total after discount
+    const newTotal = originalTotal - discount;
+    
+    // Update all displayed totals
+    document.querySelector('.grand-total').textContent = 'RM' + newTotal.toFixed(2);
+    document.getElementById('dynamic-grand-total').textContent = newTotal.toFixed(2);
+    
+    // Update UI
+    document.getElementById('voucher-message').textContent = 'Voucher applied successfully!';
+    document.getElementById('voucher-message').className = 'mt-2 text-success';
+    
+    document.getElementById('applied-voucher-code').textContent = code;
+    document.getElementById('voucher-discount').textContent = discount.toFixed(2);
+    
+    // Show and update discount row
+    document.getElementById('discount-row').style.display = 'block';
+    document.getElementById('discount-amount').style.display = 'block';
+    document.getElementById('discount-amount').textContent = '-RM' + discount.toFixed(2);
+    
+    // Update voucher code input (create if doesn't exist)
+    let voucherInput = document.querySelector('input[name="voucher_code"]');
+    if (!voucherInput) {
+        voucherInput = document.createElement('input');
+        voucherInput.type = 'hidden';
+        voucherInput.name = 'voucher_code';
+        document.getElementById('checkout-form').appendChild(voucherInput);
+    }
+    voucherInput.value = code;
+    
+    // Update grand total value
+    grandTotalInput.value = newTotal;
+    
+    // Show applied voucher UI
+    document.getElementById('voucher-applied').style.display = 'block';
+    closeVoucherModal();
+}
+
+function removeVoucher() {
+    const grandTotalInput = document.querySelector('input[name="grand_total"]');
+    const originalTotal = parseFloat(grandTotalInput.dataset.originalValue);
+    const currentDiscount = parseFloat(document.getElementById('voucher-discount').textContent) || 0;
+    
+    // Reset to original total
+    const resetTotal = originalTotal;
+    document.querySelector('.grand-total').textContent = 'RM' + resetTotal.toFixed(2);
+    document.getElementById('dynamic-grand-total').textContent = resetTotal.toFixed(2);
+    grandTotalInput.value = resetTotal;
+    
+    // Hide discount row
+    document.getElementById('discount-row').style.display = 'none';
+    document.getElementById('discount-amount').style.display = 'none';
+    
+    // Remove voucher input if exists
+    const voucherInput = document.querySelector('input[name="voucher_code"]');
+    if (voucherInput) {
+        voucherInput.remove();
+    }
+    
+    // Reset voucher UI
+    document.getElementById('voucher-applied').style.display = 'none';
+    document.getElementById('voucher-message').textContent = 'Voucher removed';
+    document.getElementById('voucher-message').className = 'mt-2 text-success';
+    document.getElementById('applied-voucher-code').textContent = '';
+    document.getElementById('voucher-discount').textContent = '0';
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up event listeners
+    document.getElementById('select-voucher-btn').addEventListener('click', openVoucherModal);
+    document.getElementById('remove-voucher-btn').addEventListener('click', removeVoucher);
+    
+    // Initialize original grand total value
+    const grandTotalInput = document.querySelector('input[name="grand_total"]');
+    if (grandTotalInput && !grandTotalInput.dataset.originalValue) {
+        grandTotalInput.dataset.originalValue = grandTotalInput.value;
+    }
+});
+</script>
 
 <style>
     .payment-options {
@@ -458,6 +650,31 @@
         color: #2e7d32;
         font-weight: bold;
     }
+
+    /* Voucher modal */
+    /* Add to your styles */
+#voucher-modal .modal-content {
+    max-width: 500px;
+}
+
+.voucher-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.voucher-option .voucher-details {
+    flex: 1;
+}
+
+.voucher-option button {
+    margin-left: 10px;
+}
+
 </style>
 
 @endsection

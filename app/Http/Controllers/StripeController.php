@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Stripe\Stripe;
-use App\Models\Cart;
+use App\Models\Voucher;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
@@ -20,7 +20,8 @@ class StripeController extends Controller
         'payment_method' => 'required|in:stripe,fpx',
         'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
         'selected_items' => 'required|array',
-        'selected_items.*' => 'exists:cart_items,id'
+        'selected_items.*' => 'exists:cart_items,id',
+        'voucher_code' => 'nullable|exists:vouchers,code'
     ]);
 
     // Store checkout data in session
@@ -30,7 +31,8 @@ class StripeController extends Controller
             'payment_method' => $request->payment_method,
             'selected_items' => $request->selected_items,
             'delivery_fee' => 6.00,
-            'grand_total' => $request->price
+            'grand_total' => $request->price,
+            'voucher_code' => $request->voucher_code ?? null
         ]
     ]);
 
@@ -43,7 +45,7 @@ class StripeController extends Controller
                 'price_data' => [
                     'currency' => 'myr',
                     'product_data' => ['name' => 'Order Total'],
-                    'unit_amount' => $request->price * 100,
+                    'unit_amount' => $request->price * 100, // Convert to cents
                 ],
                 'quantity' => 1,
             ]],
@@ -59,47 +61,48 @@ class StripeController extends Controller
     }
 }
 
-public function success(Request $request)
-{
-    $checkoutData = session('checkout_data');
-    
-    if (!$checkoutData) {
-        return redirect()->route('checkout.index')
-            ->with('error', 'Checkout session expired');
+    public function success(Request $request)
+    {
+        $checkoutData = session('checkout_data');
+        
+        if (!$checkoutData) {
+            return redirect()->route('checkout.index')
+                ->with('error', 'Checkout session expired');
+        }
+
+        $cartItems = CartItem::whereHas('cart', function($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->whereIn('id', $checkoutData['selected_items'])
+            ->with(['product', 'option'])
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'No items found');
+        }
+
+        $order = app(CheckoutController::class)->createOrder(
+            $checkoutData['address_id'],
+            $cartItems->sum(fn($item) => $item->option->price * $item->quantity),
+            $checkoutData['delivery_fee'],
+            $checkoutData['grand_total'],
+            $checkoutData['payment_method'],
+            'paid',
+            $cartItems,
+            $checkoutData['voucher_code'] ?? null
+        );
+
+        // Remove only selected items
+        CartItem::whereIn('id', $checkoutData['selected_items'])
+            ->whereHas('cart', function($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->delete();
+
+        session()->forget('checkout_data');
+
+        return view('checkout.success', compact('order'));
     }
-
-    $cartItems = CartItem::whereHas('cart', function($query) {
-            $query->where('user_id', Auth::id());
-        })
-        ->whereIn('id', $checkoutData['selected_items'])
-        ->with(['product', 'option'])
-        ->get();
-
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart.index')->with('error', 'No items found');
-    }
-
-    $order = app(CheckoutController::class)->createOrder(
-        $checkoutData['address_id'],
-        $cartItems->sum(fn($item) => $item->option->price * $item->quantity),
-        $checkoutData['delivery_fee'],
-        $checkoutData['grand_total'],
-        $checkoutData['payment_method'],
-        'paid',
-        $cartItems
-    );
-
-    // Remove only selected items
-    CartItem::whereIn('id', $checkoutData['selected_items'])
-        ->whereHas('cart', function($query) {
-            $query->where('user_id', Auth::id());
-        })
-        ->delete();
-
-    session()->forget('checkout_data');
-
-    return view('checkout.success', compact('order'));
-}
 
     public function cancel()
     {

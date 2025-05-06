@@ -1094,3 +1094,49 @@ h2 {
 }
 
 /* end of order table for customer in orders/show */
+
+
+
+
+/* Voucher Section Styles */
+.voucher-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.voucher-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.voucher-form input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#voucher-applied {
+    background: #e8f5e9;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+/* Points Display */
+.points-display {
+    background: #f1f8e9;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.points-display h3 {
+    margin: 0;
+    color: #2e7d32;
+}

@@ -59,6 +59,12 @@
                                     <td colspan="5" class="text-start"><strong>Delivery Fee:</strong></td>
                                     <td><strong>RM {{ number_format($order->delivery_fee, 2) }}</strong></td>
                                 </tr>
+                                @if($order->discount_amount > 0)
+                                <tr>
+                                    <td colspan="5" class="text-start"><strong>Discount:</strong></td>
+                                    <td><strong>-RM {{ number_format($order->discount_amount, 2) }}</strong></td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td colspan="5" class="text-start"><strong>Total:</strong></td>
                                     <td><strong>RM {{ number_format($order->total, 2) }}</strong></td>
