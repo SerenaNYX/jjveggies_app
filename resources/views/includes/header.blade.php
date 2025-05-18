@@ -57,7 +57,7 @@
                     <li><a href="/about">About</a></li>
                 @else
                     <li><a href="/product">Shop</a></li>
-                    <li><a href="/messages">Message</a></li>
+                    <li><a href="/contact">Message</a></li>
                  <!--   <li><a href="#">Rewards</a></li>-->
                     <li><a href="/orders">Orders</a></li>
                     <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt=""></a></li>

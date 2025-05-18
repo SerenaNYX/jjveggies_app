@@ -14,7 +14,7 @@
         <table class="cart-table">
             <thead>
                 <tr>
-                    <th>Image</th>
+                    <th></th>
                     <th>Product</th>
                     <th>Option</th>
                     <th>Quantity</th>

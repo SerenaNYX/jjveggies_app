@@ -23,7 +23,8 @@
     </div>
 
     <!-- Product Table -->
-    <table class="table table-striped table-product" id="productTable">
+    <table class="clean-table" id="productTable">
+    <!--<table class="table table-striped table-product" id="productTable">-->
         <thead>
             <tr>
                 <th class="number-column">#</th>
@@ -36,7 +37,7 @@
         </thead>
         <tbody>
             @foreach ($products as $index => $product)
-            <tr>
+            <tr class="hover-row" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">
                 <td class="number-column">{{ $index + 1 }}</td>
                 <td class="image-column"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="50"></td>
                 <td class="name-column">{{ $product->name }}</td>
@@ -110,3 +111,10 @@ function filterByCategory() {
 </script>
 
 @endsection
+
+<style>
+    .hover-row:hover {
+        transition: background-color 0.3s, color 0.3s;
+        background-color: #dedede;
+    }
+</style>

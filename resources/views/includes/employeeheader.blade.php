@@ -146,7 +146,7 @@
                 <li><a href="{{ route('staff.products.index') }}">Manage Products</a></li>
                 <li><a href="{{ route('staff.orders.index') }}">Manage Orders</a></li> <!-- Updated for staff -->
                 <li><a href="#">Generate Report</a></li>
-                <li><a href="#">Messages</a></li>
+                <li><a href="{{ route('staff.enquiries.index') }}">Messages</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'driver')
                 <li><a href="{{ route('driver.dashboard') }}">
                         <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">

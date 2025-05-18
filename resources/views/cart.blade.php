@@ -19,7 +19,7 @@
             </div>
         @else
             <form action="{{ route('checkout.index') }}" method="GET">
-                <table class="cart-table">
+                <table class="clean-table"> <!-- or cart-table -->
                     <thead>
                         <tr>
                             <th><!--Select--></th>

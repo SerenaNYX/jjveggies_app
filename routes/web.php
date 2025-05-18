@@ -10,12 +10,14 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\StaffContactController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -50,30 +52,20 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-
-/*
-// Email Verification
+// Email Verification Routes
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return view('auth.verify-success');
- //   return redirect('/');
+    return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/verify-success', function () {
-    return view('auth.verify-success');
-})->name('verify.success');
-
-
 Route::post('/email/verification-notification', function (Request $request) {
-//    $request->user()->sendEmailVerificationNotification();
- 
-    return back()->with('message', 'Verification link sent!');
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('verification-link-sent', true);
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-*/ 
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
@@ -85,6 +77,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/addresses', [AddressController::class, 'store'])->name('address.store');
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('address.update');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('address.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+    Route::get('/enquiries', [ContactController::class, 'userEnquiries'])->name('enquiries.index');
+    Route::get('/enquiries/{enquiry}', [ContactController::class, 'show'])->name('enquiries.show');
+    Route::get('/enquiries/attachments/{attachment}/download', [ContactController::class, 'downloadAttachment'])->name('enquiries.attachment.download');
 });
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -135,6 +135,10 @@ Route::middleware(['auth:employee', 'role:staff'])->group(function () {
     Route::get('staff/dashboard', [AdminController::class, 'dashboard'])->name('staff.dashboard');
     Route::resource('staff/products', EmployeeProductController::class, ['as' => 'staff']);
     Route::resource('staff/categories', CategoryController::class, ['as' => 'staff']);
+
+    Route::get('/staff/enquiries', [StaffContactController::class, 'index'])->name('staff.enquiries.index');
+    Route::get('/staff/enquiries/{enquiry}', [StaffContactController::class, 'show'])->name('staff.enquiries.show');
+    Route::put('/staff/enquiries/{enquiry}', [StaffContactController::class, 'update'])->name('staff.enquiries.update');
 });
 
 Route::middleware(['auth:employee', 'role:driver'])->group(function () {

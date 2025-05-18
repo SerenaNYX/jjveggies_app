@@ -27,6 +27,7 @@
         </div>
 
         <!-- Featured Section -->
+        <br>
         <div class="products text-center" id="featured-section">
             @include('partials.welcomeproducts', ['products' => $products])
         </div> <!-- End Featured Section -->
@@ -66,6 +67,7 @@
 <div id="notification" class="notification" style="display: none;"></div>
         
         <div class="text-center button-container">
+            <br>
             <a href="/product" class="button">View more products</a>
         </div>
     </div>

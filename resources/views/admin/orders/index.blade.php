@@ -22,7 +22,7 @@
         </div>
         <div class="">
             <div class="">
-                <table class="table table-hover">
+                <table class="clean-table">
             <!--    <table class="table table-striped table-product">-->
                     <thead>
                         <tr>
@@ -128,7 +128,7 @@
                             </td>
                             <td>
                                 <a href="{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}" 
-                                   class="btn" style="color: white;">
+                                   class="btn">
                                     View
                                 </a>
                             </td>

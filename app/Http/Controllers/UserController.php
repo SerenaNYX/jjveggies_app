@@ -44,19 +44,11 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'confirmed'],
             'contact' => ['required', 'regex:/^\+?[0-9]{10,15}$/'], // OR use {10,12}
-            'address' => ['required']
         ]);
 
         $incomingFields['password'] = bcrypt($incomingFields['password']);
         $user = User::create($incomingFields);
-/*
-        event(new Registered($user));
-    //    $user->sendEmailVerificationNotification();
 
-        return redirect('/email/verify')->with('success', 'Registration successful. Please verify your email and log in.');
-
-    //    return redirect('/email/verify')->with('message', 'Please verify your email address.');
-    */    
         Auth::login($user);
         return redirect('/');   
         
@@ -75,20 +67,18 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|min:3|max:25',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
             'contact' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         $user->name = $request->name;
-        $user->email = $request->email;
         $user->contact = $request->contact;
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
         }
 
-        $user->save(); // DO NOT REMOVE THIS LINE!!!
+        $user->save(); // DON'T REMOVE!
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }

@@ -140,7 +140,8 @@
     .badge {
         font-size: 14px;
         padding: 6px 12px;
-        border-radius: 5px;
+        border-radius: 20px;
+        font-weight: bold;
     }
 
     .bg-primary {
