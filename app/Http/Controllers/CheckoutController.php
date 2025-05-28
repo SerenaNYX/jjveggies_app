@@ -54,7 +54,7 @@ class CheckoutController extends Controller
     public function processCheckout(Request $request)
 {
     $validated = $request->validate([
-        'payment_method' => 'required|in:stripe,fpx',
+        'payment_method' => 'required|in:card,fpx',
         'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
         'selected_items' => 'required|array',
         'selected_items.*' => 'exists:cart_items,id',
@@ -90,8 +90,8 @@ class CheckoutController extends Controller
         }
     }
 
-    // For Stripe/FPX payments
-    if (in_array($request->payment_method, ['stripe', 'fpx'])) {
+    // For Card/FPX payments
+    if (in_array($request->payment_method, ['card', 'fpx'])) {
         return redirect()->route('stripe.payment', [
             'price' => $grandTotal,
             'payment_method' => $request->payment_method,
@@ -143,7 +143,7 @@ class CheckoutController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        $order = Order::create([
+        $orderData = [
             'user_id' => Auth::id(),
             'address_id' => $address->id,
             'subtotal' => $subtotal,
@@ -154,7 +154,9 @@ class CheckoutController extends Controller
             'status' => 'order_placed',
             'voucher_code' => $voucherCode,
             'discount_amount' => $voucherCode ? Voucher::where('code', $voucherCode)->value('discount_amount') : 0
-        ]);
+        ];
+
+        $order = Order::create($orderData);
 
         foreach ($cartItems as $item) {
             OrderItem::create([
@@ -166,7 +168,6 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Mark voucher as used if applicable
         if ($voucherCode) {
             Voucher::where('code', $voucherCode)
                 ->where('user_id', Auth::id())

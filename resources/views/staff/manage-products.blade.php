@@ -27,7 +27,7 @@
     <!--<table class="table table-striped table-product" id="productTable">-->
         <thead>
             <tr>
-                <th class="number-column">#</th>
+                <th class="number-column"></th>
                 <th class="image-column">Image</th>
                 <th class="name-column">Name</th>
                 <th class="category-column">Category</th>
@@ -37,21 +37,21 @@
         </thead>
         <tbody>
             @foreach ($products as $index => $product)
-            <tr class="hover-row" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">
-                <td class="number-column">{{ $index + 1 }}</td>
-                <td class="image-column"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="50"></td>
-                <td class="name-column">{{ $product->name }}</td>
-                <td class="category-column">{{ $product->category->name ?? 'Uncategorized' }}</td>
-                <td class="options-column">
+            <tr class="hover-row">
+                <td class="number-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $index + 1 }}</td>
+                <td class="image-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="50"></td>
+                <td class="name-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $product->name }}</td>
+                <td class="category-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $product->category->name ?? 'Uncategorized' }}</td>
+                <td class="options-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">
                     @foreach ($product->options as $option)
                         <div>
                             <strong>{{ $option->option }}</strong>:
-                            RM{{ number_format($option->price, 2) }} ({{ $option->quantity }} in stock)
+                            RM{{ number_format($option->price, 2) }} <!--({{ $option->quantity }} in stock)-->
                         </div>
                     @endforeach
                 </td>
                 <td class="actions-column">
-                    <a href="{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}" class="button-edit">Edit</a>
+               <!--     <a href="{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}" class="button-edit">Edit</a>-->
                     <form action="{{ route(Auth::guard('employee')->user()->role . '.products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
@@ -110,11 +110,57 @@ function filterByCategory() {
 }
 </script>
 
-@endsection
-
 <style>
-    .hover-row:hover {
-        transition: background-color 0.3s, color 0.3s;
-        background-color: #dedede;
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
     }
+
+    .form-control, 
+    .form-control-category,
+    .button-add {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .button-add {
+        text-align: center;
+    }
+
+    .clean-table tbody tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .clean-table td {
+        padding: 5px;
+        border: none;
+        width: 100%;
+        display: block;
+    }
+
+    /* Third column - product name */
+    .clean-table td:nth-child(3) {
+        width: 70%;
+        font-weight: bold;
+        align-items: center;
+    }
+
+    .options-column {
+        font-size: 14px;
+    }
+    .category-column {
+        font-size: 16px;
+    }
+
+}
 </style>
+@endsection

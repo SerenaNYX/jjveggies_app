@@ -17,6 +17,7 @@ use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\StaffContactController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -167,7 +168,9 @@ Route::middleware(['auth:employee', 'role:staff'])->group(function () {
     Route::get('staff/orders', [EmployeeOrderController::class, 'index'])->name('staff.orders.index');
     Route::get('staff/orders/{order}', [EmployeeOrderController::class, 'show'])->name('staff.orders.show');
     Route::post('staff/orders/{order}/status', [EmployeeOrderController::class, 'updateStatus'])
-         ->name('staff.orders.update-status');
+        ->name('staff.orders.update-status');
+    Route::post('staff/orders/{order}/assign-driver', [EmployeeOrderController::class, 'assignDriver'])
+        ->name('staff.orders.assign-driver');
 });
 
 // For driver (view and update to delivering/completed)
@@ -182,10 +185,13 @@ Route::middleware(['auth:employee', 'role:driver'])->group(function () {
 // Rewards and referrals
 // Referral routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/referral/enter', [ReferralController::class, 'showEnterReferral'])->name('referral.enter');
+    //Route::get('/referral/enter', [ReferralController::class, 'showEnterReferral'])->name('referral.enter');
     Route::post('/referral/process', [ReferralController::class, 'processReferral'])->name('referral.process');
     Route::post('/referral/generate', [ReferralController::class, 'generateReferralCode'])->name('referral.generate');
-    
+
+    Route::get('/referral/enter/{code}', [ReferralController::class, 'enterReferral'])->name('referral.enter');
+    Route::get('/referral/scanner', [ReferralController::class, 'showScanner'])->name('referral.scanner');
+    Route::post('/referral/process-scanned', [ReferralController::class, 'processScannedReferral'])->name('referral.process-scanned');
     // Voucher routes
     Route::get('/vouchers', [VoucherController::class, 'index'])->name('vouchers.index');
     Route::post('/vouchers/redeem', [VoucherController::class, 'redeem'])->name('vouchers.redeem');
@@ -199,4 +205,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vouchers/available', [VoucherController::class, 'availableVouchers'])
         ->name('vouchers.available')
         ->middleware('auth');
+});
+
+
+// Report generation
+// For admin
+Route::middleware(['auth:employee', 'role:admin'])->group(function () {
+    Route::get('admin/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+    Route::post('admin/reports/generate', [ReportController::class, 'generate'])->name('admin.reports.generate');
+});
+
+// For staff
+Route::middleware(['auth:employee', 'role:staff'])->group(function () {
+    Route::get('staff/reports', [ReportController::class, 'index'])->name('staff.reports.index');
+    Route::post('staff/reports/generate', [ReportController::class, 'generate'])->name('staff.reports.generate');
 });

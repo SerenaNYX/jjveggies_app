@@ -1,6 +1,6 @@
 <!-- IS THIS STILL NEEDED??? -->
 
-
+<!--
 @foreach ($products as $product)
     <div class="product" data-description="{{ $product->description }}">
         <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
@@ -35,4 +35,4 @@
             opacity: 1;
         }
     </style>
-@endforeach
+@endforeach-->

@@ -3,8 +3,8 @@
 @section('hero')
 <div class="hero container">
     <div class="hero-copy">
-        <h1>J&J Vegetables</h1>
-        <p>Welcome to J&J Vegetables online.<br>Buy fresh vegetables from J&J Vegetables. You order, we deliver.</p>
+        <h1 class="jj-title">J&J Vegetables</h1>
+        <p class="jj-desc">Welcome to J&J Vegetables online.<br>Buy fresh vegetables from J&J Vegetables. You order, we deliver.</p>
         <div class="hero-buttons">
             <a href="/product" class="button button-white">Shop now</a>
             <a href="/about" class="button button-white">About us</a>
@@ -55,12 +55,13 @@
         <span class="close">&times;</span>
         <img id="modalProductImage" src="" alt="Product Image" style="max-width: 50%; height: auto; display:block; margin-left: auto; margin-right: auto;">
         <div id="modalProductName" class="product-name" style="font-weight: bold; text-align: center;"></div>
+        <hr>
         <h2>Select an Option</h2>
         <form id="addToCartForm" method="POST">
             @csrf
             <input type="hidden" name="product_id" id="modalProductId">
             <div id="optionsContainer"></div>
-            <button type="submit" class="btn">Add to Cart</button>
+            <button type="submit" class="btn">+ <i class="fas fa-shopping-cart"></i></button>
         </form>
     </div>
 </div>
@@ -71,33 +72,6 @@
             <a href="/product" class="button">View more products</a>
         </div>
     </div>
-    
-<!--
-    <div class="blog-section">
-        <div class="container">
-            <h1 class="text-center">Learn more about us</h1>
-            <p class="section-description text-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et sed accusantium maxime dolore cum provident itaque ea, a architecto alias quod reiciendis ex ullam id, soluta deleniti eaque neque perferendis.</p>
-
-            <div class="blog-posts">
-                <div class="blog-post" id="blog1">
-                    <a href="#"><img src="img/logo.jpg" alt="blog image"></a>
-                    <a href="#"><h2 class="blog-title">J&J Vegetables</h2></a>
-                    <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est ullam, ipsa quasi?</div>
-                </div>
-                <div class="blog-post" id="blog2">
-                    <a href="#"><img src="img/logo.jpg" alt="blog image"></a>
-                    <a href="#"><h2 class="blog-title">J&J Vegetables</h2></a>
-                    <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est ullam, ipsa quasi?</div>
-                </div>
-                <div class="blog-post" id="blog3">
-                    <a href="#"><img src="img/logo.jpg" alt="blog image"></a>
-                    <a href="#"><h2 class="blog-title">J&J Vegetables</h2></a>
-                    <div class="blog-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est ullam, ipsa quasi?</div>
-                </div>-->
-            </div> <!-- end blog-posts -->
-        </div> <!-- end container -->
-    </div> <!-- end blog-section -->
-
 </div> <!-- end featured-section -->
 @endsection
 
@@ -126,10 +100,10 @@
                             <div class="option">
                                 <input type="radio" name="option_id" value="${option.id}" id="option${option.id}" required>
                                 <label for="option${option.id}">
-                                    ${option.option} - RM${option.price.toFixed(2)} (${option.quantity} in stock)
+                                    ${option.option} - RM${option.price.toFixed(2)}
                                 </label>
                             </div>
-                        `;
+                        `; /* (${option.quantity} in stock) */
                     });
                     $('#optionsContainer').html(optionsHtml); // Populate options in the modal
                     $('#optionModal').show(); // Show the modal
@@ -317,5 +291,18 @@
     }
     .product:hover .product-description {
         opacity: 1;
+    }
+</style>
+
+<style>
+    @media (max-width: 767px) {
+        .jj-title {
+            font-size: 7rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .jj-title {
+            font-size: 7rem;
+        }
     }
 </style>

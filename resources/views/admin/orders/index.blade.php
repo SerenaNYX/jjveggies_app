@@ -7,22 +7,25 @@
     <div class="">
         <div class="">
             <h1 class="text-center">Manage Orders</h1>
-            <div class="status-filter">
+
+            <div class="status-filter" style="display: flex;">
                 <select class="form-control-category" onchange="window.location.href = this.value">
                     <option value="{{ route(auth('employee')->user()->role . '.orders.index') }}" 
                         {{ !request('status') ? 'selected' : '' }}>All Orders</option>
-                    @foreach(['order_placed', 'preparing', 'packed', 'delivering', 'delivered', 'completed', 'cancelled'] as $status)
+                    @foreach(['order_placed', 'preparing', 'packed', 'delivering', 'delivered', 'completed', 'cancelled', 'refunded'] as $status)
                         <option value="{{ route(auth('employee')->user()->role . '.orders.index', ['status' => $status]) }}" 
                             {{ request('status') === $status ? 'selected' : '' }}>
                             {{ ucfirst(str_replace('_', ' ', $status)) }}
                         </option>
                     @endforeach
                 </select>
+                <input type="text" id="searchQuery" class="form-control" placeholder="Search for orders..." onkeyup="searchOrders()">
             </div>
         </div>
         <div class="">
             <div class="">
-                <table class="clean-table">
+                
+                <table class="clean-table" id="orderTable">
             <!--    <table class="table table-striped table-product">-->
                     <thead>
                         <tr>
@@ -32,13 +35,14 @@
                             <th>Items</th>
                             <th>Total</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th>Driver</th>
+                            <!--<th>Actions</th>-->
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($orders as $order)
-                        <tr>
-                            <td># {{ $order->id }}</td>
+                        <tr class="hover-row">
+                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;"># {{ $order->order_number }}</td>
                             <td>
                                 <a href="#" class="customer-name-link" 
                                     data-customer-name="{{ $order->user->name }}"
@@ -49,9 +53,9 @@
                                     data-order-phone="{{ $order->address->phone ?? 'N/A' }}">
                                     {{ $order->user->name }} (ID: # {{$order->user->id}})</td>
                                 </a>
-                            <td>{{ $order->created_at->format("d/m/Y H:i:s") }}</td>
-                            <td>{{ $order->items->sum('quantity') }}</td>
-                            <td>RM{{ number_format($order->total, 2) }}</td>
+                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->created_at->format("d/m/Y H:i:s") }}</td>
+                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->items->sum('quantity') }}</td>
+                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">RM{{ number_format($order->total, 2) }}</td>
                             <td>
                                 @if(auth('employee')->user()->role === 'staff')
                                     @php
@@ -126,13 +130,33 @@
                                     </span>
                                 @endif
                             </td>
+                         <!--  <td>
+                        
+                            </td>-->
                             <td>
-                                <a href="{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}" 
-                                   class="btn">
-                                    View
-                                </a>
+                                @if($order->status === 'packed' && auth('employee')->user()->role === 'staff')
+                                    <form action="{{ route('staff.orders.assign-driver', $order->id) }}" method="POST" class="driver-assign-form">
+                                        @csrf
+                                        <select name="driver_id" class="form-select form-select-sm driver-select"                        
+                                            data-order-id="{{ $order->id }}">
+                                            <option value="">Select Driver</option>
+                                            @foreach($drivers as $driver)
+                                                <option value="{{ $driver->id }}" {{ $order->driver_id == $driver->id ? 'selected' : '' }}>
+                                                    {{ $driver->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                @else
+                                    @if($order->driver)
+                                        {{ $order->driver->name }}
+                                    @else
+                                        Not assigned
+                                    @endif
+                                @endif
                             </td>
                         </tr>
+                        
                         @empty
                         <tr>
                             <td colspan="7" class="text-center">No orders found</td>
@@ -175,7 +199,53 @@
 </div>
 @endsection
 
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle driver assignment confirmation
+    const driverSelects = document.querySelectorAll('.driver-select');
+    
+    driverSelects.forEach(select => {
+        select.addEventListener('change', function(e) {
+            if (this.value) {
+                e.preventDefault();
+                
+                const driverName = this.options[this.selectedIndex].text;
+                const orderId = this.dataset.orderId;
+                
+                if (confirm(`Are you sure you want to assign ${driverName} to this order?`)) {
+                    this.form.submit();
+                } else {
+                    // Reset to original value if canceled
+                    this.value = '';
+                    // If there was a previously selected driver, you might need to restore that value
+                    // This would require storing the original value in a data attribute
+                }
+            }
+        });
+    });
+    
+});
+</script>
+
+<script>
+    function searchOrders() {
+        var query = document.getElementById('searchQuery').value.toLowerCase();
+
+        // Filter products table
+        var orderRows = document.getElementById('orderTable').getElementsByTagName('tr');
+        for (var i = 1; i < orderRows.length; i++) {
+            var order_number = orderRows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            var customer = orderRows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+            
+            if (order_number.includes(query) || customer.includes(query)) {
+                orderRows[i].style.display = '';
+            } else {
+                orderRows[i].style.display = 'none';
+            }
+        }
+    }
+
     function confirmStatusChange(selectElement, nextStatus) {
         if (confirm(`Are you sure you want to change status to ${nextStatus}?`)) {
             selectElement.form.submit();
@@ -212,6 +282,10 @@
 </script>
 
 <style>
+    .modal {
+        z-index: 1002 !important;
+    }
+
     .customer-name-link:hover {
         color: #4c7552;
     }
@@ -220,5 +294,20 @@
         margin-top: 1rem;
         margin-bottom: 0.5rem;
         font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .clean-table td:nth-child(4), .clean-table td:nth-child(7) {
+            border-top: 1px #ddd solid;
+            display: inline-block !important;
+        }
+
+        .clean-table td:nth-child(4)::after {
+            content: ' item(s)';
+        }
+
+        .clean-table td:nth-child(7)::before {
+            content: 'Driver: ';
+        }
     }
 </style>

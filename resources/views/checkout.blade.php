@@ -11,7 +11,7 @@
 
     <h1 class="text-center">Checkout</h1>
     <div class="cart-container">
-        <table class="cart-table">
+        <table class="clean-table">
             <thead>
                 <tr>
                     <th></th>
@@ -25,8 +25,8 @@
             <tbody>
                 @foreach ($cartItems as $item)
                     <tr>
-                        <td>
-                            <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70">
+                        <td width="15%">
+                            <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="65" height="65" style="object-fit: scale-down;">
                         </td>
                         <td>{{ $item->product->name }}</td>
                         <td>{{ $item->option->option }}</td> <!-- Display selected option -->
@@ -54,11 +54,11 @@
                 
                 <div class="payment-options">
                     <div class="payment-option">
-                        <input type="radio" id="stripe-payment" name="payment_selection" value="stripe" class="hidden">
+                        <input type="radio" id="stripe-payment" name="payment_selection" value="card" class="hidden">
                         <label for="stripe-payment" class="payment-label">
                             <div class="payment-content">
                               <!--  <span>Credit/Debit Card</span>-->
-                                <img src="{{ asset('img/stripe.png') }}" alt="Stripe" height="30">
+                                <img src="{{ asset('img/stripe.png') }}" alt="Card" height="30">
                             </div>
                         </label>
                     </div>
@@ -489,6 +489,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+
+    .clean-table img {
+        width: min-content;
+    }
     .payment-options {
         display: flex;
         gap: 1rem;
@@ -514,8 +518,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .payment-label:hover {
         border-color: #aaa;
     }
-
-
 
     /* Address Modal Styles */
     .modal {
@@ -677,4 +679,237 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </style>
 
+
+
+<style>
+    /* Mobile Checkout Styles */
+@media (max-width: 768px) {
+
+    /* Table styling */
+    .clean-table {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .clean-table thead {
+        display: none;
+    }
+
+    .clean-table tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .clean-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .clean-table td {
+        padding: 5px;
+        width: 48%;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Specific column styling */
+    .clean-table td:nth-child(1) { /* Image */
+        width: 30%;
+        justify-content: center;
+    }
+
+    .clean-table td:nth-child(2) { /* Product name */
+        width: 70%;
+        font-weight: bold;
+    }
+
+    .clean-table td:nth-child(3), td:nth-child(5) {
+        margin-right: 4%;
+    }
+
+    .clean-table td:nth-child(3)::before {
+        content: "Option: ";
+        color: #666;
+        margin-right: 5px;
+    }
+
+    .clean-table td:nth-child(4)::before {
+        content: "Qty: ";
+        color: #666;
+        margin-right: 5px;
+    }
+
+    .clean-table td:nth-child(5)::before {
+        content: "Price: ";
+        color: #666;
+        margin-right: 5px;
+    }
+
+    .clean-table td:nth-child(6)::before {
+        content: "Subtotal: ";
+        color: #666;
+        margin-right: 5px;
+        font-weight: bold;
+    }
+
+    .clean-table img {
+        width: 60px;
+        height: 60px;
+        object-fit: scale-down;
+    }
+
+    /* Payment methods */
+    .payment-methods h3,
+    .shipping-address-section h3,
+    .voucher-section h3,
+    .total-container2 h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+/*
+    .payment-options {
+        flex-direction: column;
+        gap: 10px;
+    }*/
+
+    .payment-label {
+        padding: 12px;
+    }
+
+    /* Address section */
+    .shipping-address-section {
+        margin: 20px 0;
+    }
+
+    #address-selection-trigger {
+        padding: 12px;
+    }
+
+    /* Voucher section */
+    .voucher-section {
+        margin: 20px 0;
+    }
+
+    #select-voucher-btn,
+    #remove-voucher-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    /* Totals section */
+    .total-container2 {
+        padding: 12px;
+        grid-template-columns: 1fr auto;
+        gap: 8px 15px;
+        margin: 20px 0;
+    }
+
+    .grand-total {
+        font-size: 1.1em;
+    }
+
+    /* Checkout button */
+    .total-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #5f916a;
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+    }
+
+    .total-container h3 {
+        font-size: 16px;
+        margin: 0;
+        color: white;
+    }
+
+    .btn-checkout {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: white;
+        color: #5f916a;
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+        padding: 15px;
+    }
+
+    .address-option {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .voucher-option {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .voucher-option button {
+        margin-left: 0;
+        margin-top: 8px;
+        width: 100%;
+    }
+
+    /* Form elements */
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group label {
+        width: 50%;
+        margin-bottom: 5px;
+    }
+
+    #new-address-form {
+        padding: 12px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .clean-table td {
+        font-size: 14px;
+    }
+
+    .clean-table td:nth-child(1) {
+        width: 25%;
+    }
+
+    .clean-table td:nth-child(2) {
+        width: 75%;
+    }
+
+    .clean-table img {
+        width: 50px;
+        height: 50px;
+        object-fit: scale-down;
+    }
+
+    .payment-label {
+        padding: 10px;
+    }
+
+    .total-container2 {
+        font-size: 14px;
+    }
+
+    .total-container h3 {
+        font-size: 15px;
+    }
+
+    .btn-checkout {
+        padding: 8px 15px;
+        font-size: 15px;
+    }
+}
+</style>
 @endsection

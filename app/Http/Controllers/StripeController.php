@@ -17,7 +17,7 @@ class StripeController extends Controller
 
     $request->validate([
         'price' => 'required|numeric',
-        'payment_method' => 'required|in:stripe,fpx',
+        'payment_method' => 'required|in:card,fpx',
         'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
         'selected_items' => 'required|array',
         'selected_items.*' => 'exists:cart_items,id',

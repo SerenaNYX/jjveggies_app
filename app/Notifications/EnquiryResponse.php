@@ -31,7 +31,7 @@ class EnquiryResponse extends Notification implements ShouldQueue
             ->line('Your enquiry has been responded to by our staff.')
             ->line('Enquiry: ' . $this->enquiry->message)
             ->line('Response: ' . $this->enquiry->response)
-            ->action('View Enquiry', route('enquiries.show', $this->enquiry))
+        /*    ->action('View Enquiry', route('enquiries.show', $this->enquiry))*/
             ->line('Thank you for contacting us!');
     }
 }

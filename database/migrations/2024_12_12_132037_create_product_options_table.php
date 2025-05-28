@@ -13,7 +13,6 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('option'); // e.g., 100g, 500g, 1kg
             $table->float('price'); // Price for this specific option
-            $table->integer('quantity')->default(0); // Quantity for this specific option
             $table->timestamps();
         
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>J&J Vegetables</title>
-    <!-- Fonts -->
+    
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
@@ -28,31 +29,28 @@
                 </div>
             @else
                 <div class="profile">
-                    <a href="/profile">My Profile</a>
+                    <a href="/profile"><i class="fas fa-user"></i>&nbsp;Account</a>
                 </div>
                 <div>
-                    <a href="/vouchers">Rewards</a>
+                    <a href="/vouchers"><i class="fas fa-gift"></i>&nbsp;Reward</a>
                 </div>
                 <div class="logout">
                     <form action="/logout" method="POST">
                         @csrf
-                        <button type="submit" class="logout-button">Logout</button>
+                        <button type="submit" class="logout-button"><i class="fa fa-sign-out"></i>&nbsp;Logout</button>
                     </form>
                 </div>
             @endguest
         </div>
 
         <div class="top-nav container">
-            <div class="logo">
-                <a href="/">
+            <div >
+                <a class="logo"href="/">
                     <img src="{{ asset('img/J & J Vegetables Marketing (1).png') }}" alt="J&J Vegetables">
                 </a>
             </div>
             <ul>
                 @guest
-                    <li></li>
-                    <li></li>
-                    <li></li>
                     <li><a href="/product">Shop</a></li>
                     <li><a href="/about">About</a></li>
                 @else
@@ -60,7 +58,8 @@
                     <li><a href="/contact">Message</a></li>
                  <!--   <li><a href="#">Rewards</a></li>-->
                     <li><a href="/orders">Orders</a></li>
-                    <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt=""></a></li>
+                <!--    <li><a href="/cart"><img src={{ asset('img/cart.png') }} alt="Cart"></li> -->
+                    <li><a href="/cart"><i class="fas fa-shopping-cart"></i></a></li>
                 @endguest
             </ul>
         </div> <!-- end top-nav -->
@@ -96,3 +95,90 @@
     </script>
 </body>
 </html>
+
+<style>
+/* Mobile Header Styles */
+@media (max-width: 768px) {
+    header {
+        padding-bottom: 15px;
+    }
+
+    .account {
+        position: static;
+        display: flex;
+        justify-content: center;
+        padding: 10px 15px;
+        gap: 15px;
+        flex-wrap: wrap;
+        background-color: #3a4d3d;
+    }
+
+    .account > div {
+        font-size: 14px;
+        margin: 0 5px;
+
+    }
+
+    .account a, .account .logout-button, .account .login, .account .signup, .account .profile, .account .logout {
+        &:hover {
+            color: #beffb2;
+        }
+    }
+
+    .top-nav {
+        flex-direction: column;
+        padding: 15px 0;
+        align-items: center;
+    }
+
+    .top-nav .logo {
+        margin-top: 0.5rem;
+        padding-bottom: 10px;
+    }
+
+    .top-nav .logo img {
+        width: 20rem;
+        margin: 0 auto;
+    }
+
+    .top-nav ul {
+        width: 100%;
+        justify-content: space-around;
+        padding: 0 10px;
+    }
+
+    .top-nav ul li {
+        margin: 0 5px;
+    }
+
+    .top-nav ul a {
+        font-size: 18px;
+    }
+
+    /*.top-nav ul img {
+        width: 24px;
+    }*/
+
+    #go-to-top {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .account {
+        gap: 10px;
+    }
+
+    .account > div {
+        font-size: 13px;
+    }
+
+    .top-nav .logo img {
+        width: 15rem;
+    }
+}
+</style>

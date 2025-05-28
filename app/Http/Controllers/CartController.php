@@ -123,29 +123,29 @@ class CartController extends Controller
     }
 
     public function checkout(Request $request)
-{
-    $request->validate([
-        'selected_items' => 'required|array',
-        'selected_items.*' => 'exists:cart_items,id,user_id,'.Auth::id()
-    ]);
+    {
+        $request->validate([
+            'selected_items' => 'required|array',
+            'selected_items.*' => 'exists:cart_items,id,user_id,'.Auth::id()
+        ]);
 
-    $cartItems = CartItem::where('user_id', Auth::id())
-        ->whereIn('id', $request->selected_items)
-        ->with(['product', 'option'])
-        ->get();
+        $cartItems = CartItem::where('user_id', Auth::id())
+            ->whereIn('id', $request->selected_items)
+            ->with(['product', 'option'])
+            ->get();
 
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart.index')->with('error', 'No items selected');
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'No items selected');
+        }
+
+        $totalPrice = $cartItems->sum(function ($item) {
+            return $item->option->price * $item->quantity;
+        });
+
+        return view('checkout.index', [
+            'cartItems' => $cartItems,
+            'totalPrice' => $totalPrice,
+            'selected_items' => $request->selected_items
+        ]);
     }
-
-    $totalPrice = $cartItems->sum(function ($item) {
-        return $item->option->price * $item->quantity;
-    });
-
-    return view('checkout.index', [
-        'cartItems' => $cartItems,
-        'totalPrice' => $totalPrice,
-        'selected_items' => $request->selected_items
-    ]);
-}
 }

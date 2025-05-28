@@ -13,7 +13,6 @@ class ProductOption extends Model
         'product_id',
         'option',
         'price',
-        'quantity',
     ];
 
     // Relationship with the Product model

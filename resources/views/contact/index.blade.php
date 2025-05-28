@@ -115,4 +115,101 @@
     }
     
 </style>
+
+<style>
+    /* Mobile Contact Page Styles */
+@media (max-width: 768px) {
+    .contact-section {
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 2rem;
+    }
+
+    .contact-info,
+    .contact-form {
+        width: 100%;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .contact-info h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .contact-info p {
+        font-size: 15px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+
+    .contact-info hr {
+        margin: 15px 0;
+    }
+
+    .contact-info .btn {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .contact-form h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 15px;
+    }
+
+    input,
+    textarea {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .alert-danger {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .alert-danger ul {
+        padding-left: 20px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+
+
+    .contact-info,
+    .contact-form {
+        padding: 15px;
+    }
+
+    .contact-info p {
+        font-size: 14px;
+    }
+
+    input,
+    textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    small.form-text {
+        font-size: 12px;
+    }
+}
+</style>
 @endsection

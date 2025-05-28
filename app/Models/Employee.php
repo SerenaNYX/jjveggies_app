@@ -26,4 +26,9 @@ class Employee extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function assignedOrders()
+    {
+        return $this->hasMany(Order::class, 'driver_id');
+    }
+
 }

@@ -47,10 +47,6 @@
                             <label for="price">Price: RM</label>
                             <input type="number" name="options[{{ $index }}][price]" placeholder="Price" class="form-control" value="{{ $option->price }}" required>
                         </div>
-                        <div class="option-field">
-                            <label for="quantity">Quantity:</label>
-                            <input type="number" name="options[{{ $index }}][quantity]" placeholder="Quantity" class="form-control" value="{{ $option->quantity }}" required>
-                        </div>
                     </div>
                     <button type="button" class="btn btn-danger delete-option">Delete</button>
                 </div>
@@ -64,48 +60,6 @@
     </form>
 </div>
 
-<style>
-    /* product options css */
-    .option-container {
-        display: flex;
-        align-items: flex-start;
-        gap: 5px;
-        border: 1px solid #a3a3a3;
-        padding: 10px;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        margin-bottom: 4px;
-    }
-    
-    .option-group {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .option-field {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .option-field label {
-        min-width: 80px;
-        margin-bottom: 0;
-    }
-    
-    .option-field input {
-        flex: 1;
-    }
-    
-    .delete-option {
-        background-color: #cb4e4e;
-        &:hover{
-            background-color: #bf3232;
-        }
-    }
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -139,10 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="option-field">
                     <label for="price">Price: RM</label>
                     <input type="number" name="options[${index}][price]" placeholder="Price" class="form-control" required>
-                </div>
-                <div class="option-field">
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" name="options[${index}][quantity]" placeholder="Quantity" class="form-control" required>
                 </div>
             </div>
             <button type="button" class="btn btn-secondary cancel-option">Cancel</button>

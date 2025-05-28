@@ -10,12 +10,6 @@
                 </div>
             </div>
         </div>
-    <!--    <div class="search-container">
-            <form action="{{ route('product.search') }}" method="GET">
-                <input type="search" class="search-bar" name="query" placeholder="Search for products..." aria-label="Search">
-                <button type="submit" class="button-search">Search</button>
-            </form>
-        </div>-->
 
         <div class="search-container">
             <form autocomplete="off" action="{{ route('product.search') }}" method="GET">
@@ -39,10 +33,10 @@
                     @endforeach
                 </div>
                 <!-- Products Section -->
-                <div class="col-md-9 products text-center">
+                <div class="products text-center">
                     @foreach ($products as $product)
                         <div class="product" data-description="{{ $product->description }}">
-                            <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
+                            <a href="{{ route('products.show', $product->id) }}"><img class="product-image" src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
                             <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
                             <div class="product-price">From RM{{ number_format($product->options->min('price'), 2) }}</div>
                             <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}" style="width:100%;">
@@ -219,10 +213,10 @@
                             <div class="option">
                                 <input type="radio" name="option_id" value="${option.id}" id="option${option.id}" required>
                                 <label for="option${option.id}">
-                                    ${option.option} - RM${option.price.toFixed(2)} (${option.quantity} in stock)
+                                    ${option.option} - RM${option.price.toFixed(2)}
                                 </label>
                             </div>
-                        `;
+                        `; /*(${option.quantity} in stock)*/
                     });
                     $('#optionsContainer').html(optionsHtml); // Populate options in the modal
                     $('#optionModal').show(); // Show the modal

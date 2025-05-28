@@ -40,7 +40,7 @@ class ProductController extends Controller
             'options' => 'required|array',
             'options.*.option' => 'required|string',
             'options.*.price' => 'required|numeric',
-            'options.*.quantity' => 'required|integer',
+          //  'options.*.quantity' => 'required|integer',
         ]);
 
         $product = new Product($request->only(['name', 'category_id', 'description']));
@@ -58,7 +58,7 @@ class ProductController extends Controller
             $product->options()->create([
                 'option' => $option['option'],
                 'price' => $option['price'],
-                'quantity' => $option['quantity'],
+        //        'quantity' => $option['quantity'],
             ]);
         }
 
@@ -84,7 +84,7 @@ class ProductController extends Controller
             'options' => 'required|array',
             'options.*.option' => 'required|string',
             'options.*.price' => 'required|numeric',
-            'options.*.quantity' => 'required|integer',
+        //    'options.*.quantity' => 'required|integer',
         ]);
 
         // Update product data
@@ -104,7 +104,7 @@ class ProductController extends Controller
             $product->options()->create([
                 'option' => $option['option'],
                 'price' => $option['price'],
-                'quantity' => $option['quantity'],
+        //        'quantity' => $option['quantity'],
             ]);
         }
 

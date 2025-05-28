@@ -26,8 +26,9 @@
                             <th class="column-image">Image</th>
                             <th class="column-product">Product</th>
                     <!--     <th class="column-option">Option</th>-->
-                            <th class="column-quantity">Quantity</th>
                             <th>Price (per unit)</th>
+                            <th class="column-quantity">Quantity</th>
+                         
                     <!--       <th>Subtotal</th>-->
                             <th>Actions</th>
                         </tr>
@@ -45,18 +46,18 @@
                                         onclick="updateTotal()">
                                 </td>
                                 <td>
-                                    <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70">
+                                    <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" width="70" height="70" style="object-fit: scale-down;">
                                 </td>
                                 <td><strong>{{ $item->product->name }} </strong>({{ $item->option->option }})</td>
-
-                            <!--    <td>{{ $item->product->name }}</td>
-                                <td>{{ $item->option->option }}</td>-->
-                                <td>
-                                    <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'decrease')">-</button>
-                                    <input type="number" class="cart-quantity" id="quantity-{{ $item->id }}" value="{{ $item->quantity }}" min="1" readonly>
-                                    <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'increase')">+</button>
-                                </td>
                                 <td>RM{{ number_format($item->option->price, 2) }}</td>
+                                <td>
+                                    <div style="display: block;">
+                                        <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'decrease')">-</button>
+                                        <input type="number" class="cart-quantity" id="quantity-{{ $item->id }}" value="{{ $item->quantity }}" min="1" readonly>
+                                        <button type="button" class="btn-quantity" onclick="updateQuantityInCart('{{ $item->id }}', 'increase')">+</button>
+                                    </div>
+                                </td>
+                                
                     <!--           <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>-->
                                 <td>                  
                                     <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
@@ -187,3 +188,132 @@
 </script>
 
 @endsection
+
+<style>
+@media (max-width: 768px) {
+    /* First column - checkbox */
+    .clean-table td:first-child {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: auto;
+    }
+
+    /* Second column - image */
+    .clean-table td:nth-child(2) {
+        width: 30%;
+        padding-left: 35px;
+    }
+
+    /* Third column - product name */
+    .clean-table td:nth-child(3) {
+        width: 70%;
+        font-size: 16px;
+        align-items: center;
+    }
+
+    /* Fourth column - price */
+    .clean-table td:nth-child(4) {
+        width: 100%;
+        order: 4;
+        font-weight: bold;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+    }
+
+    /* Fifth column - quantity */
+    .clean-table td:nth-child(5) {
+        width: 50%;
+        order: 5;
+        justify-content: flex-start;
+    }
+
+    /* Sixth column - actions */
+    .clean-table td:nth-child(6) {
+        width: 50%;
+        order: 6;
+        justify-content: flex-end;
+    }
+
+    /* Quantity controls */
+    .clean-table td:nth-child(4) .btn-quantity {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .clean-table td:nth-child(4) .cart-quantity {
+        width: 40px;
+        height: 30px;
+        margin: 0 5px;
+    }
+
+    /* Remove button */
+    .btn-remove {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+
+    /* Total container */
+    .total-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .select-all-container {
+        font-size: 14px !important;
+        margin-bottom: -0.5rem !important;
+    }
+
+    .total-container h3 {
+        font-size: 16px !important;
+        text-align: center;
+    }
+
+    .btn-checkout {
+        width: 100%;
+        font-size: 16px !important;
+    }
+
+    /* Empty cart */
+    .cart-container .text-center .fa-shopping-cart {
+        font-size: 3em;
+    }
+
+    .cart-container .text-center h3 {
+        font-size: 20px;
+    }
+
+    .cart-container .text-center p {
+        font-size: 16px;
+    }
+
+    .cart-container .text-center .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .clean-table td:nth-child(2) {
+        width: 25%;
+    }
+
+    .clean-table td:nth-child(3) {
+        width: 75%;
+        font-size: 15px;
+    }
+
+    .btn-remove {
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+}
+</style>

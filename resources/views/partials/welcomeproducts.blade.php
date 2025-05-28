@@ -1,6 +1,6 @@
 @foreach ($products as $product)
     <div class="product" data-description="{{ $product->description }}">
-        <a href="{{ route('products.show', $product->id) }}"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
+        <a href="{{ route('products.show', $product->id) }}"><img class="product-image" src="{{ asset($product->image) }}" alt="{{ $product->name }}"></a>
         <a href="{{ route('products.show', $product->id) }}"><div class="product-name">{{ $product->name }}</div></a>
         <div class="product-price">From RM{{ number_format($product->options->min('price'), 2) }}</div>
         
@@ -20,3 +20,6 @@
         @endif
     </div>
 @endforeach
+
+<style>
+</style>

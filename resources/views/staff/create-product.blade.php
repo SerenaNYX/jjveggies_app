@@ -29,15 +29,23 @@
 
         <!-- Product Options -->
         <div class="form-group">
-            <label>Product Options</label>
             <div id="options-container">
-                <div class="option mb-3">
-                    <input type="text" name="options[0][option]" placeholder="Option (e.g., 100g)" class="form-control" required>
-                    <input type="number" name="options[0][price]" placeholder="Price" class="form-control" required>
-                    <input type="number" name="options[0][quantity]" placeholder="Quantity" class="form-control" required>
+            <label>Product Options</label>
+                <div class="option-container mb-3 form-group">
+                    <div class="option-group">
+                        <div class="option-field">
+                            <label for="option">Option:</label>
+                            <input type="text" name="options[0][option]" placeholder="Option (e.g., 100g)" class="form-control" required>
+                        </div>
+                        <div class="option-field">  
+                            <label for="price">Price: RM</label>
+                            <input type="number" name="options[0][price]" placeholder="Price" class="form-control" required>
+                        </div>
+                    </div>
                 </div>
             </div>
             <button type="button" id="add-option" class="button">Add Option</button>
+            
         </div>
 
         <button type="submit" class="button">Add Product</button>
@@ -66,13 +74,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('options-container');
         const index = container.children.length;
         const div = document.createElement('div');
-        div.classList.add('option', 'mb-3');
+        div.classList.add('option-container', 'mb-3');
         div.innerHTML = `
-            <input type="text" name="options[${index}][option]" placeholder="Option (e.g., 100g)" class="form-control" required>
-            <input type="number" name="options[${index}][price]" placeholder="Price" class="form-control" required>
-            <input type="number" name="options[${index}][quantity]" placeholder="Quantity" class="form-control" required>
+        <div class="option-group">
+                <div class="option-field">
+                    <label for="option">Option:</label>
+                    <input type="text" name="options[${index}][option]" placeholder="Option (e.g., 100g)" class="form-control" required>
+                </div>
+                <div class="option-field">
+                    <label for="price">Price: RM</label>
+                    <input type="number" name="options[${index}][price]" placeholder="Price" class="form-control" required>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary cancel-option">Cancel</button>
         `;
         container.appendChild(div);
+
+        // Add event listener for the Cancel button
+        div.querySelector('.cancel-option').addEventListener('click', function() {
+            div.remove(); // Remove the dynamically added option form
+        });
     });
 });
 </script>

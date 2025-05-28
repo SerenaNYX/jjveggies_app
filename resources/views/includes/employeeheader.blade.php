@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('css/employee.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
@@ -42,6 +43,7 @@
             position: fixed;
             height: 100%;
             transition: transform 0.3s ease;
+            z-index: 1000;
         }
 
         .employee-sidebar.hide {
@@ -118,15 +120,58 @@
             border: 1px solid #6d7e59;
             border-radius: 5px;
             cursor: pointer;
-            z-index: 1000;
+            z-index: 1001;
             &:hover {
                 background-color: #e6ffca;
+            }
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                width: 100%;
+                margin-left: 0;
+                position: relative;
+                z-index: 1;
+            }
+
+            .employee-content {
+                margin-left: 0;
+            }
+
+            .employee-sidebar {
+                transform: translateX(-100%);
+                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            }
+
+            .employee-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .toggle-button {
+                display: block;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
     <button class="toggle-button" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
     <div class="employee-sidebar">
         <ul>
             @if (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'admin')
@@ -136,23 +181,23 @@
                 </li>
                 <li><a href="{{ route('admin.employees.index') }}">Manage Users</a></li>
                 <li><a href="{{ route('admin.products.index') }}">Manage Products</a></li>
-                <li><a href="{{ route('admin.orders.index') }}">View Orders</a></li> <!-- Added for admin -->
-                <li><a href="#">Generate Report</a></li>
+                <li><a href="{{ route('admin.orders.index') }}">View Orders</a></li>
+                <li><a href="{{ route('admin.reports.index') }}">Generate Report</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'staff')
                 <li><a href="{{ route('staff.dashboard') }}">
                         <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">
                     </a>
-                </li>
+                </li> 
                 <li><a href="{{ route('staff.products.index') }}">Manage Products</a></li>
-                <li><a href="{{ route('staff.orders.index') }}">Manage Orders</a></li> <!-- Updated for staff -->
-                <li><a href="#">Generate Report</a></li>
+                <li><a href="{{ route('staff.orders.index') }}">Manage Orders</a></li>
+                <li><a href="{{ route('staff.reports.index') }}">Generate Report</a></li>
                 <li><a href="{{ route('staff.enquiries.index') }}">Messages</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'driver')
                 <li><a href="{{ route('driver.dashboard') }}">
                         <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">
                     </a>
                 </li>
-                <li><a href="{{ route('driver.orders.index') }}">Manage Deliveries</a></li> <!-- Updated for driver -->
+                <li><a href="{{ route('driver.orders.index') }}">Manage Deliveries</a></li>
             @endif
             <li>
                 <form action="{{ route('admin.logout') }}" method="POST">
@@ -173,17 +218,30 @@
         @endif
     </div>
 
+    <button id="go-to-top" title="Go to top">&#8679;</button>
+    
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.employee-sidebar');
-            sidebar.classList.toggle('hide');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            if (window.innerWidth > 768) {
+                sidebar.classList.toggle('hide'); 
+            } else {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
             document.querySelector('.employee-content').classList.toggle('full-width');
             document.querySelector('.dashboard-container').classList.toggle('full-width');
         }
+
+        document.querySelector('.sidebar-overlay').addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        });
     </script>
 
-    
-    <button id="go-to-top" title="Go to top">&#8679;</button>
     <script>
         //Get the button:
         let mybutton = document.getElementById("go-to-top");

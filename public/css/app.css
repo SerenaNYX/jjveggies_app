@@ -90,6 +90,68 @@ img {
     margin-bottom: 40px;
 }
 
+/* RADIO BUTTON STYLING */
+
+input[type="radio"] {
+  appearance: none; /* Hide default appearance */
+  width: 18px;
+  height: 18px;
+  border: 2px solid #99ad9c; /* Border when unchecked */
+  border-radius: 50%; /* Make it circular */
+  background-color: white;
+}
+
+input[type="radio"]:checked {
+  background-color: #84ae8a; /* When checked */
+  border-color: #63966b;
+  box-shadow: 0 0 0 2px white inset; /* Add a subtle outline */
+  /* You can add a checkmark or an inner circle here */
+}
+
+input[type="radio"]:hover {
+  cursor: pointer; /* Change cursor on hover */
+  border-color: #517c58; /* Change border on hover */
+}
+
+input[type="radio"]:disabled {
+  opacity: 0.5; /* Dim disabled radio buttons */
+}
+
+/* END OF radio button */
+
+
+input[type="checkbox"] {
+  appearance: none; /* Hide default appearance */
+  width: 18px;
+  height: 18px;
+  border: 2px solid #99ad9c; /* Border when unchecked */
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="checkbox"]:checked {
+    border-color: #63966b;
+    position: relative;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    font-size: 13px;
+    font-weight: bold;
+    color: #63966b;
+}
+
+input[type="checkbox"]:hover {
+  cursor: pointer; /* Change cursor on hover */
+  border-color: #517c58; /* Change border on hover */
+}
+
+input[type="checkbox"]:disabled {
+  opacity: 0.5; /* Dim disabled radio buttons */
+  cursor: not-allowed;
+}
 
 /* clean-table css */
 .clean-table {
@@ -114,6 +176,7 @@ img {
 }
 
 .clean-table th {
+    color: #2d3748;
     background-color: #f5f5f5;
     font-weight: bold;
 }
@@ -129,6 +192,11 @@ img {
 }
 
 /* END OF clean-table css */
+
+.hover-row:hover {
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #eafee9;
+}
 
 header {
    /* background: url('/img/background.jpg');*/
@@ -171,22 +239,44 @@ header {
     right: 235px;
     gap: 20px;
     padding-top: 30px;
+    align-items: center; 
 }
 
-.account a, .logout-button, .login, .signup {
+.account a, .account .logout-button, .account .login, .account .signup, .account .profile, .account .logout {
     text-decoration: none;
     color: #e9e9e9;
     font-size: 15px;
     border: none;
     background: none;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center; 
+    height: 100%;
     &:hover {
         color:#155724;
     }
 }
 
-.logout-button:hover, .login:hover, .signup:hover {
-    color: darken(#e9e9e9, 90%);
+.logout form {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: none;
+    &:hover {
+        color:#155724;
+    }
 }
 
 /* top-nav */
@@ -197,20 +287,12 @@ header {
     padding-bottom: 10px;
 
     .logo {
-        a {
-        /*    color: #e9e9e9;
-            font-weight: bold;
-            font-size: 28px;
-            display: flex;
-            align-items: center;*/
-
             img {
                 margin-top: -20px;
                 width: 220px;
                 border-radius: 5px;
                 margin-right: 20px;
             }
-        }
         
     }
 
@@ -483,9 +565,18 @@ header {
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%;
+    width: 100%;
     max-width: 500px;
     border-radius: 10px;
+
+    .product-name {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        text-align: left;
+        font-size: 1.2rem;
+    }
 }
 
 .close {
@@ -919,6 +1010,51 @@ h2 {
 
 /* end of cart */
 
+
+/* MANAGE PRODUCT for employee */
+
+.option-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+        border: 1px solid #a3a3a3;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin-bottom: 4px;
+    }
+    
+    .option-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .option-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .option-field label {
+        min-width: 80px;
+        margin-bottom: 0;
+    }
+    
+    .option-field input {
+        flex: 1;
+    }
+    
+    .delete-option {
+        background-color: #cb4e4e;
+        &:hover{
+            background-color: #bf3232;
+        }
+    }
+
+    /* END OF MANAGE PRODUCT */
+
 /* order management for employee */
 
 /* Status Dropdown Styles */
@@ -932,13 +1068,13 @@ h2 {
     color: #212121;
     cursor: pointer;
     transition: all 0.3s ease;
-    appearance: none;
+/*    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2363966b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); /* ARROW */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2363966b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); 
     background-repeat: no-repeat;
     background-position: right 8px center;
-    background-size: 12px;
+    background-size: 12px;*/
     min-width: 120px;
 }
 
@@ -962,6 +1098,7 @@ h2 {
     font-weight: 500;
     text-transform: capitalize;
 }
+
 /*
 .badge-status.order_placed {
     background-color: #e2e3e5;

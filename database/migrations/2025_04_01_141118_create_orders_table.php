@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_number')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('address_id')->constrained()->onDelete('cascade');
             $table->decimal('subtotal', 10, 2);
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable(false);;
             $table->string('payment_status')->default('pending');
             $table->string('status')->default('order_placed');
+            $table->foreignId('driver_id')->nullable()->constrained('employees');
             $table->timestamps();
         });
     }

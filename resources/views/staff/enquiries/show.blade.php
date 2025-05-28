@@ -3,8 +3,8 @@
 @section('content')
     <div class="container">
         <h1>Enquiry Details</h1>
-        
-        <div class="enquiry-detail">
+        <a href="{{ route('staff.enquiries.index') }}" class="btn back-btn" style="margin-bottom:1rem;">&larr;</a>
+        <div class="enquiry-detail">   
             <div class="enquiry-meta">
                 <div>
                     <p><strong>Customer:</strong> {{ $enquiry->name }}</p>
@@ -52,19 +52,16 @@
                 
                 <div class="form-group">
                     <label for="response">Your Response:</label>
-                    <textarea id="response" name="response" rows="5" required>{{ old('response', $enquiry->response) }}</textarea>
+                    <textarea id="response" name="response" rows="5" style="resize: none;" required>{{ old('response', $enquiry->response) }}</textarea>
                 </div>
                 
-                <button type="submit" class="submit-btn">Update Enquiry</button>
-                <a href="{{ route('staff.enquiries.index') }}" class="back-btn">Back to Enquiries</a>
+                <button type="submit" class="btn">Update Enquiry</button>
             </form>
         </div>
     </div>
 
 
 <style>
-
-    
     .enquiry-detail {
         background: #fff;
         padding: 2rem;
@@ -131,35 +128,132 @@
     textarea {
         min-height: 150px;
     }
-    
-    .submit-btn {
-        background-color: #44684a;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.3s;
-        margin-right: 1rem;
+</style>
+<style>
+    /* Mobile Enquiry Details Styles */
+@media (max-width: 768px) {
+
+    .enquiry-detail {
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    
-    .submit-btn:hover {
-        background-color: #63966b;
+
+    .enquiry-meta {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
     }
-    
-    .back-btn {
+
+    .enquiry-meta div {
+        width: 100%;
+    }
+
+    .enquiry-meta p {
+        margin: 0.5rem 0;
+        font-size: 17px;
+    }
+
+    .status-badge {
         display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background-color: #f5f5f5;
-        color: #333;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.3s;
+        padding: 0.2rem 0.6rem;
+        font-size: 13px;
+    }
+
+    .enquiry-section h3,
+    .attachments-section h3 {
+        font-size: 18px;
+        margin-bottom: 0.75rem;
+    }
+
+    .enquiry-section p {
+        font-size: 17px;
+        line-height: 1.5;
+    }
+
+    .attachments-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+    }
+
+    .attachments-list {
+        padding-left: 1rem;
+    }
+
+    .attachments-list li {
+        font-size: 14px;
+        margin-bottom: 0.5rem;
+        word-break: break-all;
+    }
+
+    .response-form {
+        margin-top: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        font-size: 15px;
+    }
+
+    select, textarea {
+        padding: 0.65rem;
+        font-size: 15px;
+    }
+
+    textarea {
+        min-height: 120px;
+    }
+
+    /* Status badge colors remain the same */
+    .status-badge.pending {
+        background-color: #fff3cd;
+        color: #856404;
     }
     
-    .back-btn:hover {
-        background-color: #ddd;
+    .status-badge.in_progress {
+        background-color: #cce5ff;
+        color: #004085;
     }
+    
+    .status-badge.resolved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .btn {
+        font-size: 13px;
+    }
+
+    .back-btn {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    .enquiry-meta p {
+        font-size: 15px;
+    }
+
+    .enquiry-section p,
+    .attachments-list li {
+        font-size: 16px;
+    }
+
+    select, textarea {
+        font-size: 14px;
+    }
+
+}
 </style>
 @endsection

@@ -23,13 +23,13 @@
             <a href="{{ route('admin.employees.create') }}" class="button-add">Add New Employee</a>
         </div>
 
-        <table class="table table-striped table-product" id="employeeTable">
+        <table class="clean-table table-striped" id="employeeTable">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th class="actions-column2">Actions</th>
+                    <th style="width: 30%">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,14 +63,14 @@
     <!-- Customer Table (Initially Hidden) -->
     <div id="customersSection" style="display: none;">
         <h2>Customers</h2>
-        <table class="table table-striped table-product" id="customerTable">
+        <table class="clean-table table-striped" id="customerTable">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Contact</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th style="width: 15%">Actions</th>
                 </tr>
             </thead>
             <tbody>

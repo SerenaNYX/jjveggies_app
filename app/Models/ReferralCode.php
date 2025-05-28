@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ReferralCode extends Model
 {
@@ -27,5 +28,10 @@ class ReferralCode extends Model
         return $this->hasOne(ReferralCode::class)->withDefault([
             'code' => 'ERROR-GENERATE-CODE'
         ]);
+    }
+
+    public function getQrCode()
+    {
+        return QrCode::size(200)->generate($this->code);
     }
 }
