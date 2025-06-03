@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UsersTableSeeder extends Seeder
 {
@@ -16,6 +17,7 @@ class UsersTableSeeder extends Seeder
     {
         $users = [
             [
+                'uid' => User::generateUniqueUid(),
                 'name' => 'Serena',
                 'email' => 'yenxinng@gmail.com',
                 'password' => Hash::make('password'),
@@ -23,6 +25,7 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ],
             [
+                'uid' => User::generateUniqueUid(),
                 'name' => 'Saera',
                 'email' => 'saera@example.com',
                 'password' => Hash::make('password'),
@@ -30,7 +33,7 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ],
         ];
-
+        // teolilynatasha@gmail.com
         DB::table('users')->insert($users);
     }
 }

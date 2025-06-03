@@ -3,7 +3,8 @@
 @section('content')
 <div class="container">
     <h1 class="text-center">Manage Categories</h1>
-    <a href="{{ route(Auth::guard('employee')->user()->role . '.categories.create') }}" class="button-add">Add New Category</a>
+    <a class="btn" style="color: white; margin-bottom: 1rem;" href="{{ route(Auth::guard('employee')->user()->role . '.products.index') }}">&larr; </a>
+    <a href="{{ route(Auth::guard('employee')->user()->role . '.categories.create') }}" class="btn">Add New Category</a>
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -14,19 +15,19 @@
     <table class="clean-table">
         <thead>
             <tr>
-                <th></th>
+                <th>#</th>
                 <th>Name</th>
-                <th>Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach ($categories as $index => $category)
             <tr class="hover-row">
-                <td style="width: 10%; cursor: pointer;" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.categories.edit', $category->id) }}'" style="cursor: pointer;">
+                <td style=" cursor: pointer;" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.categories.edit', $category->id) }}'" style="cursor: pointer;">
                     {{ $index + 1 }}</td>
-                <td style="width: 70%; cursor: pointer;" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.categories.edit', $category->id) }}'">
+                <td style=" cursor: pointer;" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.categories.edit', $category->id) }}'">
                     {{ $category->name }}</td>
-                <td style="width: 20%;">
+                <td style="display: flex; justify-content: flex-end;">
                 <!--    <a href="{{ route(Auth::guard('employee')->user()->role . '.categories.edit', $category->id) }}" class="button-edit">Edit</a>-->
                     <form action="{{ route(Auth::guard('employee')->user()->role . '.categories.destroy', $category->id) }}" method="POST" style="display:inline-block;">
                         @csrf

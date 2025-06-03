@@ -153,11 +153,6 @@
         text-align: center;
     }
 
-    .contact-form h2 {
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
-
     .form-group {
         margin-bottom: 15px;
     }
@@ -170,12 +165,6 @@
     textarea {
         padding: 12px;
         font-size: 15px;
-    }
-
-    button[type="submit"] {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
     }
 
     .alert-danger {

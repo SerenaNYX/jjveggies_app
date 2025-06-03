@@ -18,7 +18,7 @@
             @endforeach
         </select>
 
-        <a href="{{ route(Auth::guard('employee')->user()->role . '.products.create') }}" class="button-add">Add New Product</a>
+        <a href="{{ route(Auth::guard('employee')->user()->role . '.products.create') }}" class="button-add">New Product</a>
         <a href="{{ route(Auth::guard('employee')->user()->role . '.categories.index') }}" class="button-add">Manage Categories</a>
     </div>
 
@@ -27,18 +27,18 @@
     <!--<table class="table table-striped table-product" id="productTable">-->
         <thead>
             <tr>
-                <th class="number-column"></th>
+                <th class="number-column">Code</th>
                 <th class="image-column">Image</th>
                 <th class="name-column">Name</th>
                 <th class="category-column">Category</th>
                 <th class="options-column">Options</th>
-                <th class="actions-column">Actions</th>
+                <th class="">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($products as $index => $product)
-            <tr class="hover-row">
-                <td class="number-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $index + 1 }}</td>
+            <tr class="hover-row {{ $product->status === 'unavailable' ? 'unavailable-product' : '' }}">
+                <td class="number-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $product->product_number }}</td>
                 <td class="image-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="50"></td>
                 <td class="name-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $product->name }}</td>
                 <td class="category-column" onclick="window.location='{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}'" style="cursor: pointer;">{{ $product->category->name ?? 'Uncategorized' }}</td>
@@ -51,7 +51,13 @@
                     @endforeach
                 </td>
                 <td class="actions-column">
-               <!--     <a href="{{ route(Auth::guard('employee')->user()->role . '.products.edit', $product->id) }}" class="button-edit">Edit</a>-->
+                    <form action="{{ route(Auth::guard('employee')->user()->role . '.products.toggle-status', $product->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="button {{ $product->status === 'available' ? 'button-danger2' : 'button-danger3' }}">
+                            {{ $product->status === 'available' ? 'Make Unavailable' : 'Make Available' }}
+                        </button>
+                    </form>
                     <form action="{{ route(Auth::guard('employee')->user()->role . '.products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
@@ -72,10 +78,11 @@ function searchProducts() {
     // Filter products table
     var productRows = document.getElementById('productTable').getElementsByTagName('tr');
     for (var i = 1; i < productRows.length; i++) {
+        var product_number = productRows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
         var name = productRows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
         var category = productRows[i].getElementsByTagName('td')[3].textContent.toLowerCase();
         
-        if (name.includes(query) || category.includes(query)) {
+        if (product_number.includes(query) || name.includes(query) || category.includes(query)) {
             productRows[i].style.display = '';
         } else {
             productRows[i].style.display = 'none';
@@ -111,7 +118,97 @@ function filterByCategory() {
 </script>
 
 <style>
+
+    img {
+        object-fit: scale-down;
+    }
+    .unavailable-product {
+        background-color: #e6e6e6 !important;
+
+        &:hover {
+            background-color: #d2d2d2 !important;
+        }
+    }
+
+    /* Main table fixes */
+.clean-table {
+    table-layout: fixed; /* Ensures consistent column sizing */
+    border-collapse: collapse; /* Proper cell spacing */
+}
+
+/* Actions column fixes */
+.actions-column {
+    height: 100%; /* Take full available height */
+    padding: 10px 15px; /* Match other cells */
+    vertical-align: middle; /* Center content vertically */
+    box-sizing: border-box; /* Include padding in height calc */
+    .button {
+        margin-bottom: 5px;
+    }
+}
+
+.actions-column form:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 1500px) {
+
+    .clean-table {
+        font-size: 15px;
+    }
+
+    .actions-column .button {
+        margin-bottom: 5px;
+        padding: 0;
+        font-size: 13px;
+        width: 90px;
+    }
+
+    .button-add {
+        font-size: 15px !important;
+        line-height: normal;
+    } 
+/*    .actions-column {
+        white-space: wrap;
+        .button {
+            margin-bottom: 0.4rem;
+        }
+    }*/
+}
+
+@media (max-width: 1000px) {
+    .actions-column .button {
+        font-size: 12px;
+        width: 80px;
+    }
+
+    .button-add {
+        font-size: 14px !important;
+    } 
+}
+
+@media (max-width: 900px) {
+    .actions-column .button {
+        width: 70px;
+    }
+}
+
 @media (max-width: 768px) {
+    .actions-column .button {
+        margin-bottom: 5px;
+        padding: 0;
+        font-size: 13px;
+        width: 130px;
+    }
+
+    .unavailable-product {
+        background-color: #dadada !important;
+
+        &:hover {
+            background-color: #d2d2d2 !important;
+        }
+    }
+    
     .flex-container {
         flex-direction: column;
         gap: 10px;
@@ -128,6 +225,9 @@ function filterByCategory() {
 
     .button-add {
         text-align: center;
+        margin: 0;
+        margin-top: -5px;
+        height: 2rem;
     }
 
     .clean-table tbody tr {
@@ -147,11 +247,22 @@ function filterByCategory() {
         display: block;
     }
 
+    .clean-table td:nth-child(1) {
+        /*display: none;*/
+        font-size: 10px;
+        font-weight: bold;
+    }
+
     /* Third column - product name */
     .clean-table td:nth-child(3) {
         width: 70%;
         font-weight: bold;
         align-items: center;
+        margin-bottom: 0;
+    }
+    .clean-table td:nth-child(4) {
+        margin-top: -5px;
+        margin-bottom: -5px;
     }
 
     .options-column {

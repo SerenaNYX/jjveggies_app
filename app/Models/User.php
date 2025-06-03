@@ -12,6 +12,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'uid',
         'name',
         'email',
         'password',
@@ -39,23 +40,45 @@ class User extends Authenticatable implements MustVerifyEmail
 
     // Referral and points
     protected static function boot()
-    {
-        parent::boot();
+{
+    parent::boot();
 
-        static::created(function ($user) {
+    static::creating(function ($user) {
+        $user->uid = self::generateUniqueUid();
+    });
+
+    static::created(function ($user) {
+        $user->referralCode()->create([
+            'code' => ReferralCode::generateUniqueCode()
+        ]);
+    });
+
+    static::retrieved(function ($user) {
+        if (!$user->referralCode) {
             $user->referralCode()->create([
                 'code' => ReferralCode::generateUniqueCode()
             ]);
-        });
-
-        // For existing users without codes
-        static::retrieved(function ($user) {
-            if (!$user->referralCode) {
-                $user->referralCode()->create([
-                    'code' => ReferralCode::generateUniqueCode()
-                ]);
+        }
+        
+        if (!$user->uid) {
+            $user->uid = self::generateUniqueUid();
+            $user->save();
+        }
+    });
+}
+    protected static function generateUniqueUid()
+    {
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $uid = '';
+        
+        do {
+            $uid = '';
+            for ($i = 0; $i < 10; $i++) { // 10-character UID
+                $uid .= $characters[rand(0, strlen($characters) - 1)];
             }
-        });
+        } while (static::where('uid', $uid)->exists());
+        
+        return $uid;
     }
     
     public function referralCode()

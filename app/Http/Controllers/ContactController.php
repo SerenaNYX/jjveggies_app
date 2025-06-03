@@ -25,13 +25,16 @@ class ContactController extends Controller
             'attachments.*' => 'sometimes|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx',
         ]);
 
-        $enquiry = Enquiry::create([
+        $enquiryData = [
             'user_id' => Auth::id(),
+            'enquiry_number' => Enquiry::generateEnquiryNumber(),
             'name' => $request->name,
             'contact_number' => $request->phone,
             'email' => $request->email,
             'message' => $request->message,
-        ]);
+        ];
+
+        $enquiry = Enquiry::create($enquiryData);
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {

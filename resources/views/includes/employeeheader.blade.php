@@ -176,25 +176,26 @@
         <ul>
             @if (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'admin')
                 <li><a href="{{ route('admin.dashboard') }}">
-                        <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables"> 
+                        <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables"> 
                     </a>
                 </li>
                 <li><a href="{{ route('admin.employees.index') }}">Manage Users</a></li>
                 <li><a href="{{ route('admin.products.index') }}">Manage Products</a></li>
                 <li><a href="{{ route('admin.orders.index') }}">View Orders</a></li>
+                <li><a href="{{ route('admin.enquiries.index') }}">View Messages</a></li>
                 <li><a href="{{ route('admin.reports.index') }}">Generate Report</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'staff')
                 <li><a href="{{ route('staff.dashboard') }}">
-                        <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">
+                        <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables">
                     </a>
                 </li> 
                 <li><a href="{{ route('staff.products.index') }}">Manage Products</a></li>
                 <li><a href="{{ route('staff.orders.index') }}">Manage Orders</a></li>
-                <li><a href="{{ route('staff.reports.index') }}">Generate Report</a></li>
                 <li><a href="{{ route('staff.enquiries.index') }}">Messages</a></li>
+                <li><a href="{{ route('staff.reports.index') }}">Generate Report</a></li>
             @elseif (Auth::guard('employee')->check() && Auth::guard('employee')->user()->role === 'driver')
                 <li><a href="{{ route('driver.dashboard') }}">
-                        <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">
+                        <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables">
                     </a>
                 </li>
                 <li><a href="{{ route('driver.orders.index') }}">Manage Deliveries</a></li>

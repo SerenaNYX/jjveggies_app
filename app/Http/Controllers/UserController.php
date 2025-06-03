@@ -60,7 +60,6 @@ class UserController extends Controller
         return view('profile', compact('user'));
     }
 
-    // update in user's profile
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -81,20 +80,6 @@ class UserController extends Controller
         $user->save(); // DON'T REMOVE!
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
-    }
-
-    public function denyCustomer(User $user)
-    {
-        $user->banned_at = now();
-        $user->save();
-        return redirect()->route('admin.employees.index')->with('success', 'Customer access denied successfully.');
-    }
-
-    public function unbanCustomer(User $user)
-    {
-        $user->banned_at = null;
-        $user->save();
-        return redirect()->route('admin.employees.index')->with('success', 'Customer access restored successfully.');
     }
 
 }

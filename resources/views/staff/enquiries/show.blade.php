@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1>Enquiry Details</h1>
-        <a href="{{ route('staff.enquiries.index') }}" class="btn back-btn" style="margin-bottom:1rem;">&larr;</a>
+        <a href="{{ route(auth('employee')->user()->role . '.enquiries.index') }}" class="btn back-btn" style="margin-bottom:1rem;">&larr;</a>
         <div class="enquiry-detail">   
             <div class="enquiry-meta">
                 <div>
@@ -37,28 +37,44 @@
                 @endif
             </div>
             
-            <form action="{{ route('staff.enquiries.update', $enquiry) }}" method="POST" class="response-form">
-                @csrf
-                @method('PUT')
-                
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" name="status" required>
-                        <option value="pending" {{ $enquiry->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="in_progress" {{ $enquiry->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                        <option value="resolved" {{ $enquiry->status == 'resolved' ? 'selected' : '' }}>Resolved</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="response">Your Response:</label>
-                    <textarea id="response" name="response" rows="5" style="resize: none;" required>{{ old('response', $enquiry->response) }}</textarea>
-                </div>
-                
-                <button type="submit" class="btn">Update Enquiry</button>
-            </form>
+            @if(!$isAdmin)
+                <form action="{{ route('staff.enquiries.update', $enquiry) }}" method="POST" class="response-form">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status" required>
+                            <option value="pending" {{ $enquiry->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="in_progress" {{ $enquiry->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="resolved" {{ $enquiry->status == 'resolved' ? 'selected' : '' }}>Resolved</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="response">Your Response:</label>
+                        <textarea id="response" name="response" rows="5" style="resize: none;" required>{{ old('response', $enquiry->response) }}</textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Update Enquiry</button>
+                </form>
+            @else
+                @if($enquiry->response)
+                    <div class="response-section">
+                        <h3>Staff Response</h3>
+                        <p>{{ $enquiry->response }}</p>
+                        <p><small>Responded by: {{ $enquiry->staff->name ?? 'Unknown' }}</small></p>
+                        <p><small>Last updated: {{ $enquiry->updated_at->format('d M Y, h:i A') }}</small></p>
+                    </div>
+                @else
+                    <div class="alert alert-info">
+                        No response has been provided yet.
+                    </div>
+                @endif
+            @endif
         </div>
     </div>
+
 
 
 <style>

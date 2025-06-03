@@ -2,64 +2,70 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center">Edit Product</h1>
-    <form id="productForm" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="name" style="font-weight: bold;">Product Name</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ $product->name }}" required>
-        </div>
-        <div class="form-group">
-            <label for="category_id" style="font-weight: bold;">Category</label>
-            <select id="category_id" name="category_id" class="form-control">
-                <option value="">Select Category</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}" @if($category->id == $product->category_id) selected @endif>{{ $category->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="description" style="font-weight: bold;">Product Description</label>
-            <textarea id="description" name="description" class="form-control" rows="4" style="resize: none;">{{ $product->description }}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="image" style="font-weight: bold;">Product Image</label>
-            <input type="file" id="image" name="image" class="form-control-file">
-            @if($product->image)
-                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="100">
-            @endif
-        </div>
-
-        <!-- Product Options -->
-        <div class="form-group">
-            <label style="font-weight: bold;">Product Options</label>
-            <label style="color:red; text-align: right;">"UPDATE PRODUCT" to confirm delete/add</label>
-            <div id="options-container">
-                @foreach ($product->options as $index => $option)
-                <div class="option-container mb-3 form-group">
-                    <div class="option-group">
-                        <div class="option-field">
-                            <label for="option">Option #{{ $index + 1 }}:</label>
-                            <input type="text" name="options[{{ $index }}][option]" placeholder="Option (e.g., 100g)" class="form-control" value="{{ $option->option }}" required>
-                        </div>
-                        <div class="option-field">
-                            <label for="price">Price: RM</label>
-                            <input type="number" name="options[{{ $index }}][price]" placeholder="Price" class="form-control" value="{{ $option->price }}" required>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-danger delete-option">Delete</button>
-                </div>
-                @endforeach
+    <a href="{{ route(auth('employee')->user()->role . '.products.index') }}" class="btn back-btn">&larr;</a>
+    <div class="product-edit-card">
+        <h1 class="text-center">Edit Product</h1>
+        <form id="productForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="form-group">
+                <label for="name" style="font-weight: bold;">Product Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ $product->name }}" required>
             </div>
-            <button type="button" id="add-option" class="btn btn-success">Add Option</button>
-        </div>
+            <div class="form-group">
+                <label for="category_id" style="font-weight: bold;">Category</label>
+                <select id="category_id" name="category_id" class="form-control">
+                    <option value="">Select Category</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" @if($category->id == $product->category_id) selected @endif>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description" style="font-weight: bold;">Product Description</label>
+                <textarea id="description" name="description" class="form-control" rows="4" style="resize: none;">{{ $product->description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="image" style="font-weight: bold;">Product Image</label>
+                <input type="file" id="image" name="image" class="form-control-file">
+                @if($product->image)
+                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" height="100">
+                @endif
+            </div>
 
-        <button type="submit" class="button">Update Product</button> 
-        <button class="button" href="/admin/products">Cancel</button>
-    </form>
+            <!-- Product Options -->
+            <div class="form-group">
+                <label style="font-weight: bold;">Product Options</label>
+                <br><label style="color:red; text-align: right; font-size: 16px;">Click on "Update Product" to confirm delete/add</label>
+                <div id="options-container">
+                    @foreach ($product->options as $index => $option)
+                    <div class="option-container form-group">
+                        <div class="option-group">
+                            <div class="option-field">
+                                <label for="option">Option #{{ $index + 1 }}:</label>
+                                <input type="text" name="options[{{ $index }}][option]" placeholder="Option (e.g., 100g)" class="form-control" value="{{ $option->option }}" required>
+                            </div>
+                            <div class="option-field">
+                                <label for="price">Price: RM</label>
+                                <input type="number" name="options[{{ $index }}][price]" placeholder="Price" 
+                                    class="form-control" value="{{ number_format($option->price, 2) }}" 
+                                    step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger delete-option">Delete</button>
+                    </div>
+                    @endforeach
+                </div>
+                <button type="button" id="add-option" class="btn btn-success">Add Option</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">Update Product</button> 
+            <!--    <button class="btn btn-cancel" href="/admin/products">Cancel</button>-->
+            </div>
+        </form>
+    </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -83,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('options-container');
         const index = container.children.length;
         const div = document.createElement('div');
-        div.classList.add('option-container', 'mb-3');
+        div.classList.add('option-container');
         div.innerHTML = `
             <div class="option-group">
                 <div class="option-field">

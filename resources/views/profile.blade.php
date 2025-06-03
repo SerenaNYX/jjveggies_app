@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="container">
-    <h1>Edit Profile</h1>
+    <h1 class="text-center">Edit Profile</h1>
     <!-- Link to Manage Addresses -->
-    <a href="{{ route('address.index') }}" class="btn" style="margin-top:-30px; margin-bottom:20px;">Manage Addresses</a>
+    <a href="{{ route('address.index') }}" class="btn" style=" margin-bottom:20px;">Manage Addresses</a>
 
     @if (session('verification-link-sent'))
         <div class="alert alert-success">
@@ -50,6 +50,7 @@
     @endif
 
     <div class="profile-container">
+        <p>User ID: {{ $user->uid }}</p>
         <!-- Profile Update Form -->
         <form action="{{ route('profile.update') }}" method="POST">
             @csrf
@@ -175,4 +176,99 @@
         font-size: 0.875rem;
         color: #5f6c65;
     }
+
+
+
+    /* Mobile Profile Edit Styles */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Verification Status */
+    .verification-status {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .verification-status-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .verification-status-text {
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+
+    .verification-resend-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .verification-help-text {
+        font-size: 14px;
+    }
+
+    /* Profile Form */
+    .profile-container {
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 15px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .text-danger {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    .verification-status-text,
+    .verification-resend-btn {
+        font-size: 14px;
+    }
+
+    .form-control {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        font-size: 15px;
+    }
+}
 </style>

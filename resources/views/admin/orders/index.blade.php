@@ -4,9 +4,14 @@
 
 @section('content')
 <div class="container">
-    <div class="">
-        <div class="">
-            <h1 class="text-center">Manage Orders</h1>
+        <div>
+            @if(auth('employee')->user()->role === 'staff')
+                <h1 class="text-center">Manage Orders</h1>
+            @elseif(auth('employee')->user()->role === 'admin')
+                <h1 class="text-center">Orders</h1>
+            @elseif(auth('employee')->user()->role === 'driver')
+                <h1 class="text-center">Deliveries</h1>
+            @endif
 
             <div class="status-filter" style="display: flex;">
                 <select class="form-control-category" onchange="window.location.href = this.value">
@@ -22,11 +27,9 @@
                 <input type="text" id="searchQuery" class="form-control" placeholder="Search for orders..." onkeyup="searchOrders()">
             </div>
         </div>
-        <div class="">
-            <div class="">
-                
+        <div>
+            <div>
                 <table class="clean-table" id="orderTable">
-            <!--    <table class="table table-striped table-product">-->
                     <thead>
                         <tr>
                             <th>Order</th>
@@ -51,7 +54,7 @@
                                     data-order-address="{{ $order->address->address ?? 'N/A' }}"
                                     data-order-postal="{{ $order->address->postal_code ?? 'N/A' }}"
                                     data-order-phone="{{ $order->address->phone ?? 'N/A' }}">
-                                    {{ $order->user->name }} (ID: # {{$order->user->id}})</td>
+                                    {{ $order->user->name }} (ID: # {{$order->user->uid}})</td>
                                 </a>
                             <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->created_at->format("d/m/Y H:i:s") }}</td>
                             <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->items->sum('quantity') }}</td>
@@ -167,7 +170,6 @@
             </div>
             {{ $orders->links() }}
         </div>
-    </div>
 </div>
 
 <!-- Customer Info Modal -->
@@ -176,18 +178,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="customerInfoModalLabel">Customer Information</h3>
-        <!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
             </div>
             <div class="modal-body">
                 <div class="customer-details">
                     <p><strong>Name:</strong> <span id="customer-name"></span></p>
                     <p><strong>Email:</strong> <span id="customer-email"></span></p>
-                    <p><strong>Contact:</strong> <span id="customer-contact"></span></p>
+            <!--        <p><strong>Contact:</strong> <span id="customer-contact"></span></p>-->
                     
                     <hr>
  
-                    <p><strong>Address:</strong> <span id="order-address"></span></p>
-                    <p><strong>Postal Code:</strong> <span id="order-postal"></span></p>
+                    <p>
+                        <strong>Address:</strong> <br>
+                        <a id="map-link" target="_blank" rel="noopener noreferrer">
+                            <span id="order-address"></span>, <span id="order-postal"></span>
+                        </a>
+                    </p>
                     <p><strong>Phone:</strong> <span id="order-phone"></span></p>
                 </div>
             </div>
@@ -216,10 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (confirm(`Are you sure you want to assign ${driverName} to this order?`)) {
                     this.form.submit();
                 } else {
-                    // Reset to original value if canceled
                     this.value = '';
-                    // If there was a previously selected driver, you might need to restore that value
-                    // This would require storing the original value in a data attribute
                 }
             }
         });
@@ -257,31 +259,49 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Customer info modal
-        const customerLinks = document.querySelectorAll('.customer-name-link');
-        const customerModal = new bootstrap.Modal(document.getElementById('customerInfoModal'));
-        
-        customerLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Set the modal content
-                document.getElementById('customer-name').textContent = this.dataset.customerName;
-                document.getElementById('customer-email').textContent = this.dataset.customerEmail;
-                document.getElementById('customer-contact').textContent = this.dataset.customerContact;
-                document.getElementById('order-address').textContent = this.dataset.orderAddress;
-                document.getElementById('order-postal').textContent = this.dataset.orderPostal;
-                document.getElementById('order-phone').textContent = this.dataset.orderPhone;
-                
-                // Show the modal
-                customerModal.show();
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    // Customer info modal
+    const customerLinks = document.querySelectorAll('.customer-name-link');
+    const customerModal = new bootstrap.Modal(document.getElementById('customerInfoModal'));
+    
+    customerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get the address components
+            const address = this.dataset.orderAddress;
+            const postal = this.dataset.orderPostal;
+            
+            // Set the modal content
+            document.getElementById('customer-name').textContent = this.dataset.customerName;
+            document.getElementById('customer-email').textContent = this.dataset.customerEmail;
+        //    document.getElementById('customer-contact').textContent = this.dataset.customerContact;
+            document.getElementById('order-address').textContent = address;
+            document.getElementById('order-postal').textContent = postal;
+            document.getElementById('order-phone').textContent = this.dataset.orderPhone;
+            
+            // Set the Google Maps link
+            const mapLink = document.getElementById('map-link');
+            const fullAddress = encodeURIComponent(`${address}, ${postal}`);
+            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${fullAddress}`;
+            
+            // Show the modal
+            customerModal.show();
         });
     });
+});
 </script>
 
 <style>
+    #map-link {
+        color: #4c7552;
+        text-decoration: none;
+    }
+
+    #map-link:hover {
+        text-decoration: underline;
+    }
+
     .modal {
         z-index: 1002 !important;
     }

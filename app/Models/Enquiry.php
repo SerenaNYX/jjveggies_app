@@ -10,6 +10,7 @@ class Enquiry extends Model
     use HasFactory;
 
     protected $fillable = [
+        'enquiry_number',
         'user_id',
         'staff_id',
         'name',
@@ -24,6 +25,20 @@ class Enquiry extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public static function generateEnquiryNumber()
+    {
+        $prefix = 'ENQ-' . date('Ymd') . '-';
+        $latest = static::where('enquiry_number', 'like', $prefix . '%')->latest()->first();
+
+        if ($latest) {
+            $number = (int) str_replace($prefix, '', $latest->enquiry_number) + 1;
+        } else {
+            $number = 1;
+        }
+
+        return $prefix . str_pad($number, 6, '0', STR_PAD_LEFT);
+    }
 
     public function user()
     {

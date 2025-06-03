@@ -17,15 +17,24 @@ class StaffContactController extends Controller
 
     public function show(Enquiry $enquiry)
     {
-        if (is_null($enquiry->staff_id)) {
+        // Only assign to staff if user is staff
+        if (auth('employee')->user()->role === 'staff' && is_null($enquiry->staff_id)) {
             $enquiry->update(['staff_id' => auth('employee')->id()]);
         }
 
-        return view('staff.enquiries.show', compact('enquiry'));
+        return view('staff.enquiries.show', [
+            'enquiry' => $enquiry,
+            'isAdmin' => auth('employee')->user()->role === 'admin'
+        ]);
     }
 
     public function update(Request $request, Enquiry $enquiry)
     {
+        // Prevent admin from updating
+        if (auth('employee')->user()->role === 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'response' => 'required|string|max:1000',
             'status' => 'required|in:pending,in_progress,resolved',

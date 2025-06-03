@@ -14,15 +14,26 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $categoryId = $request->query('category');
-        $categories = Category::all(); // Retrieve all categories
+        $categories = Category::all();
 
+        $query = Product::with(['category', 'options']);
+    
         if ($categoryId) {
-            $products = Product::where('category_id', $categoryId)->with(['category', 'options'])->get();
-        } else {
-            $products = Product::with(['category', 'options'])->get();
+            $query->where('category_id', $categoryId);
         }
 
-        return view('staff.manage-products', compact('products', 'categories')); // Pass categories to the view
+        $products = $query->get();
+
+        return view('staff.manage-products', compact('products', 'categories'));
+    }
+
+    public function toggleStatus(Product $product)
+    {
+        $product->update([
+            'status' => $product->status === 'available' ? 'unavailable' : 'available'
+        ]);
+
+        return back()->with('success', 'Product status updated successfully');
     }
 
     public function create()

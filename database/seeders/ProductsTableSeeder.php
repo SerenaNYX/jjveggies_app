@@ -8,14 +8,28 @@ use Illuminate\Support\Str;
 
 class ProductsTableSeeder extends Seeder
 {
+    protected function generateUniqueProductNumber($characters)
+    {
+        do {
+            $productNumber = '';
+            for ($i = 0; $i < 4; $i++) {
+                $productNumber .= $characters[rand(0, strlen($characters) - 1)];
+            }
+            $exists = DB::table('products')->where('product_number', $productNumber)->exists();
+        } while ($exists);
+        
+        return $productNumber;
+    }
     public function run()
     {
+        $characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         // TO ADD: 
         // VEGETABLES: garlic.webp, redchilipadi.webp, greenchilipadi.jpg, coriander.webp, turmeric.webp, cucumber.jpg, japanesecucumber.png, lemongrass.jpg, pumpkin.jpg
         // FRUITS: pineapple.jpg, lemon.jpg, limaunipis.webp, limaukasturi.png, watermelon.jpg
         // CONDIMENTS: corianderseed.jpg, turmericpowder.webp, paprikapowder.jpg, cinnamon.webp, cinnamonpowder.jpg
         $products = [
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Sample Vegetables',
                 'slug' => Str::slug('Sample Vegetables'),
@@ -25,6 +39,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Broccoli',
                 'slug' => Str::slug('Broccoli'),
@@ -34,6 +49,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Carrot',
                 'slug' => Str::slug('Carrot'),
@@ -43,6 +59,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Spring Onion',
                 'slug' => Str::slug('Spring Onion'),
@@ -52,6 +69,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Shallot',
                 'slug' => Str::slug('Shallot'),
@@ -61,6 +79,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Ginger',
                 'slug' => Str::slug('Ginger'),
@@ -70,6 +89,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 2,
                 'name' => 'Strawberry',
                 'slug' => Str::slug('Strawberry'),
@@ -79,6 +99,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 3,
                 'name' => 'Black Pepper',
                 'slug' => Str::slug('Black Pepper'),
@@ -88,6 +109,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 3,
                 'name' => 'Ground Black Pepper',
                 'slug' => Str::slug('Ground Black Pepper'),
@@ -97,6 +119,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 3,
                 'name' => 'White Pepper',
                 'slug' => Str::slug('White Pepper'),
@@ -106,6 +129,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 3,
                 'name' => 'Ground White Pepper',
                 'slug' => Str::slug('Ground White Pepper'),
@@ -115,6 +139,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 2,
                 'name' => 'Avocado',
                 'slug' => Str::slug('Avocado'),
@@ -124,6 +149,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 2,
                 'name' => 'Mandarin Oranges',
                 'slug' => Str::slug('Mandarin Oranges'),
@@ -133,6 +159,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Cabbages',
                 'slug' => Str::slug('Cabbages'),
@@ -142,6 +169,7 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'product_number' => $this->generateUniqueProductNumber($characters),
                 'category_id' => 1,
                 'name' => 'Pak Choy',
                 'slug' => Str::slug('Pak Choy'),
@@ -151,7 +179,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Bitter Gourd',
                 'slug' => Str::slug('Bitter Gourd'),
                 'image' => 'img/vegetables/bittergourd.jpg',
@@ -160,7 +189,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Garlic',
                 'slug' => Str::slug('Garlic'),
                 'image' => 'img/vegetables/garlic.webp',
@@ -169,7 +199,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Red Chili Padi',
                 'slug' => Str::slug('Red Chili Padi'),
                 'image' => 'img/vegetables/redchilipadi.webp',
@@ -178,7 +209,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Green Chili Padi',
                 'slug' => Str::slug('Green Chili Padi'),
                 'image' => 'img/vegetables/greenchilipadi.jpg',
@@ -187,7 +219,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Coriander',
                 'slug' => Str::slug('Coriander'),
                 'image' => 'img/vegetables/coriander.webp',
@@ -196,7 +229,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Turmeric',
                 'slug' => Str::slug('Turmeric'),
                 'image' => 'img/vegetables/turmeric.webp',
@@ -205,7 +239,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Cucumber',
                 'slug' => Str::slug('Cucumber'),
                 'image' => 'img/vegetables/cucumber.jpg',
@@ -214,7 +249,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Japanese Cucumber',
                 'slug' => Str::slug('Japanese Cucumber'),
                 'image' => 'img/vegetables/japanesecucumber.png',
@@ -223,7 +259,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Lemongrass',
                 'slug' => Str::slug('Lemongrass'),
                 'image' => 'img/vegetables/lemongrass.jpg',
@@ -232,7 +269,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 1,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 1,
                 'name' => 'Pumpkin',
                 'slug' => Str::slug('Pumpkin'),
                 'image' => 'img/vegetables/pumpkin.jpg',
@@ -241,7 +279,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],      
             [
-                'category_id' => 2,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 2,
                 'name' => 'Pineapple',
                 'slug' => Str::slug('Pineapple'),
                 'image' => 'img/fruits/pineapple.jpg',
@@ -250,7 +289,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 2,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 2,
                 'name' => 'Lemon',
                 'slug' => Str::slug('Lemon'),
                 'image' => 'img/fruits/lemon.jpg',
@@ -259,7 +299,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 2,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 2,
                 'name' => 'Limau Nipis',
                 'slug' => Str::slug('Limau Nipis'),
                 'image' => 'img/fruits/limaunipis.webp',
@@ -268,7 +309,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 2,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 2,
                 'name' => 'Limau Kasturi',
                 'slug' => Str::slug('Limau Kasturi'),
                 'image' => 'img/fruits/limaukasturi.png',
@@ -277,7 +319,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 2,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 2,
                 'name' => 'Watermelon',
                 'slug' => Str::slug('Watermelon'),
                 'image' => 'img/fruits/watermelon.jpg',
@@ -286,7 +329,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],  
             [
-                'category_id' => 3,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 3,
                 'name' => 'Coriander Seed',
                 'slug' => Str::slug('Coriander Seed'),
                 'image' => 'img/condiments/corianderseed.jpg',
@@ -295,7 +339,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 3,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 3,
                 'name' => 'Turmeric Powder',
                 'slug' => Str::slug('Turmeric Powder'),
                 'image' => 'img/condiments/turmericpowder.webp',
@@ -304,7 +349,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 3,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 3,
                 'name' => 'Paprika Powder',
                 'slug' => Str::slug('Paprika Powder'),
                 'image' => 'img/condiments/paprikapowder.jpg',
@@ -313,7 +359,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 3,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 3,
                 'name' => 'Cinnamon',
                 'slug' => Str::slug('Cinnamon'),
                 'image' => 'img/condiments/cinnamon.webp',
@@ -322,7 +369,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 3,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 3,
                 'name' => 'Cinnamon Powder',
                 'slug' => Str::slug('Cinnamon Powder'),
                 'image' => 'img/condiments/cinnamonpowder.jpg',
@@ -332,7 +380,8 @@ class ProductsTableSeeder extends Seeder
             ],
             // Clearance Products
             [
-                'category_id' => 4,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 4,
                 'name' => 'Mandarin Oranges (Clearance)',
                 'slug' => Str::slug('Mandarin Oranges (Clearance)'),
                 'image' => 'img/fruits/mandarinorange.jpg',
@@ -341,7 +390,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 4,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 4,
                 'name' => 'Avocado (Clearance)',
                 'slug' => Str::slug('Avocado (Clearance)'),
                 'image' => 'img/fruits/avocado.jpg',
@@ -350,7 +400,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 4,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 4,
                 'name' => 'Bitter Gourd (Clearance)',
                 'slug' => Str::slug('Bitter Gourd (Clearance)'),
                 'image' => 'img/vegetables/bittergourd.jpg',
@@ -359,7 +410,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 4,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 4,
                 'name' => 'Cabbages (Clearance)',
                 'slug' => Str::slug('Cabbages (Clearance)'),
                 'image' => 'img/vegetables/cabbage.jpg',
@@ -368,7 +420,8 @@ class ProductsTableSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'category_id' => 4,
+                'product_number' => $this->generateUniqueProductNumber($characters),
+'category_id' => 4,
                 'name' => 'Pak Choy (Clearance)',
                 'slug' => Str::slug('Pak Choy (Clearance)'),
                 'image' => 'img/vegetables/pakchoy.jpg',

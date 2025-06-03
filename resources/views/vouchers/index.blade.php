@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>My Vouchers</h1>
+    <h1 class="text-center">My Vouchers</h1>
     <div class="row">
         <div class="">
             <h4>Current Points: {{ Auth::user()->points }}</h4>

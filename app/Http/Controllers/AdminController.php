@@ -12,24 +12,6 @@ class AdminController extends Controller
     {
         return view('admin.login');
     }
-/*
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::guard('employee')->attempt($credentials)) {
-            $role = Auth::guard('employee')->user()->role;
-            if ($role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } elseif ($role === 'staff') {
-                return redirect()->route('staff.dashboard');
-            } elseif ($role === 'driver') {
-                return redirect()->route('driver.dashboard');
-            }
-        }
-
-        return redirect()->route('admin.login')->withErrors(['email' => 'Invalid credentials.']);
-    }*/
 
     public function login(Request $request)
     {

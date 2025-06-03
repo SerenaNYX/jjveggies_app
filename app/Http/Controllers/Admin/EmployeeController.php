@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Employee;
-use App\Models\User; // Add the User model
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +13,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::all();
-        $customers = User::all(); // Fetch all customers
+        $customers = User::all();
         return view('admin.manage-users', compact('employees', 'customers'));
     }
 
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
         return redirect()->route('admin.employees.index')->with('success', 'Employee deleted successfully.');
     }
 
-    public function denyCustomer(User $user)
+    /*public function denyCustomer(User $user)
     {
         // Deny customer by setting their status to "banned" or by a similar flag
         $user->banned_at = now();  // You may want to add a 'banned_at' field in the database.
@@ -89,6 +89,42 @@ class EmployeeController extends Controller
         $user->save();
         
         return redirect()->route('admin.employees.index')->with('success', 'Customer access restored successfully.');
+    }*/
+
+    public function denyCustomer(User $user)
+    {
+        try {
+            $user->banned_at = now();
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Customer banned successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function unbanCustomer(User $user)
+    {
+        try {
+            $user->banned_at = null;
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Customer unbanned successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

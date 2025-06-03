@@ -97,11 +97,11 @@
         <div class="voucher-section">
             
             <button type="button" id="select-voucher-btn" class="btn btn-sm btn-primary">Select Voucher</button>
-            <div id="voucher-applied" style="display: none;">
-                <p>Voucher applied: <span id="applied-voucher-code"></span> (-RM<span id="voucher-discount">0</span>)</p>
+            <div id="voucher-applied" style="display: none; border: 2px solid #ddd;">
+                <p>Voucher applied: <span id="applied-voucher-code"></span><br> <strong>Discount RM<span id="voucher-discount">0</span></strong></p>
                 <button type="button" id="remove-voucher-btn" class="btn btn-sm btn-danger">Remove</button>
             </div>
-            <div id="voucher-message" class="mt-2"></div>
+            <div id="voucher-message"></div>
         </div>
 
         <!-- Total Price Section -->
@@ -156,11 +156,17 @@
                     </div>
                     <div class="form-group">
                         <label>Postal Code</label>
-                        <input type="text" name="postal_code" class="form-control" required>
+                        <input type="text" name="postal_code" class="form-control" maxlength="5" oninput="validateContact(this)" required>
+                        
                     </div>
                     <div class="form-group">
                         <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" required>
+                        <input type="text" name="phone" class="form-control" maxlength="12" oninput="validateContact(this)" required>
+                        <script>
+                            function validateContact(input) {
+                                input.value = input.value.replace(/[^0-9]/g, '');
+                            }
+                        </script>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">Save Address</button>
@@ -199,9 +205,135 @@
 
     </div>
 </div>
+<!-- Add this script section to your checkout.blade.php -->
+<script>
+// Valid postcodes for the specified areas
+const validPostcodes = [
+    '81750', // Permas Jaya
+    '81100', // Austin Heights
+    '81300', // Skudai
+    '79100'  // Iskandar Puteri
+];
+
+// Also allow any postcode between 80000-81300 for general Johor Bahru area
+function isValidPostcode(postcode) {
+    // Check if it's one of the specific valid postcodes
+    if (validPostcodes.includes(postcode)) {
+        return true;
+    }
+    
+    // Check if it's in the Johor Bahru range (80000-81300)
+    const numericPostcode = parseInt(postcode);
+    if (numericPostcode >= 80000 && numericPostcode <= 81300) {
+        return true;
+    }
+    
+    return false;
+}
+
+// Validate postcode in the address form
+document.addEventListener('DOMContentLoaded', function() {
+    const addressForm = document.getElementById('save-address-form');
+    if (addressForm) {
+        const postcodeInput = addressForm.querySelector('input[name="postal_code"]');
+        
+        // Add validation on form submission
+        addressForm.addEventListener('submit', function(e) {
+            const postcode = postcodeInput.value.trim();
+            
+            if (!isValidPostcode(postcode)) {
+                e.preventDefault();
+                postcodeInput.classList.add('is-invalid');
+                
+                // Create error message if it doesn't exist
+                let errorElement = postcodeInput.nextElementSibling;
+                if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'invalid-feedback';
+                    postcodeInput.parentNode.insertBefore(errorElement, postcodeInput.nextSibling);
+                }
+                
+                errorElement.textContent = 
+                    'Invalid postcode. We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.';
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Validate postcode on input change
+        postcodeInput.addEventListener('input', function() {
+            const postcode = this.value.trim();
+            
+            if (postcode.length === 5) {
+                if (isValidPostcode(postcode)) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                    
+                    // Remove error message if exists
+                    const errorElement = this.nextElementSibling;
+                    if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+                        errorElement.textContent = '';
+                    }
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                    
+                    // Create or update error message
+                    let errorElement = this.nextElementSibling;
+                    if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
+                        errorElement = document.createElement('div');
+                        errorElement.className = 'invalid-feedback';
+                        this.parentNode.insertBefore(errorElement, this.nextSibling);
+                    }
+                    
+                    errorElement.textContent = 
+                        'Invalid postcode. We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.';
+                }
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.remove('is-invalid');
+                
+                // Remove error message if exists
+                const errorElement = this.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+                    errorElement.textContent = '';
+                }
+            }
+        });
+    }
+});
+</script>
+
+<!-- Add this style to your existing styles -->
+<style>
+/* Postcode validation styles */
+.is-valid {
+    border-color: #28a745;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
 
 
-
+</style>
 <script>
     // Address Modal Functions
     function openAddressModal() {
@@ -404,7 +536,7 @@ function selectVoucher(code, discount, minSpend) {
     if (originalTotal < minSpend) {
         document.getElementById('voucher-message').textContent = 
             `This voucher requires a minimum spend of RM${minSpend.toFixed(2)}`;
-        document.getElementById('voucher-message').className = 'mt-2 text-danger';
+        document.getElementById('voucher-message').className = 'text-danger';
         return;
     }
     
@@ -416,8 +548,8 @@ function selectVoucher(code, discount, minSpend) {
     document.getElementById('dynamic-grand-total').textContent = newTotal.toFixed(2);
     
     // Update UI
-    document.getElementById('voucher-message').textContent = 'Voucher applied successfully!';
-    document.getElementById('voucher-message').className = 'mt-2 text-success';
+    //document.getElementById('voucher-message').textContent = 'Voucher applied successfully!';
+    document.getElementById('voucher-message').className = 'text-success';
     
     document.getElementById('applied-voucher-code').textContent = code;
     document.getElementById('voucher-discount').textContent = discount.toFixed(2);
@@ -468,8 +600,8 @@ function removeVoucher() {
     
     // Reset voucher UI
     document.getElementById('voucher-applied').style.display = 'none';
-    document.getElementById('voucher-message').textContent = 'Voucher removed';
-    document.getElementById('voucher-message').className = 'mt-2 text-success';
+    //document.getElementById('voucher-message').textContent = 'Voucher removed';
+    //document.getElementById('voucher-message').className = 'text-success';
     document.getElementById('applied-voucher-code').textContent = '';
     document.getElementById('voucher-discount').textContent = '0';
 }
@@ -613,7 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .form-group input {
         width: 100%;
         padding: 8px;
-        border: 1px solid #ddd;
+        border: 1px solid #9e9e9e;
         border-radius: 4px;
         box-sizing: border-box;
     }
@@ -653,8 +785,15 @@ document.addEventListener('DOMContentLoaded', function() {
         font-weight: bold;
     }
 
+    .btn-danger {
+        background-color: #d9534f;
+        &:hover {
+            background-color: #c9302c;
+        }
+    }
+
     /* Voucher modal */
-    /* Add to your styles */
+    
 #voucher-modal .modal-content {
     max-width: 500px;
 }

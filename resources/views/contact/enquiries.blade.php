@@ -14,7 +14,7 @@
         @forelse($enquiries as $enquiry)
             <div class="enquiry-card" onclick="window.location='{{ route('enquiries.show', $enquiry) }}'" style="cursor: pointer;">
                 <div class="enquiry-header">
-                    <h3>Enquiry #{{ $enquiry->id }}</h3>
+                    <h3>#{{ $enquiry->enquiry_number }}</h3>
                     <span class="status-badge {{ $enquiry->status }}">{{ str_replace('_', ' ', ucfirst($enquiry->status)) }}</span>
                 </div>         
                 <p><strong>Message:</strong> {{ Str::limit($enquiry->message, 100) }}</p>

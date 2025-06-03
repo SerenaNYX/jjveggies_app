@@ -1,7 +1,11 @@
 /*==========  Non-Mobile First Method  ==========*/
 
 
-
+@media (max-width: 768px) {
+    .btn {
+        font-size: 16px;
+    }
+}
 
 /* cart.blade.php */
 /* Mobile Cart Styles */
@@ -47,7 +51,27 @@
 
 /* END OF cart.blade.php */
 
+/* add to cart notification */
 
+@media (max-width: 768px) {
+    .notification {
+        width: 90% !important;
+        max-width: 90%;
+        padding: 12px 20px;
+        font-size: 16px;
+        bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .notification {
+        width: 95% !important;
+        padding: 10px 15px;
+        font-size: 15px;
+        bottom: 5px;
+    }
+}
+/* END OF add to cart notification */
 
 /* Large Devices, Wide Screens */
 
@@ -106,6 +130,33 @@
   }
   
   /*  WELCOME PAGE */
+
+  /* MANAGE PRODUCT */
+
+  @media (max-width: 768px) { 
+        .product-edit-card {
+            width: 120%;
+            margin-left: -10%;
+        }
+
+        .option-group {
+            font-size: 16px;
+            label {
+                font-size: 14px;
+            }
+            input[type=text], input[type=number] {
+                margin-left: -15px;
+            }
+        }
+
+        .delete-option, .cancel-option {
+            font-size: 14px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+
+/* END OF MANAGE PRODUCT */
 
   /* For tablets and small desktops (768px - 1023px) */
   @media (max-width: 1023px) {
@@ -275,6 +326,10 @@
       font-size: 13px; /* Smaller font size */
       flex: 1 1 calc(50% - 8px); /* Allow 2 items per row */
   }
+  
+  .category-link:last-child:nth-child(odd) {
+        margin-right: calc(50% + 5px) !important;
+    }
 
   .products-container {
       margin-right: 0; /* Remove margin */

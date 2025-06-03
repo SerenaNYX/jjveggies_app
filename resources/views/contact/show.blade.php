@@ -5,6 +5,7 @@
     <h1 class="text-center">Enquiry Details</h1>
     
     <div class="enquiry-detail">
+        <p><strong>#{{ $enquiry->enquiry_number }}</strong></p>
         <div class="enquiry-meta">
             <p><strong>Submitted:</strong> {{ $enquiry->created_at->format('d M Y, h:i A') }}</p>
             <p><strong>Status:</strong> <span class="status-badge {{ $enquiry->status }}">{{ str_replace('_', ' ', ucfirst($enquiry->status)) }}</span></p>

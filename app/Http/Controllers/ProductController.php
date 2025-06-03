@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductOption;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -21,6 +22,7 @@ class ProductController extends Controller
         return view('products.create', compact('categories'));
     }
 
+    // IS store function NEEDED in customer's ProductController??
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -30,7 +32,6 @@ class ProductController extends Controller
             'options' => 'required|array',
             'options.*.option' => 'required|string',
             'options.*.price' => 'required|numeric',
-            'options.*.quantity' => 'required|integer',
         ]);
 
         // Handle image upload
@@ -61,6 +62,7 @@ class ProductController extends Controller
         return view('products.edit', compact('product', 'categories'));
     }
 
+    // IS update function NEEDED in customer's ProductController??
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
@@ -70,7 +72,6 @@ class ProductController extends Controller
             'options' => 'required|array',
             'options.*.option' => 'required|string',
             'options.*.price' => 'required|numeric',
-            'options.*.quantity' => 'required|integer',
         ]);
 
         // Update product data
@@ -106,8 +107,109 @@ class ProductController extends Controller
     // SHOW INDIVIDUAL PRODUCTS
     public function show(Product $product)
     {
-        $product->load('options'); // Load options for the product
-        return view('products.show', compact('product'));
+        if ($product->status !== 'available') {
+            abort(404);
+        }
+        
+        $product->increment('views_count');
+        $product->load('options');
+        
+        // Get recommended products in the specified order
+        $frequentlyBoughtTogether = $this->getFrequentlyBoughtTogether($product);
+        $sameCategoryProducts = $this->getSameCategoryProducts($product, 5 - $frequentlyBoughtTogether->count());
+        
+        // Merge and ensure no duplicates
+        $recommendedProducts = $frequentlyBoughtTogether->merge($sameCategoryProducts)
+            ->unique('id');
+        
+        // If still less than 5, fill with popular products excluding already recommended ones
+        if ($recommendedProducts->count() < 5) {
+            $needed = 5 - $recommendedProducts->count();
+            $excludeIds = $recommendedProducts->pluck('id')->push($product->id);
+            
+            $additionalProducts = Product::whereNotIn('id', $excludeIds)
+                ->with('options')
+                ->withCount('orderItems')
+                ->orderByDesc('order_items_count')
+                ->orderByDesc('views_count')
+                ->take($needed)
+                ->get();
+            
+            $recommendedProducts = $recommendedProducts->merge($additionalProducts);
+        }
+        
+        // Get popular products based on views and purchases (excluding current and recommended products)
+        $excludeIds = $recommendedProducts->pluck('id')->push($product->id);
+        $popularProducts = $this->getPopularProducts(5, $excludeIds);
+        
+        return view('products.show', compact('product', 'recommendedProducts', 'popularProducts'));
+    }
+
+    protected function getFrequentlyBoughtTogether(Product $product)
+    {
+        // Get order IDs that contain the current product
+        $orderIds = OrderItem::where('product_id', $product->id)
+            ->pluck('order_id')
+            ->toArray();
+        
+        // Get products that appear in those orders (excluding current product)
+        return Product::whereHas('orderItems', function($query) use ($orderIds) {
+                $query->whereIn('order_id', $orderIds);
+            })
+            ->available()
+            ->where('id', '!=', $product->id)
+            ->with('options')
+            ->withCount(['orderItems as co_occurrences' => function($query) use ($orderIds) {
+                $query->whereIn('order_id', $orderIds);
+            }])
+            ->orderByDesc('co_occurrences')
+            ->take(5)
+            ->get();
+    }
+
+    protected function getSameCategoryProducts(Product $product, $limit = 5)
+    {
+        if ($limit <= 0) return collect();
+        
+        return Product::where('category_id', $product->category_id)
+            ->available()
+            ->where('id', '!=', $product->id)
+            ->with('options')
+            ->take($limit)
+            ->get();
+    }
+
+    protected function getPopularProducts($limit = 5, $excludeIds = [])
+    {
+        $query = Product::query()
+            ->available()
+            ->with('options')
+            ->withCount('orderItems')
+            ->orderByDesc('order_items_count')
+            ->orderByDesc('views_count')
+            ->take($limit);
+
+        if (!empty($excludeIds)) {
+            $query->whereNotIn('id', $excludeIds);
+        }
+
+        $popular = $query->get();
+
+        // If not enough, fallback to random products
+        if ($popular->count() < $limit) {
+            $remaining = $limit - $popular->count();
+            $random = Product::query()
+                ->available()
+                ->with('options')
+                ->whereNotIn('id', $popular->pluck('id')->merge($excludeIds))
+                ->inRandomOrder()
+                ->take($remaining)
+                ->get();
+            
+            $popular = $popular->merge($random);
+        }
+        
+        return $popular;
     }
 
     // SHOW IN PRODUCT PAGE
@@ -117,23 +219,13 @@ class ProductController extends Controller
         $category = Category::where('slug', $categorySlug)->first();
         $categories = Category::all();
 
-
-        // TODO: PAGINATION IS NOT WORKING!
-        $perPage = 100; // Number of products to load per scroll
-        $page = $request->get('page', 1); // Get the current page number
+        $query = Product::available()->with('options');
 
         if ($category) {
-            $products = Product::where('category_id', $category->id)->with('options')->paginate($perPage, ['*'], 'page', $page);
-        } else {
-            $products = Product::with('options')->paginate($perPage, ['*'], 'page', $page);
+            $query->where('category_id', $category->id);
         }
 
-        if ($request->ajax()) {
-            return response()->json([
-                'products' => $products->items(),
-                'next_page_url' => $products->nextPageUrl()
-            ]);
-        }
+        $products = $query->get();
 
         return view('product', compact('products', 'categories', 'categorySlug'));
     }
@@ -141,7 +233,10 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $products = Product::where('name', 'LIKE', "%$query%")->with('options')->get();
+        $products = Product::where('name', 'LIKE', "%$query%")
+            ->available()
+            ->with('options')
+            ->get();
         $categories = Category::all();
 
         return view('product', compact('products', 'categories'))->with('categorySlug', null);
@@ -156,6 +251,7 @@ class ProductController extends Controller
         }
         
         $products = Product::where('name', 'LIKE', $query.'%')
+            ->available()
             ->orderBy('name')
             ->limit(10)
             ->pluck('name')
@@ -168,11 +264,21 @@ class ProductController extends Controller
     {
         $products = Product::whereDoesntHave('category', function ($query) {
             $query->where('name', 'Clearance');
-        })->with('options')->paginate(8);
+        })
+        ->available()
+        ->with('options')
+        ->withCount('orderItems') // Count of purchases
+        ->orderByDesc('views_count') // Most viewed first
+        ->orderByDesc('order_items_count') // Then most purchased
+        ->paginate(8);
+
 
         $clearanceProducts = Product::whereHas('category', function ($query) {
-            $query->where('name', 'Clearance');
-        })->with('options')->paginate(8);
+                $query->where('name', 'Clearance');
+            })
+            ->available()
+            ->with('options')
+            ->paginate(8);
 
         if ($request->ajax()) {
             return view('welcome', compact('products', 'clearanceProducts'));

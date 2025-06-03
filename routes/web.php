@@ -56,31 +56,31 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 // Email Verification Routes
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+})->middleware('auth', 'banned')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     return redirect('/');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+})->middleware(['auth', 'banned', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('verification-link-sent', true);
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+})->middleware(['auth', 'banned', 'throttle:6,1'])->name('verification.send');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [UserController::class, 'update'])->name('profile.update');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/addresses', [AddressController::class, 'index'])->name('address.index');
     Route::post('/addresses', [AddressController::class, 'store'])->name('address.store');
     Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('address.update');
     Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('address.destroy');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/enquiries', [ContactController::class, 'userEnquiries'])->name('enquiries.index');
@@ -91,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
@@ -106,7 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/stripe/cancel', [StripeController::class, 'cancel'])->name('stripe.cancel');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
     // Customer Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
@@ -129,6 +129,11 @@ Route::middleware(['auth:employee', 'role:admin'])->group(function () {
 
     Route::post('admin/customers/{user}/deny', [EmployeeController::class, 'denyCustomer'])->name('admin.customers.deny');
     Route::post('admin/customers/{user}/unban', [EmployeeController::class, 'unbanCustomer'])->name('admin.customers.unban');
+    
+    Route::get('/admin/enquiries', [StaffContactController::class, 'index'])->name('admin.enquiries.index');
+    Route::get('/admin/enquiries/{enquiry}', [StaffContactController::class, 'show'])->name('admin.enquiries.show');
+    Route::patch('/admin/products/{product}/toggle-status', [EmployeeProductController::class, 'toggleStatus'])
+        ->name('admin.products.toggle-status');
 });
 
 
@@ -140,6 +145,8 @@ Route::middleware(['auth:employee', 'role:staff'])->group(function () {
     Route::get('/staff/enquiries', [StaffContactController::class, 'index'])->name('staff.enquiries.index');
     Route::get('/staff/enquiries/{enquiry}', [StaffContactController::class, 'show'])->name('staff.enquiries.show');
     Route::put('/staff/enquiries/{enquiry}', [StaffContactController::class, 'update'])->name('staff.enquiries.update');
+    Route::patch('/staff/products/{product}/toggle-status', [EmployeeProductController::class, 'toggleStatus'])
+        ->name('staff.products.toggle-status');
 });
 
 Route::middleware(['auth:employee', 'role:driver'])->group(function () {
@@ -184,7 +191,7 @@ Route::middleware(['auth:employee', 'role:driver'])->group(function () {
 
 // Rewards and referrals
 // Referral routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'banned'])->group(function () {
     //Route::get('/referral/enter', [ReferralController::class, 'showEnterReferral'])->name('referral.enter');
     Route::post('/referral/process', [ReferralController::class, 'processReferral'])->name('referral.process');
     Route::post('/referral/generate', [ReferralController::class, 'generateReferralCode'])->name('referral.generate');
@@ -204,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/vouchers/available', [VoucherController::class, 'availableVouchers'])
         ->name('vouchers.available')
-        ->middleware('auth');
+        ->middleware('auth', 'banned');
 });
 
 

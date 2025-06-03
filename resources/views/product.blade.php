@@ -55,12 +55,13 @@
             <span class="close">&times;</span>
             <img id="modalProductImage" src="" alt="Product Image" style="max-width: 50%; height: auto; display:block; margin-left: auto; margin-right: auto;">
             <div id="modalProductName" class="product-name" style="font-weight: bold; text-align: center;"></div>
+            <hr>
             <h2>Select an Option</h2>
             <form id="addToCartForm" method="POST">
                 @csrf
                 <input type="hidden" name="product_id" id="modalProductId">
                 <div id="optionsContainer"></div>
-                <button type="submit" class="btn">Add to Cart</button>
+                <button type="submit" class="btn">+ <i class="fas fa-shopping-cart"></i></button>
             </form>
         </div>
     </div>
@@ -272,7 +273,7 @@
                     console.error('Error adding to cart:', error);
 
                     const notification = $('#notification');
-                    notification.text('Failed to add product to cart.');
+                    notification.text('Sign in to add product to cart.');
                     notification.css('background-color', '#f44336'); // Red color for error
                     notification.css('display', 'block');
                     notification.css('opacity', '1');
@@ -289,3 +290,34 @@
         });
     });
 </script>
+
+<style>
+    /* Mobile Search and Category Styles */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        padding: 0 15px;
+    }
+
+    .search-bar {
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+
+    .button-search {
+        width: 100%;
+    }
+
+    .autocomplete-items {
+        width: 100% !important;
+        left: 0;
+        right: 0;
+    }
+
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+   
+}
+</style>

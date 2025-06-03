@@ -14,9 +14,45 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view('employee.reports.index');
-    }
+        // Get data for the last 60 days (2 months)
+        $endDate = Carbon::now()->endOfDay();
+        $startDate = Carbon::now()->subDays(6)->startOfDay();
+        
+        $dailyData = Order::whereBetween('created_at', [$startDate, $endDate])
+            ->whereIn('status', ['delivered', 'completed'])
+            ->selectRaw('
+                DATE(created_at) as date,
+                MONTH(created_at) as month,
+                SUM(total) as total_sales,
+                COUNT(*) as order_count,
+                SUM((SELECT SUM(quantity) FROM order_items WHERE order_items.order_id = orders.id)) as item_count
+            ')
+            ->groupBy('date', 'month')
+            ->orderBy('date')
+            ->get();
+        
+        // Prepare data for the chart
+        $labels = [];
+        $salesData = [];
+        $orderCountData = [];
+        $itemCountData = [];
+        
+        // Fill in missing days with zero values
+        $currentDate = clone $startDate;
+        while ($currentDate <= $endDate) {
+            $dateString = $currentDate->format('Y-m-d');
+            $found = $dailyData->firstWhere('date', $dateString);
 
+            $labels[] = $currentDate->format('M j');
+            $salesData[] = $found ? $found->total_sales : 0;
+            $orderCountData[] = $found ? $found->order_count : 0;
+            $itemCountData[] = $found ? $found->item_count : 0;
+            
+            $currentDate->addDay();
+        }
+        
+        return view('employee.reports.index', compact('labels', 'salesData', 'orderCountData', 'itemCountData'));
+    }
     public function generate(Request $request)
     {
         $request->validate([

@@ -44,13 +44,15 @@
         </div>
 
         <div class="top-nav container">
-            <div >
+            <div>
                 <a class="logo"href="/">
                     <img src="{{ asset('img/J & J Vegetables Marketing (1).png') }}" alt="J&J Vegetables">
                 </a>
             </div>
             <ul>
                 @guest
+                    <li></li>
+                    <li></li>
                     <li><a href="/product">Shop</a></li>
                     <li><a href="/about">About</a></li>
                 @else
@@ -97,6 +99,27 @@
 </html>
 
 <style>
+
+    @media (max-width: 1500px){
+        .account {
+            margin-right: -100px;
+        }
+    }
+
+    @media (max-width: 1023px) {
+        .account {
+            margin-right: -200px;
+        }
+
+        .top-nav .logo img {
+            margin-left: 100px;
+        }
+
+        .top-nav ul {
+            margin-right: 30px;
+        }
+    }
+
 /* Mobile Header Styles */
 @media (max-width: 768px) {
     header {
@@ -104,6 +127,7 @@
     }
 
     .account {
+        margin-right: 0;
         position: static;
         display: flex;
         justify-content: center;

@@ -159,7 +159,7 @@
                     console.error('Error adding to cart:', error);
 
                     const notification = $('#notification');
-                    notification.text('Failed to add product to cart.');
+                    notification.text('Sign in to add product to cart.');
                     notification.css('background-color', '#f44336'); // Red color for error
                     notification.css('display', 'block');
                     notification.css('opacity', '1');
@@ -305,4 +305,5 @@
             font-size: 7rem;
         }
     }
+
 </style>

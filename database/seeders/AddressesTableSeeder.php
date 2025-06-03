@@ -24,9 +24,9 @@ class AddressesTableSeeder extends Seeder
             for ($i = 0; $i < $addressCount; $i++) {
                 Address::create([
                     'user_id' => $user->id,
-                    'address' => "123, Default Address",
-                    'postal_code' => "12300",
-                    'phone' => "0111234567",
+                    'address' => "123, Jalan Contoh 123, Taman Contoh, Johor Bahru",
+                    'postal_code' => "81100",
+                    'phone' => "01112345678",
                 ]);
             }
         }

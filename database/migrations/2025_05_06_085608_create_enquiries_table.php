@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('enquiries', function (Blueprint $table) {
             $table->id();
+            $table->string('enquiry_number')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('staff_id')->nullable()->constrained('employees')->onDelete('set null');
             $table->string('name');

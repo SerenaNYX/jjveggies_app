@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('payment_status')->default('pending');
             $table->string('status')->default('order_placed');
             $table->foreignId('driver_id')->nullable()->constrained('employees');
+            $table->text('cancellation_reason')->nullable();
             $table->timestamps();
         });
     }

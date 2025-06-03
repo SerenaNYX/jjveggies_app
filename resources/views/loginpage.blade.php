@@ -10,19 +10,30 @@
 
         @auth
             <div class="auth-box">
-                <p>You are logged in.</p>
-                <form action="/logout" method="POST">
+                <div class="auth-header">
+                    <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables" 
+                        style=" width: 30%; height: auto; margin-top: 2rem; border: 3px solid #63966b; border-radius: 50%;"> 
+                    <h2>Welcome Back</h2>
+                    <p>You are already logged in.</p>
+                </div>
+                <form action="/logout" method="POST" class="auth-form">
                     @csrf
-                    <button class="btn btn-primary">Log out</button>
+                    <button class="btn auth-btn">Log out</button>
                 </form>
             </div>
         @else
             <div class="auth-box">
-                <h2>Login</h2>
-                <form action="/login" method="POST">
+                <div class="auth-header">
+                    <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables" 
+                        style=" width: 30%; height: auto; margin-top: 2rem; border: 3px solid #63966b; border-radius: 50%;"> 
+                    <h2>Login</h2>
+                    <p>Access your account to continue</p>
+                </div>
+                
+                <form action="/login" method="POST" class="auth-form">
                     @csrf
                     <div class="form-group">
-                        <input name="loginemail" type="text" class="form-control" placeholder="Email" value="{{ old('loginemail') }}">
+                        <input name="loginemail" type="text" class="form-control" placeholder="Email Address" value="{{ old('loginemail') }}">
                         @error('loginemail')
                             <p class="error-message">{{ $message }}</p>
                         @enderror
@@ -33,16 +44,17 @@
                             <p class="error-message">{{ $message }}</p>
                         @enderror
                     </div>
-                    <button class="btn btn-primary">Log in</button>
+                    
+                    <div class="form-options">
+                        <a href="{{ route('password.request') }}" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button class="auth-btn btn">Log in</button>
+                    
+                    <div class="auth-footer">
+                        <p>No account yet? <a href="/registerpage" class="auth-link">Register now!</a></p>
+                    </div>
                 </form>
-                    <div style="font-size: 15px;">
-                        <br>
-                        <a href="{{ route('password.request') }}" style="color:goldenrod;">Forgot password?</a>
-                    </div>
-                    <div style="font-size: 15px;">
-                        No account yet?
-                        <a href="/registerpage" style="color:green;">Register now!</a>
-                    </div>
             </div>
         @endauth
     </div>

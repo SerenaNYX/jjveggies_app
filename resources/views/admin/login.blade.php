@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <title>Employee Login</title>
 
     <style>
@@ -36,21 +37,6 @@
             box-sizing: border-box;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 30px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #589a4b;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #5a9219;
-        }
-
         .dashboard-container {
             display: flex;
             flex-direction: column;
@@ -71,7 +57,7 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <img class="jj-logo" src="{{ asset('img/logo.jpg') }}" alt="J&J Vegetables">
+        <img class="jj-logo" src="{{ asset('img/jjlogo.png') }}" alt="J&J Vegetables">
         <h1>J&J Vegetables</h1>
     </div>
 
@@ -93,7 +79,7 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn">Login</button>
         </form>
     </div>
 </body>

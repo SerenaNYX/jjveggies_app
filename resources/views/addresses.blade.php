@@ -3,22 +3,31 @@
 
 @section('content')
 <div class="container">
-    <h1> Manage Addresses</h1>
+    <h1 class="text-center"> Manage Addresses</h1>
+    <p class="section-description text-center">We deliver to 81750 (Permas Jaya), 80000-81300 (JB), 81100 (Austin Heights), 81300 (Skudai), and 79100 (Iskandar Puteri).</p>
     <!-- Add New Address Button -->
-    <button id="add-address-button" class="btn btn-primary mt-4" onclick="toggleAddAddressForm()">Add New Address</button>
-
-    <!-- Add New Address Form (Hidden by Default) -->
+    <div class="button-container">
+        <a href="{{ route('profile.edit') }}" class="btn back-button" style="color: white;">
+            &larr; 
+        </a> 
+        <button id="add-address-button" class="btn" onclick="toggleAddAddressForm()">Add New Address</button>
+    </div>
+    
+    <!-- Add New Address Form -->
     <div id="add-address-form" style="display: none;">
         <div class="add-address-container">
-            <form action="{{ route('address.store') }}" method="POST">
+            <form action="{{ route('address.store') }}" method="POST" id="address-form">
                 @csrf
                 <div class="form-group">
                     <label for="new_address">Address</label>
                     <input type="text" name="address" id="new_address" class="form-control" required>
+                    <small id="address-help" class="form-text text-muted">Please enter an address in Permas Jaya, Johor Bahru, Austin Heights, Skudai, or Iskandar Puteri</small>
                 </div>
                 <div class="form-group">
                     <label for="postal_code">Postal Code</label>
-                    <input type="text" name="postal_code" id="postal_code" class="form-control" maxlength="5" required>
+                    <input type="text" name="postal_code" id="postal_code" class="form-control" maxlength="5" oninput="validateContact(this)" required>
+                    <small id="postcode-help" class="form-text text-muted">Valid postcodes: 81750 (Permas Jaya), 80000-81300 (JB), 81100 (Austin Heights), 81300 (Skudai), 79100 (Iskandar Puteri)</small>
+                    <div id="postcode-error" class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
@@ -30,8 +39,8 @@
                     </script>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Add Address</button>
-                    <button type="button" class="btn btn-secondary" onclick="toggleAddAddressForm()">Cancel</button>
+                    <button type="submit" class="btn">Add Address</button>
+                    <button type="button" class="btn" onclick="toggleAddAddressForm()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -72,7 +81,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="postal_code-{{ $address->id }}">Postal Code</label>
-                                <input type="text" name="postal_code" id="postal_code-{{ $address->id }}" class="form-control" value="{{ $address->postal_code }}" maxlength="5" required>
+                                <input type="text" name="postal_code" id="postal_code-{{ $address->id }}" class="form-control" value="{{ $address->postal_code }}" maxlength="5" oninput="validateContact(this)" required>
                             </div>
                             <div class="form-group">
                                 <label for="phone-{{ $address->id }}">Phone Number</label>
@@ -84,8 +93,8 @@
                                     }
                                 </script>
                             </div>
-                            <button type="submit" class="btn btn-sm btn-success">Save</button>
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEditForm({{ $address->id }})">Cancel</button>
+                            <button type="submit" class="btn">Save</button>
+                            <button type="button" class="btn" onclick="toggleEditForm({{ $address->id }})">Cancel</button>
                         </form>
                     </div>
                 </div>
@@ -94,6 +103,95 @@
     </div>
 
 </div>
+
+<script>
+// Valid postcodes for the specified areas
+const validPostcodes = ['81750', '81100', '81300', '79100'];
+
+// Check if postcode is valid
+function isValidPostcode(postcode) {
+    if (validPostcodes.includes(postcode)) return true;
+    const numericPostcode = parseInt(postcode);
+    return numericPostcode >= 80000 && numericPostcode <= 81300;
+}
+
+// Initialize postcode validation for any form
+function setupPostcodeValidation(form) {
+    const postcodeInput = form.querySelector('input[name="postal_code"]');
+    if (!postcodeInput) return;
+
+    // Ensure error element exists
+    let errorElement = postcodeInput.nextElementSibling;
+    if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
+        errorElement = document.createElement('div');
+        errorElement.className = 'invalid-feedback';
+        postcodeInput.parentNode.insertBefore(errorElement, postcodeInput.nextSibling);
+    }
+
+    // Validate on submission
+    form.addEventListener('submit', function(e) {
+        const postcode = postcodeInput.value.trim();
+        if (!isValidPostcode(postcode)) {
+            e.preventDefault();
+            postcodeInput.classList.add('is-invalid');
+            errorElement.textContent = 'Invalid postcode. We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.';
+        }
+    });
+
+    // Validate on input
+    postcodeInput.addEventListener('input', function() {
+        const postcode = this.value.trim();
+        if (postcode.length === 5) {
+            if (isValidPostcode(postcode)) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+                errorElement.textContent = '';
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+                errorElement.textContent = 'Invalid postcode. We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.';
+            }
+        } else {
+            this.classList.remove('is-valid', 'is-invalid');
+            errorElement.textContent = '';
+        }
+    });
+}
+
+// Initialize all forms on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Main add form
+    const addForm = document.getElementById('address-form');
+    if (addForm) setupPostcodeValidation(addForm);
+
+    // All edit forms
+    document.querySelectorAll('[id^="address-"][id$="-edit"] form').forEach(form => {
+        setupPostcodeValidation(form);
+    });
+});
+
+// Modified toggle function to handle edit forms
+function toggleEditForm(addressId) {
+    const viewDiv = document.getElementById(`address-${addressId}-view`);
+    const editDiv = document.getElementById(`address-${addressId}-edit`);
+
+    if (viewDiv.style.display === 'none') {
+        viewDiv.style.display = 'block';
+        editDiv.style.display = 'none';
+    } else {
+        viewDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+    }
+}
+
+// Toggle add address form
+function toggleAddAddressForm() {
+    const form = document.getElementById('add-address-form');
+    const button = document.getElementById('add-address-button');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    button.style.display = button.style.display === 'none' ? 'block' : 'none';
+}
+</script>
 
 <!-- JavaScript to Toggle Edit Form -->
 <script>
@@ -125,46 +223,46 @@
     }
 </script>
 
-<!-- Custom CSS for Address Containers -->
 <style>
+    .button-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+   
+    }
 
     .back-button {
-        display: inline-block;
-        font-size: 24px; /* Larger font size for the arrow */
-        font-weight: bold; /* Bold text */
-        color: #000; /* Black color */
-        text-decoration: none; /* Remove underline */
-        margin-bottom: 20px; /* Space below the button */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
     }
 
-    .back-button:hover {
-        color: #63966b; /* Change color on hover */
-    }
     .address-container {
-        border: 1px solid #ddd; /* Light gray border */
-        border-radius: 8px; /* Rounded corners */
-        padding: 15px; /* Inner spacing */
-        margin-bottom: 15px; /* Space between address containers */
-        background-color: #f9f9f9; /* Light background color */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        border: 1px solid #ddd; 
+        border-radius: 8px; 
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #f9f9f9; 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .address-container .address-content {
         display: flex;
         flex-direction: column;
-        gap: 10px; /* Space between elements inside the container */
+        gap: 10px;
     }
 
     .address-container .btn {
-        margin-right: 10px; /* Space between buttons */
+        margin-right: 10px;
     }
 
     .address-container .form-group {
-        margin-bottom: 10px; /* Space between form fields */
+        margin-bottom: 10px; 
     }
 
     .address-container .card-text {
-        margin: 0; /* Remove default margin for cleaner look */
+        margin: 0; 
     }
 
     .address-container:hover {
@@ -180,7 +278,7 @@
         }
     }
 
-    /* Custom CSS for Add New Address Section */
+    /* Add New Address Section */
     .add-address-container {
         border: 1px solid #ddd; /* Light gray border */
         border-radius: 8px; /* Rounded corners */
@@ -212,14 +310,36 @@
         border-radius: 4px; /* Rounded corners */
     }
 
-    .add-address-container .form-actions {
-        display: flex; /* Align buttons horizontally */
-        gap: 10px; /* Space between buttons */
-        margin-top: 20px; /* Space above buttons */
-    }
+</style>
 
-    .add-address-container .form-actions .btn {
-        flex: 1; /* Equal width for buttons */
-    }
+<style>
+/* Add some visual feedback for valid/invalid postcodes */
+.is-valid {
+    border-color: #28a745;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+}
 </style>
 @endsection

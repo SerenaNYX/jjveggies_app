@@ -1,7 +1,6 @@
 @extends('layouts.employee')
 
 @section('content')
-
 <div class="container">
     <h1 class="text-center">Customer Enquiries</h1>
     
@@ -11,30 +10,30 @@
         </div>
     @endif
     
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="searchQuery" placeholder="Search for enquiries..." class="form-control" onkeyup="searchEnquiries()">
+    </div>
+    
     <div class="clean-table">
-    <!--<div class="enquiries-table">-->
-        <table>
+        <table id="enquiryTable">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Customer</th>
-                    <th>Submitted</th>
+                    <th>Submitted On</th>
                     <th>Status</th>
                     <th>Assigned To</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($enquiries as $enquiry)
-                    <tr>
-                        <td>{{ $enquiry->id }}</td>
-                        <td>{{ $enquiry->name }}</td>
+                    <tr class="hover-row" onclick="window.location='{{ route(auth('employee')->user()->role . '.enquiries.show', $enquiry->id) }}'" style="cursor: pointer;">
+                        <td>{{ $enquiry->enquiry_number }}</td>
+                        <td>{{ $enquiry->name }} ({{ $enquiry->user->uid }})</td>
                         <td>{{ $enquiry->created_at->format('d M Y') }}</td>
                         <td><span class="status-badge {{ $enquiry->status }}">{{ str_replace('_', ' ', ucfirst($enquiry->status)) }}</span></td>
                         <td>{{ $enquiry->staff ? $enquiry->staff->name : 'Unassigned' }}</td>
-                        <td>
-                            <a href="{{ route('staff.enquiries.show', $enquiry) }}" class="btn action-btn">View</a>
-                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -44,42 +43,12 @@
     </div>
 </div>
 
-<style>
-/*    
-    .alert {
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
+<style>    
+    .search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
     }
-    
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-    }
-    */
-
- /*   .enquiries-table {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        overflow-x: auto;
-    }
-    
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    th, td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-    
-    th {
-        background-color: #f5f5f5;
-        font-weight: bold;
-    }*/
     
     .status-badge {
         padding: 0.25rem 0.75rem;
@@ -111,6 +80,12 @@
         text-decoration: none;
         font-size: 0.9rem;
         margin-right: 0.5rem;
+        background-color: #63966b;
+        color: white;
+    }
+    
+    .action-btn:hover {
+        background-color: #44684a;
     }
     
     .pagination {
@@ -141,4 +116,23 @@
         color: white;
     }
 </style>
+
+<script>
+    function searchEnquiries() {
+        var query = document.getElementById('searchQuery').value.toLowerCase();
+        var enquiryRows = document.getElementById('enquiryTable').getElementsByTagName('tr');
+        
+        // Start from index 1 to skip header row
+        for (var i = 1; i < enquiryRows.length; i++) {
+            var enquiryNumber = enquiryRows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            var customerName = enquiryRows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+            
+            if (enquiryNumber.includes(query) || customerName.includes(query)) {
+                enquiryRows[i].style.display = '';
+            } else {
+                enquiryRows[i].style.display = 'none';
+            }
+        }
+    }
+</script>
 @endsection

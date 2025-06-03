@@ -4,6 +4,34 @@
 <div class="container">
     <h1 class="text-center">Generate Report</h1>
 
+    <!-- Charts Container -->
+    <div class="charts-grid">
+        <!-- Sales Chart -->
+        <div class="chart-card">
+            <h3>Daily Sales</h3>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Order Count Chart -->
+        <div class="chart-card">
+            <h3>Daily Orders</h3>
+            <div class="chart-container">
+                <canvas id="orderChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Item Count Chart -->
+        <div class="chart-card">
+            <h3>Daily Items</h3>
+            <div class="chart-container">
+                <canvas id="itemChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <br>
+
     <div class="report-card">
         <form action="{{ route(auth('employee')->user()->role . '.reports.generate') }}" method="POST">
             @csrf
@@ -64,7 +92,6 @@
     <br><br><br>
 </div>
 @endsection
-
 <script>
 
     function toggleSelectAll() {
@@ -85,13 +112,150 @@
         document.getElementById('end_date').valueAsDate = endDate;
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Chart data from controller
+        const labels = @json($labels);
+        const salesData = @json($salesData);
+        const orderCountData = @json($orderCountData);
+        const itemCountData = @json($itemCountData);
+
+        const chartConfig = (id, label, data, color, isCurrency = false) => {
+            const ctx = document.getElementById(id).getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color.replace('1)', '0.2)'),
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    // Show full date in tooltip
+                                    const date = new Date(context[0].label + ', ' + new Date().getFullYear());
+                                    return date.toLocaleDateString('en-US', { 
+                                        month: 'short', 
+                                        day: 'numeric', 
+                                        year: 'numeric' 
+                                    });
+                                },
+                                label: function(context) {
+                                    return isCurrency 
+                                        ? `Total: RM ${context.parsed.y.toFixed(2)}`
+                                        : `Total: ${context.parsed.y.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                // Show month labels for the first day of each month
+                                callback: function(value, index, values) {
+                                    const date = new Date(labels[index] + ', ' + new Date().getFullYear());
+                                    if (date.getDate() === 1) {
+                                        return date.toLocaleDateString('en-US', { month: 'short' });
+                                    }
+                                    return '';
+                                },
+                                maxRotation: 0,
+                                autoSkip: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Initialize charts
+        chartConfig('salesChart', 'Total Sales (RM)', salesData, 'rgba(75, 192, 192, 1)', true);
+        chartConfig('orderChart', 'Order Count', orderCountData, 'rgba(54, 162, 235, 1)');
+        chartConfig('itemChart', 'Item Count', itemCountData, 'rgba(255, 159, 64, 1)');
+    });
+
+</script>
 <style>
+    /* Add to your existing styles */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.5rem;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 1px solid #e0e6ed;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.chart-container {
+    position: relative;
+    flex-grow: 1;
+    min-height: 250px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .charts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card {
+        padding: 1rem;
+    }
+}
     .report-card {
         background: #ffffff;
         border-radius: 12px;
         padding: 2.5rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        max-width: 900px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        max-width: 1200px;
         margin: 0 auto;
         border: 1px solid #e0e6ed;
     }
@@ -189,6 +353,11 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
+        .report-card, .charts-grid {
+            width: 120%;
+            margin-left: -10%;
+        }
+
         .form-row.date-range {
             flex-direction: column;
             gap: 1rem;

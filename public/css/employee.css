@@ -1,4 +1,5 @@
 /* General Styles */
+
 body {
     font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
@@ -162,8 +163,8 @@ body {
 
 .button-danger {
     width: 120px; 
-    height: 40px;
-    border: 1px solid #ffffff;
+    height: 35px;
+    border: none !important;
     background-color: #d9534f;
     color: white;
     border-radius: 5px;
@@ -172,7 +173,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: 'Roboto', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
 
     &:hover {
         background-color: #c9302c;
@@ -181,8 +182,8 @@ body {
 
 .button-danger2 {
     width: 120px; 
-    height: 40px;
-    border: 1px solid #ffffff;
+    height: 35px;
+    border: none !important;
     background-color: #d9ab4f;
     color: white;
     border-radius: 5px;
@@ -191,13 +192,31 @@ body {
     justify-content: center;
     align-items: center;
     font-family: 'Roboto', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
 
     &:hover {
         background-color: #c1953d;
     }
 }
 
+.button-danger3 {
+    width: 120px; 
+    height: 35px;
+    border: none !important;
+    background-color: #63966b;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 14px;
+
+    &:hover {
+        background-color: #44684a;
+    }
+}
 
 .form-control {
     height: 100%;
@@ -292,39 +311,6 @@ body {
     gap: 10px; 
 }
 
-/* Product column width */
-.table th.number-column, .table td.number-column {
-    width: 2%;
-}
-
-.table th.image-column, .table td.image-column {
-    width: 7%;
-}
-
-.table th.name-column, .table td.name-column {
-    width: 30%;
-}
-
-.table th.category-column, .table td.category-column {
-    width: 10%; 
-}
-
-.table th.price-column, .table td.price-column {
-    width: 10%; 
-}
-
-.table th.actions-column, .table td.actions-column {
-    width: 22%; 
-}
-
-.table th.quantity-column {
-    width: 5%; 
-}
-
-.table th.actions-column2 {
-    width: 30%; 
-}
-
 /* Category filter styles */
 .form-control-category {
     flex-grow: 1;
@@ -336,6 +322,36 @@ body {
     cursor: pointer;
     font-size: 90%;
 }
+
+
+
+    .form-control-file {
+        border: 1px solid #909090;
+    }
+
+    .product-edit-card {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        padding: 30px;
+        margin: 20px auto;
+        width: 100%;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-cancel {
+        background-color: goldenrod;
+    }
+
+    .btn-cancel:hover {
+        background-color: darkgoldenrod;
+    }
 /* End of manage-products page */
 
 .form-control {

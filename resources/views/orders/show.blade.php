@@ -75,6 +75,7 @@
                         <p>Placed on {{ $order->created_at->format('F j, Y \a\t g:i a') }}</p>
                         <p>Payment via {{ strtoupper($order->payment_method) }}</p>
                     </div>
+                    <hr>
                     <!-- Status History -->
                     <h3>Status History</h3>
                     <div class="timeline">
@@ -96,6 +97,7 @@
                         @endforeach
                     </div>
 
+            <hr>
             <div class="">
                 <div class="">
                     <h3>Shipping Information</h3>
@@ -130,6 +132,12 @@
 @endsection
 
 <style>
+    @media (max-width: 768px) {
+        .timeline {
+            padding-left: 0;
+        }
+
+    }
     /* Timeline styling */
     .timeline {
         position: relative;
@@ -138,12 +146,12 @@
 
     .timeline-item {
         position: relative;
-        padding-bottom: 1.5rem;
-        border-left: 2px solid #63966b;
+        padding-bottom: 0.5rem;
+        border-left: 2px solid #9a9a9a;
     }
 
     .timeline-item:last-child {
-        padding-bottom: 0;
+        padding-bottom: 15px;
     }
 
     .timeline-item.active {
@@ -158,7 +166,7 @@
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        background: #63966b;
+        background: #9a9a9a;
     }
 
     .timeline-item.active::before {

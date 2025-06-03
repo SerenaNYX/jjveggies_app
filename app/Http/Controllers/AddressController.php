@@ -18,9 +18,29 @@ class AddressController extends Controller
     // Store a new address
     public function store(Request $request)
     {
-        $request->validate([
+
+        $validated = $request->validate([
             'address' => 'required|string|max:255',
-            'postal_code' => 'required|string|size:5',
+            'postal_code' => [
+                'required',
+                'digits:5',
+                function ($attribute, $value, $fail) {
+                    $validPostcodes = ['81750', '81100', '81300', '79100'];
+                    
+                    // Check specific postcodes
+                    if (in_array($value, $validPostcodes)) {
+                        return;
+                    }
+                    
+                    // Check Johor Bahru range (80000-81300)
+                    $numericPostcode = (int)$value;
+                    if ($numericPostcode >= 80000 && $numericPostcode <= 81300) {
+                        return;
+                    }
+                    
+                    $fail('We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.');
+                }
+            ],
             'phone' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
         ]);
 
@@ -40,22 +60,39 @@ class AddressController extends Controller
     }
 
     // Update an existing address
+    // In your AddressController.php
+
     public function update(Request $request, Address $address)
     {
-        $request->validate([
+        $validated = $request->validate([
             'address' => 'required|string|max:255',
-            'postal_code' => 'required|string|size:5',
-            'phone' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
+            'postal_code' => [
+                'required',
+                'digits:5',
+                function ($attribute, $value, $fail) {
+                    $validPostcodes = ['81750', '81100', '81300', '79100'];
+                    
+                    // Check specific postcodes
+                    if (in_array($value, $validPostcodes)) {
+                        return;
+                    }
+                    
+                    // Check Johor Bahru range (80000-81300)
+                    $numericPostcode = (int)$value;
+                    if ($numericPostcode >= 80000 && $numericPostcode <= 81300) {
+                        return;
+                    }
+                    
+                    $fail('We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.');
+                }
+            ],
+            'phone' => 'required|string|max:12'
         ]);
-
-        $address->update([
-            'address' => $request->address,
-            'postal_code' => $request->postal_code,
-            'phone' => $request->phone,
-        ]);
-
-    return redirect()->route('address.index')->with('success', 'Address updated successfully.');
-}
+        
+        $address->update($validated);
+        
+        return redirect()->route('address.index')->with('success', 'Address updated successfully');
+    }
 
     // Delete an address
     public function destroy(Address $address)

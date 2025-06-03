@@ -2,6 +2,8 @@
 
 @section('content')
 
+<!-- IS THIS PAGE STILL NEEDED??? -->
+
 <div class="container">
     <h1 class="text-center">Messages</h1>
     <p class="section-description text-center">Chat with our customer service.</p>

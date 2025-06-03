@@ -11,12 +11,49 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_number',
         'name', 
         'slug', 
         'image', 
         'category_id', 
-        'description'
+        'description',
+        'status'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            $product->slug = self::generateUniqueSlug($product->name);
+            $product->product_number = self::generateUniqueProductNumber();
+        });
+
+        static::updating(function ($product) {
+            if ($product->isDirty('name')) {
+                $product->slug = self::generateUniqueSlug($product->name, $product->id);
+            }
+        });
+    }
+    protected static function generateUniqueProductNumber()
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $productNumber = '';
+        
+        do {
+            $productNumber = '';
+            for ($i = 0; $i < 4; $i++) {
+                $productNumber .= $characters[rand(0, strlen($characters) - 1)];
+            }
+        } while (static::where('product_number', $productNumber)->exists());
+        
+        return $productNumber;
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 'available');
+    }
 
     // Relationship with the ProductOption model
     public function options()
@@ -45,21 +82,6 @@ class Product extends Model
         return $value ?? 'img/vegetables/vegetables.png';
     }
 
-    // Boot method to handle model events
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($product) {
-            $product->slug = self::generateUniqueSlug($product->name);
-        });
-
-        static::updating(function ($product) {
-            if ($product->isDirty('name')) {
-                $product->slug = self::generateUniqueSlug($product->name, $product->id);
-            }
-        });
-    }
     
     protected static function generateUniqueSlug($name, $productId = null)
     {
@@ -73,5 +95,10 @@ class Product extends Model
         }
 
         return $slug;
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }
