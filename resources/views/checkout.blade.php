@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     errorElement.textContent = 
-                        'Invalid postcode. We only deliver to Permas Jaya, Johor Bahru, Austin Heights, Skudai, and Iskandar Puteri.';
+                        'Invalid postcode. We only deliver to Permas Jaya (81750), Johor Bahru (80000-81300), Austin Heights (81100), Skudai (81300), and Iskandar Puteri (79100).';
                 }
             } else {
                 this.classList.remove('is-valid');
@@ -330,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
     margin-top: 0.25rem;
     font-size: 80%;
     color: #dc3545;
+    position: static;
 }
 
 
@@ -731,15 +732,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     .form-group {
-        display: flex;
         margin-bottom: 15px;
+        display: block;
     }
 
     .form-group label {
-        width: 30%;
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
+        width: auto;
     }
 
     .form-group input {
@@ -748,6 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
         border: 1px solid #9e9e9e;
         border-radius: 4px;
         box-sizing: border-box;
+        margin-bottom: 5px; /* Add space between input and error message */
     }
 
     #new-address-form {
