@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    <a href="{{ route('enquiries.index') }}" class="btn" style="color: white; margin-top: 1rem;">&larr;</a>
     <h1 class="text-center">Enquiry Details</h1>
     
     <div class="enquiry-detail">
@@ -52,7 +53,7 @@
             </div>
         @endif
         
-        <a href="{{ route('enquiries.index') }}" class="btn">Back to Enquiries</a>
+        <a href="{{ route('enquiries.index') }}" class="btn back-enquiry">Back to Enquiries</a>
     </div>
 </div>
 
@@ -114,16 +115,6 @@
     .no-response ul {
         margin-top: 1rem;
         padding-left: 1.5rem;
-    }
-    
-    .back-btn {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background-color: #44684a;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.3s;
     }
     
     .back-btn:hover {
@@ -211,7 +202,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .btn {
+    .back-enquiry {
         display: block;
         width: 100%;
         padding: 0.75rem;

@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container">
+    <div class="manage-container">
         <div>
             @if(auth('employee')->user()->role === 'staff')
                 <h1 class="text-center">Manage Orders</h1>
@@ -13,7 +14,7 @@
                 <h1 class="text-center">Deliveries</h1>
             @endif
 
-            <div class="status-filter" style="display: flex;">
+            <div class="status-filter" style="margin-bottom: 0.5rem; display: flex;">
                 <select class="form-control-category" onchange="window.location.href = this.value">
                     <option value="{{ route(auth('employee')->user()->role . '.orders.index') }}" 
                         {{ !request('status') ? 'selected' : '' }}>All Orders</option>
@@ -24,7 +25,7 @@
                         </option>
                     @endforeach
                 </select>
-                <input type="text" id="searchQuery" class="form-control" placeholder="Search for orders..." onkeyup="searchOrders()">
+                <input type="text" id="searchQuery" class="form-control" placeholder="Search for orders..." onkeyup="searchOrders()">    
             </div>
         </div>
         <div>
@@ -170,34 +171,35 @@
             </div>
             {{ $orders->links() }}
         </div>
-</div>
+    </div>
 
-<!-- Customer Info Modal -->
-<div class="modal fade" id="customerInfoModal" tabindex="-1" aria-labelledby="customerInfoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="customerInfoModalLabel">Customer Information</h3>
-            </div>
-            <div class="modal-body">
-                <div class="customer-details">
-                    <p><strong>Name:</strong> <span id="customer-name"></span></p>
-                    <p><strong>Email:</strong> <span id="customer-email"></span></p>
-            <!--        <p><strong>Contact:</strong> <span id="customer-contact"></span></p>-->
-                    
-                    <hr>
- 
-                    <p>
-                        <strong>Address:</strong> <br>
-                        <a id="map-link" target="_blank" rel="noopener noreferrer">
-                            <span id="order-address"></span>, <span id="order-postal"></span>
-                        </a>
-                    </p>
-                    <p><strong>Phone:</strong> <span id="order-phone"></span></p>
+    <!-- Customer Info Modal -->
+    <div class="modal fade" id="customerInfoModal" tabindex="-1" aria-labelledby="customerInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="customerInfoModalLabel">Customer Information</h3>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="modal-body">
+                    <div class="customer-details">
+                        <p><strong>Name:</strong> <span id="customer-name"></span></p>
+                        <p><strong>Email:</strong> <span id="customer-email"></span></p>
+                <!--        <p><strong>Contact:</strong> <span id="customer-contact"></span></p>-->
+                        
+                        <hr>
+    
+                        <p>
+                            <strong>Address:</strong> <br>
+                            <a id="map-link" target="_blank" rel="noopener noreferrer">
+                                <span id="order-address"></span>, <span id="order-postal"></span>
+                            </a>
+                        </p>
+                        <p><strong>Phone:</strong> <span id="order-phone"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

@@ -2,10 +2,11 @@
 
 @section('content')
 <div class="container">
+    <div class="manage-product">
     <h1 class="text-center">Manage Products</h1>
 
     <!-- Search Bar and Category Filter -->
-    <div class="flex-container mb-4">
+    <div class="flex-container">
         <!-- Search Form -->
         <input type="text" id="searchQuery" class="form-control" placeholder="Search for products..." onkeyup="searchProducts()">
         <!-- Category Filter -->
@@ -69,6 +70,7 @@
         </tbody>
     </table>
 </div>
+</div>
 
 <script>
 // Function to search products
@@ -130,26 +132,24 @@ function filterByCategory() {
         }
     }
 
-    /* Main table fixes */
-.clean-table {
-    table-layout: fixed; /* Ensures consistent column sizing */
-    border-collapse: collapse; /* Proper cell spacing */
-}
-
-/* Actions column fixes */
-.actions-column {
-    height: 100%; /* Take full available height */
-    padding: 10px 15px; /* Match other cells */
-    vertical-align: middle; /* Center content vertically */
-    box-sizing: border-box; /* Include padding in height calc */
-    .button {
-        margin-bottom: 5px;
+    .clean-table {
+        table-layout: fixed; 
+        border-collapse: collapse; 
     }
-}
 
-.actions-column form:last-child {
-    margin-bottom: 0;
-}
+    .actions-column {
+        height: 100%;
+        padding: 10px 15px;
+        vertical-align: middle;
+        box-sizing: border-box;
+        .button {
+            margin-bottom: 5px;
+        }
+    }
+
+    .actions-column form:last-child {
+        margin-bottom: 0;
+    }
 
 @media (max-width: 1500px) {
 
@@ -168,12 +168,6 @@ function filterByCategory() {
         font-size: 15px !important;
         line-height: normal;
     } 
-/*    .actions-column {
-        white-space: wrap;
-        .button {
-            margin-bottom: 0.4rem;
-        }
-    }*/
 }
 
 @media (max-width: 1000px) {
@@ -194,6 +188,7 @@ function filterByCategory() {
 }
 
 @media (max-width: 768px) {
+    
     .actions-column .button {
         margin-bottom: 5px;
         padding: 0;

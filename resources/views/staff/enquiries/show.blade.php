@@ -2,9 +2,10 @@
 
 @section('content')
     <div class="container">
-        <h1>Enquiry Details</h1>
         <a href="{{ route(auth('employee')->user()->role . '.enquiries.index') }}" class="btn back-btn" style="margin-bottom:1rem;">&larr;</a>
+        
         <div class="enquiry-detail">   
+            <h1>Enquiry Details</h1>
             <div class="enquiry-meta">
                 <div>
                     <p><strong>Customer:</strong> {{ $enquiry->name }}</p>
@@ -60,7 +61,7 @@
                 </form>
             @else
                 @if($enquiry->response)
-                    <div class="response-section">
+                    <div class="enquiry-section">
                         <h3>Staff Response</h3>
                         <p>{{ $enquiry->response }}</p>
                         <p><small>Responded by: {{ $enquiry->staff->name ?? 'Unknown' }}</small></p>
@@ -152,6 +153,8 @@
     .enquiry-detail {
         padding: 1rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        width: 120%;
+        margin-left: -10%;
     }
 
     .enquiry-meta {
@@ -245,10 +248,7 @@
         font-size: 13px;
     }
 
-    .back-btn {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
+  
 }
 
 /* For very small screens */

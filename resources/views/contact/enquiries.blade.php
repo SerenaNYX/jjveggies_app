@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    <a href="{{ route('contact.index') }}" class="btn" style="color: white; margin-top: 1rem;">&larr;</a>
     <h1 class="text-center">My Enquiries</h1>
     
     @if(session('success'))

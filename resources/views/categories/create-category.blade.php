@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <a class="btn" style="color: white;" href="{{ route(Auth::guard('employee')->user()->role . '.categories.index') }}">&larr; </a>
+    <a class="btn back-btn" style="color: white;" href="{{ route(Auth::guard('employee')->user()->role . '.categories.index') }}">&larr; </a>
     <div class="product-edit-card">
         <h1 class="text-center">{{ isset($category) ? 'Edit Category' : 'Add Category' }}</h1>
         

@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    <div class="enquiry-detail">   
     <h1 class="text-center">Customer Enquiries</h1>
     
     @if(session('success'))
@@ -41,7 +42,7 @@
         
         {{ $enquiries->links() }}
     </div>
-</div>
+</div></div>
 
 <style>    
     .search-container {
@@ -114,6 +115,13 @@
     .pagination .active a {
         background-color: #44684a;
         color: white;
+    }
+
+    @media (max-width: 768px) {
+        .enquiry-detail {
+            width: 120%;
+            margin-left: -10%;
+        }
     }
 </style>
 
