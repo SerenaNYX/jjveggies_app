@@ -18,22 +18,29 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'uid' => User::generateUniqueUid(),
-                'name' => 'Serena',
+                'name' => 'Serena Ng Yen Xin',
                 'email' => 'yenxinng@gmail.com',
                 'password' => Hash::make('password'),
-                'contact' => '0115479225',
+                'contact' => '01154719225',
                 'remember_token' => Str::random(10),
             ],
             [
                 'uid' => User::generateUniqueUid(),
-                'name' => 'Saera',
+                'name' => 'Saera NYX',
                 'email' => 'saera@example.com',
                 'password' => Hash::make('password'),
-                'contact' => '0174215779',
+                'contact' => '01742145779',
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'uid' => User::generateUniqueUid(),
+                'name' => 'Risa NMX',
+                'email' => 'risa@example.com',
+                'password' => Hash::make('password'),
+                'contact' => '01845612345',
                 'remember_token' => Str::random(10),
             ],
         ];
-        // teolilynatasha@gmail.com
         DB::table('users')->insert($users);
     }
 }

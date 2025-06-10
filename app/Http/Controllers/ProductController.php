@@ -225,7 +225,7 @@ class ProductController extends Controller
             $query->where('category_id', $category->id);
         }
 
-        $products = $query->get();
+        $products = $query->orderBy('name', 'asc')->get();
 
         return view('product', compact('products', 'categories', 'categorySlug'));
     }

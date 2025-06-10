@@ -529,6 +529,97 @@ class ProductOptionsTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+
+            // Cavendish Banana
+            [
+                'product_id' => 41,
+                'option' => 'Per bundle',
+                'price' => 4.60,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Seedless Green Grapes
+            [
+                'product_id' => 42,
+                'option' => '+/-800g',
+                'price' => 13.50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Seedless Red Grapes
+            [
+                'product_id' => 43,
+                'option' => '+/-800g',
+                'price' => 13.50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Seedless Green Grapes
+            [
+                'product_id' => 44,
+                'option' => '+/-800g',
+                'price' => 7.50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+
+            // Seedless Red Grapes
+            [
+                'product_id' => 45,
+                'option' => '+/-800g',
+                'price' => 7.50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Potato
+            [
+                'product_id' => 46,
+                'option' => '500g',
+                'price' => 1.70,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 46,
+                'option' => '1kg',
+                'price' => 3.50,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Russet Potato
+            [
+                'product_id' => 47,
+                'option' => '500g',
+                'price' => 2.00,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'product_id' => 47,
+                'option' => '1kg',
+                'price' => 4.40,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Papaya
+            [
+                'product_id' => 48,
+                'option' => '1 whole',
+                'price' => 5.20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Papaya (Clearance)
+            [
+                'product_id' => 49,
+                'option' => '1 whole',
+                'price' => 3.20,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ];
 
         DB::table('product_options')->insert($productOptions);
