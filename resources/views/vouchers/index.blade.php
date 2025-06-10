@@ -120,7 +120,26 @@
             
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
-                    const cameraId = devices[0].id; // use first camera
+                    // Determine which camera to use
+                    let cameraId;
+                    
+                    if (isMobileDevice()) {
+                        // On mobile, try to find the back camera
+                        const backCamera = devices.find(device => 
+                            device.label.toLowerCase().includes('back') || 
+                            device.label.toLowerCase().includes('rear')
+                        );
+                        
+                        if (backCamera) {
+                            cameraId = backCamera.id;
+                        } else {
+                            // If no back camera found, use the last camera (often the back one)
+                            cameraId = devices[devices.length - 1].id;
+                        }
+                    } else {
+                        // On desktop, just use the first camera
+                        cameraId = devices[0].id;
+                    }
                     
                     html5QrCode.start(
                         cameraId,
@@ -159,6 +178,11 @@
             }
             qrReaderContainer.style.display = 'none';
             scanBtn.style.display = 'inline-block';
+        }
+        
+        // Function to detect mobile devices
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
         
         // Clean up scanner when leaving page
