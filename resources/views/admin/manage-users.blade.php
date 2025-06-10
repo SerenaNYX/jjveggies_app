@@ -82,7 +82,13 @@
                         <tr>
                             <td>{{ $customer->uid }}</td>
                             <td>{{ $customer->name }}</td>
-                            <td>{{ $customer->email }}</td>
+                            <td>{{ $customer->email }}
+                                @if ($customer->hasVerifiedEmail())
+                                    <small style="color: green;"> (Verified)</small>
+                                @else
+                                    <small style="color: red;"> (Unverified)</small>
+                                @endif
+                            </td>
                             <td>{{ $customer->contact }}</td>
                             <td>
                                 @if ($customer->banned_at)
@@ -91,6 +97,7 @@
                                     <span class="badge badge-success">Active</span>
                                 @endif
                             </td>
+
                             <td>
                                 @if ($customer->banned_at)
                                     <button class="button-danger2" 
