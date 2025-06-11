@@ -40,6 +40,14 @@ class UsersTableSeeder extends Seeder
                 'contact' => '01845612345',
                 'remember_token' => Str::random(10),
             ],
+            [
+                'uid' => User::generateUniqueUid(),
+                'name' => 'Customer User',
+                'email' => 'customer@example.com',
+                'password' => Hash::make('password'),
+                'contact' => '01172534174',
+                'remember_token' => Str::random(10),
+            ],
         ];
         DB::table('users')->insert($users);
     }
