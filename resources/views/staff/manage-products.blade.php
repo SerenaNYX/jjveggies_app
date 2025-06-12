@@ -132,11 +132,6 @@ function filterByCategory() {
         }
     }
 
-    .clean-table {
-        table-layout: fixed; 
-        border-collapse: collapse; 
-    }
-
     .actions-column {
         height: 100%;
         padding: 10px 15px;

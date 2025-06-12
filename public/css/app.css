@@ -165,6 +165,7 @@ input[type="checkbox"]:disabled {
     overflow-x: auto;
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; 
 }
 
 .clean-table table {
@@ -336,14 +337,10 @@ header {
     grid-gap: 30px;
     padding-top: 20px;
     padding-bottom: 20px;
-    /*background: url('/img/background2.jpg');*/
     background-color: #3a4d3d;
-    /* background-size: cover; */
-
-    .hero-image {
-        padding-left: 60px;
-    }
-
+    align-items: center; /* This vertically centers the content */
+    min-height: 400px; /* Set a minimum height or use whatever height you prefer */
+    position: relative;
     h1 {
         font-size: 52px;
         margin-top: 50px;
@@ -356,6 +353,20 @@ header {
     .button {
         margin-right: 14px;
     }
+}
+
+.hero-image {
+    padding-left: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-image img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
 }
 
 /* Featured and Clearance section in welcome page */
@@ -480,12 +491,12 @@ header {
         background-color: #5f916a;
     }
 }
-
+/*
 .blog-section {
     background: #f5f5f5;
     border-top: 1px solid #cdcdcd;
     padding: 50px 0;
-    margin-bottom: -150px; /* remove gap between blog section and footer */
+    margin-bottom: -150px;
 
     .blog-posts {
         display: grid;
@@ -498,7 +509,7 @@ header {
         font-weight: 300;
         font-size: 16px;
     }
-}
+}*/
 
 .pagination {
     display: flex;

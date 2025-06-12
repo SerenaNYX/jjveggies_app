@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CheckoutController extends Controller
-{
+{/*
     public function index(Request $request)
     {
         $selectedItems = $request->input('selected_items', []);
@@ -100,7 +100,127 @@ class CheckoutController extends Controller
                 'voucher_code' => $request->voucher_code ?? null
             ]);
         }
+    }*/
+
+    // In CheckoutController.php
+
+public function index(Request $request)
+{
+    $selectedItems = $request->input('selected_items', []);
+    
+    if (empty($selectedItems)) {
+        return redirect()->route('cart.index')->with('error', 'No items selected');
     }
+
+    $cartItems = CartItem::whereHas('cart', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->whereIn('id', $selectedItems)
+        ->with(['product' => function($query) {
+            $query->where('status', 'available');
+        }, 'option'])
+        ->get();
+
+    // Filter out any unavailable items
+    $availableItems = $cartItems->filter(function($item) {
+        return $item->product && $item->product->status === 'available';
+    });
+
+    if ($availableItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'No available items selected');
+    }
+
+    // Check if any selected items were unavailable
+    if ($cartItems->count() !== $availableItems->count()) {
+        $unavailableCount = $cartItems->count() - $availableItems->count();
+        return redirect()->route('cart.index')
+            ->with('warning', "$unavailableCount item(s) in your cart are no longer available");
+    }
+
+    $totalPrice = $availableItems->sum(function ($item) {
+        return $item->option->price * $item->quantity;
+    });
+
+    $deliveryFee = 6.00;
+    $grandTotal = $totalPrice + $deliveryFee;
+    $addresses = Auth::user()->addresses()->latest()->get();
+    $defaultAddress = $addresses->first();
+
+    return view('checkout', compact(
+        'cartItems', 
+        'totalPrice',
+        'deliveryFee',
+        'grandTotal',
+        'addresses',
+        'defaultAddress',
+        'selectedItems'
+    ));
+}
+
+public function processCheckout(Request $request)
+{
+    $validated = $request->validate([
+        'payment_method' => 'required|in:card,fpx',
+        'address_id' => 'required|exists:addresses,id,user_id,'.Auth::id(),
+        'selected_items' => 'required|array',
+        'selected_items.*' => 'exists:cart_items,id',
+    ]);
+
+    $cartItems = CartItem::whereHas('cart', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->whereIn('id', $request->selected_items)
+        ->with(['product' => function($query) {
+            $query->where('status', 'available');
+        }, 'option'])
+        ->get();
+
+    // Filter out any unavailable items
+    $availableItems = $cartItems->filter(function($item) {
+        return $item->product && $item->product->status === 'available';
+    });
+
+    if ($availableItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'No available items selected');
+    }
+
+    // Check if any selected items became unavailable
+    if ($cartItems->count() !== $availableItems->count()) {
+        $unavailableCount = $cartItems->count() - $availableItems->count();
+        return redirect()->route('cart.index')
+            ->with('warning', "$unavailableCount item(s) in your cart are no longer available");
+    }
+
+    $subtotal = $availableItems->sum(function($item) {
+        return $item->option->price * $item->quantity;
+    });
+
+    $deliveryFee = 6.00;
+    $grandTotal = $subtotal + $deliveryFee;
+
+    // Apply voucher discount if provided
+    if ($request->has('voucher_code')) {
+        $voucher = Voucher::where('code', $request->voucher_code)
+            ->where('user_id', Auth::id())
+            ->where('is_used', false)
+            ->first();
+
+        if ($voucher && $grandTotal >= $voucher->minimum_spend) {
+            $grandTotal -= $voucher->discount_amount;
+        }
+    }
+
+    // For Card/FPX payments
+    if (in_array($request->payment_method, ['card', 'fpx'])) {
+        return redirect()->route('stripe.payment', [
+            'price' => $grandTotal,
+            'payment_method' => $request->payment_method,
+            'address_id' => $request->address_id,
+            'selected_items' => $request->selected_items,
+            'voucher_code' => $request->voucher_code ?? null
+        ]);
+    }
+}
 
     public function createOrder($addressId, $subtotal, $deliveryFee, $total, $paymentMethod, $paymentStatus, $cartItems, $voucherCode = null)
     {

@@ -27,7 +27,10 @@
         <!--        <a href="{{ route('enquiries.show', $enquiry) }}" class="btn">View Details</a>-->
             </div>
         @empty
-            <p>You haven't submitted any enquiries yet.</p>
+            <div class="text-center">
+                <i class="fa fa-envelope-open-o fa-5x" style="color: #969696;"></i>
+            </div>
+            <p class="text-center">You haven't submitted any enquiries yet.</p>
         @endforelse
     </div>
 </div>

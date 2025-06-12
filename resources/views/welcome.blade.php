@@ -4,10 +4,10 @@
 <div class="hero container">
     <div class="hero-copy">
         <h1 class="jj-title">J&J Vegetables</h1>
-        <p class="jj-desc">Welcome to J&J Vegetables online.<br>Buy fresh vegetables from J&J Vegetables. You order, we deliver.</p>
+        <p class="jj-desc">Welcome to J&J Vegetables online.<br>Buy fresh vegetables from J&J Vegetables.<br>You order, we deliver.</p>
         <div class="hero-buttons">
-            <a href="/product" class="button button-white">Shop now</a>
-            <a href="/about" class="button button-white">About us</a>
+            <a href="/product" class="button intro-button button-white">Shop now</a>
+            <a href="/about" class="button intro-button button-white">About us</a>
         <!--    <a href="#" class="button button-white">How to order</a>-->
         </div>
     </div> <!-- end hero-copy -->
@@ -22,8 +22,8 @@
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="text-center button-container">
-            <button id="featured-button" class="button active" onclick="showFeatured()">Featured</button>
-            <button id="clearance-button" class="button" onclick="showClearance()">Clearance</button>
+            <button id="featured-button" class="button active">Featured</button>
+            <button id="clearance-button" class="button">Clearance</button>
         </div>
 
         <!-- Featured Section -->
@@ -78,20 +78,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Open modal when "Add to Cart" is clicked
-        $('.add-to-cart').on('click', function() {
+        // =============================================
+        // MODAL AND ADD TO CART FUNCTIONALITY
+        // =============================================
+        
+        // Use event delegation for dynamically loaded add-to-cart buttons
+        $(document).on('click', '.add-to-cart', function() {
             const productId = $(this).data('product-id');
-            $('#modalProductId').val(productId); // Set the product ID in the form
+            $('#modalProductId').val(productId);
             $('#addToCartForm').attr('action', `/cart/add/${productId}`);
+            
             // Fetch product details and options
             $.ajax({
-                url: `/products/${productId}/options`, // Updated endpoint name
+                url: `/products/${productId}/options`,
                 type: 'GET',
                 success: function(response) {
                     // Update modal content with product details
-                    $('#modalProductImage').attr('src', response.image); // Set product image
-                    $('#modalProductImage').attr('alt', response.name); // Set alt text for image
-                    $('#modalProductName').text(response.name); // Set product name
+                    $('#modalProductImage').attr('src', response.image);
+                    $('#modalProductImage').attr('alt', response.name);
+                    $('#modalProductName').text(response.name);
 
                     // Populate options
                     let optionsHtml = '';
@@ -103,10 +108,10 @@
                                     ${option.option} - RM${option.price.toFixed(2)}
                                 </label>
                             </div>
-                        `; /* (${option.quantity} in stock) */
+                        `;
                     });
-                    $('#optionsContainer').html(optionsHtml); // Populate options in the modal
-                    $('#optionModal').show(); // Show the modal
+                    $('#optionsContainer').html(optionsHtml);
+                    $('#optionModal').show();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching product details:', error);
@@ -128,13 +133,12 @@
 
         // Submit the form via AJAX
         $('#addToCartForm').on('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const formData = $(this).serialize(); // Serialize form data
-            const action = $(this).attr('action'); // Get the form action
+            event.preventDefault();
+            const formData = $(this).serialize();
+            const action = $(this).attr('action');
 
             $.ajax({
-                url: action, // Use the dynamically set action
+                url: action,
                 type: 'POST',
                 data: formData,
                 success: function(response) {
@@ -152,7 +156,7 @@
                         notification.css('opacity', '0');
                         setTimeout(function() {
                             notification.css('display', 'none');
-                        }, 500); // Wait for fade out to complete
+                        }, 500);
                     }, 2000);
                 },
                 error: function(xhr, status, error) {
@@ -160,7 +164,7 @@
 
                     const notification = $('#notification');
                     notification.text('Sign in to add product to cart.');
-                    notification.css('background-color', '#f44336'); // Red color for error
+                    notification.css('background-color', '#f44336');
                     notification.css('display', 'block');
                     notification.css('opacity', '1');
                     
@@ -168,26 +172,22 @@
                         notification.css('opacity', '0');
                         setTimeout(function() {
                             notification.css('display', 'none');
-                      //      notification.css('background-color', '#4CAF50');
                         }, 500);
                     }, 4000);
                 }
             });
         });
-    });
-</script>
 
-<script>
-    $(document).ready(function() {
+        // =============================================
+        // PAGINATION HANDLING
+        // =============================================
+        
         // Function to handle AJAX pagination
         function handlePagination(section, pagination) {
             $(document).on('click', `#${pagination} .pagination a`, function(event) {
-                event.preventDefault(); // Prevent default link behavior
-
-                // Get the URL from the clicked link
+                event.preventDefault();
                 let url = $(this).attr('href');
 
-                // Make an AJAX request to fetch the new page
                 $.ajax({
                     url: url,
                     type: 'GET',
@@ -203,56 +203,55 @@
             });
         }
 
-        // Initialize AJAX pagination for Featured and Clearance sections
+        // Initialize AJAX pagination for both sections
         handlePagination('featured-section', 'featured-pagination');
         handlePagination('clearance-section', 'clearance-pagination');
+
+        // =============================================
+        // SECTION TOGGLE FUNCTIONALITY
+        // =============================================
+
+        // Function to show the Featured section
+        function showFeatured() {
+            $('#featured-section').css('display', 'grid');
+            $('#clearance-section').hide();
+            $('#featured-pagination').show();
+            $('#clearance-pagination').hide();
+            $('#featured-button').addClass('active');
+            $('#clearance-button').removeClass('active');
+        }
+
+        // Function to show the Clearance section
+        function showClearance() {
+            $('#featured-section').hide();
+            $('#clearance-section').css('display', 'grid');
+            $('#featured-pagination').hide();
+            $('#clearance-pagination').show();
+            $('#featured-button').removeClass('active');
+            $('#clearance-button').addClass('active');
+        }
+
+        // Set Featured as default on page load
+        showFeatured();
+
+        // Add click handlers for the section toggle buttons
+        $('#featured-button').on('click', showFeatured);
+        $('#clearance-button').on('click', showClearance);
     });
-</script>
 
-<script>
-    // Function to show the Featured section and hide the Clearance section
-    function showFeatured() {
-        document.getElementById('featured-section').style.display = 'grid';
-        document.getElementById('clearance-section').style.display = 'none';
-        document.getElementById('featured-pagination').style.display = 'block';
-        document.getElementById('clearance-pagination').style.display = 'none';
-        document.getElementById('featured-button').classList.add('active');
-        document.getElementById('clearance-button').classList.remove('active');
-    }
-
-    // Function to show the Clearance section and hide the Featured section
-    function showClearance() {
-        document.getElementById('featured-section').style.display = 'none';
-        document.getElementById('clearance-section').style.display = 'grid';
-        document.getElementById('featured-pagination').style.display = 'none';
-        document.getElementById('clearance-pagination').style.display = 'block';
-        document.getElementById('clearance-button').classList.add('active');
-        document.getElementById('featured-button').classList.remove('active');
-    }
-
-    // Set the Featured section as the default visible section on page load
-    document.addEventListener('DOMContentLoaded', function () {
-        showFeatured(); // Show Featured section by default
-    });
-</script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // AJAX search handling
+    // =============================================
+    // SEARCH FUNCTIONALITY (if needed)
+    // =============================================
+    $(function() {
         $('#searchForm').on('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Get the search query
+            event.preventDefault();
             let query = $('#searchInput').val();
 
-            // Make the AJAX request
             $.ajax({
-                url: '{{ route('product.show') }}', // The same route used for products
+                url: '{{ route("product.show") }}',
                 type: 'GET',
-                data: { query: query }, // Send the search query
+                data: { query: query },
                 success: function(response) {
-                    // Update the products section with the new content
                     $('#productsList').html(response);
                 },
                 error: function(xhr, status, error) {
@@ -261,12 +260,12 @@
             });
         });
 
-        // Hover to show description
-        $('.product').hover(function() {
+        // Hover to show description (using event delegation)
+        $(document).on('mouseenter', '.product', function() {
             var description = $(this).data('description');
             var descriptionElement = $('<div class="product-description"></div>').text(description);
             $(this).append(descriptionElement);
-        }, function() {
+        }).on('mouseleave', '.product', function() {
             $(this).find('.product-description').remove();
         });
     });
@@ -303,6 +302,13 @@
     @media (max-width: 480px) {
         .jj-title {
             font-size: 7rem;
+        }
+
+        .intro-button {
+            margin-bottom: 0.5rem;
+            padding: 1rem !important;
+            font-size: 16px;
+            width: 8rem;
         }
     }
 

@@ -30,8 +30,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th style="width: 35%">Email</th>
+                        <th style="width: 15%">Role</th>
                         <th style="width: 30%">Actions</th>
                     </tr>
                 </thead>
@@ -41,11 +41,11 @@
                             <td>{{ $employee->name }}</td>
                             <td>{{ $employee->email }}</td>
                             <td>{{ $employee->role }}</td>
-                            <td>
+                            <td class="actions-column">
                                 @if($employee->name == 'Admin User') <!-- Disable Edit button for "Admin User" -->
-                                    <button class="button button-edit" style="background-color: gray; cursor: default;" disabled>Edit</button>
+                                    <button class="button button-edit" style="background-color: gray; cursor: default; margin-bottom: 4px;" disabled>Edit</button>
                                 @else
-                                    <a href="{{ route('admin.employees.edit', $employee) }}" class="button-edit">Edit</a>
+                                    <a href="{{ route('admin.employees.edit', $employee) }}" class="button button-edit" style="margin-bottom: 4px;">Edit</a>
                                 @endif
                                 @if($employee->name == 'Admin User') <!-- Disable the delete button for Admin User -->
                                     <button class="button button-danger" style="background-color: gray; cursor: default;" disabled>Delete</button>
@@ -53,7 +53,7 @@
                                     <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" style="display:inline-block;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="button-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                        <button type="submit" class="button button-danger" onclick="return confirm('Are you sure?')">Delete</button>
                                     </form>
                                 @endif
                             </td>
@@ -71,10 +71,10 @@
                     <tr>
                         <th>UID</th>
                         <th>Name</th>
-                        <th>Email</th>
+                        <th style="width: 24%">Email</th>
                         <th>Contact</th>
-                        <th>Status</th>
-                        <th style="width: 15%">Actions</th>
+                    <!--    <th>Status</th>-->
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,22 +90,22 @@
                                 @endif
                             </td>
                             <td>{{ $customer->contact }}</td>
-                            <td>
+                        <!--    <td>
                                 @if ($customer->banned_at)
                                     <span class="badge badge-danger">Banned</span>
                                 @else
                                     <span class="badge badge-success">Active</span>
                                 @endif
-                            </td>
+                            </td>-->
 
-                            <td>
+                            <td class="actions-column">
                                 @if ($customer->banned_at)
-                                    <button class="button-danger2" 
+                                    <button class="button button-danger2" 
                                             onclick="toggleBan({{ $customer->id }}, 'unban', this)">
                                         Unban
                                     </button>
                                 @else
-                                    <button class="button-danger" 
+                                    <button class="button button-danger" 
                                             onclick="toggleBan({{ $customer->id }}, 'ban', this)">
                                         Ban
                                     </button>
@@ -241,6 +241,8 @@ function searchUsers() {
 </script>
 
 <style>
+
+
     .badge-success {
         background-color: #a2cb97;;
         border-radius: 18px;
@@ -272,6 +274,35 @@ function searchUsers() {
         }
     }
 
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .clean-table td, .clean-table th {
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 5px;
+        }
+        .clean-table {
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .actions-column .button {
+            margin: 3px !important;
+            padding: 0;
+            width: 70px;
+        }
+
+        .button-add {
+            font-size: 15px !important;
+            line-height: normal;
+        } 
+    }
+
     /* Mobile User Management Styles */
 @media (max-width: 768px) {
 
@@ -299,10 +330,31 @@ function searchUsers() {
         font-size: 14px;
     }
 
+    .clean-table tbody tr {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .clean-table td {
+        padding: 5px;
+        border: none;
+        width: 100%;
+        display: block;
+    }
+
     .clean-table td::before {
         content: attr(data-label);
         font-weight: bold;
         width: 40%;
+    }
+
+    .clean-table .button {
+        margin: 3px;
     }
 
     /* Buttons */

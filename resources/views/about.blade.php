@@ -12,7 +12,7 @@
 
         <div class="blog-posts">
             <div class="blog-post" id="blog1">
-                <img src="img/map.png" alt="" width="600" height="300">
+                <img src="img/map.png" alt="" >
                 <h2 class="blog-title">Delivery Coverage</h2>
                 <div class="blog-description">We deliver fresh groceries to <strong>
                     <ul>
@@ -27,7 +27,7 @@
             </div>
             <div class="blog-post" id="blog2">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d662.0049891411493!2d103.82755792994057!3d1.5086852083713673!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da6b7bf3f34ab1%3A0x2b6fd1089d9b6300!2sJ%20%26%20J%20Vegetables%20Marketing!5e0!3m2!1sen!2smy!4v1748675467579!5m2!1sen!2smy" 
-                    width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
                 <h2 class="blog-title">Location</h2>
                 <div class="blog-description">Find us at
@@ -39,13 +39,78 @@
 @endsection
 
 <style>
-    /* Mobile About Us Page Styles */
+
+.blog-section {
+    background: #f5f5f5;
+    border-top: 1px solid #cdcdcd;
+    padding: 50px 0;
+    margin-bottom: -150px;
+
+    .blog-posts {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 30px;
+        margin: 60px 0;
+    }
+
+    .blog-description {
+        font-weight: 300;
+        font-size: 16px;
+    }
+}
+
+.blog-post img {
+    object-fit: cover;
+    height: 300px;
+}
+
+.blog-post iframe {
+    height: 300px;
+    width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .blog-section {
+        padding: 40px 0;
+    }
+
+    .blog-posts {
+        grid-template-columns: 1fr 1fr !important; 
+        gap: 30px !important;
+        margin: 30px 0 !important;
+    }
+
+    .blog-post {
+        padding: 20px;
+        
+    }
+
+   /* .blog-post img,
+    .blog-post iframe {
+        width: 100% !important;
+        height: 200px !important;
+    }*/
+
+    .blog-title {
+        font-size: 22px;
+        margin: 15px 0 10px;
+    }
+
+    .blog-description {
+        font-size: 16px !important;
+        line-height: 1.5;
+    }
+
+    .blog-description ul {
+        padding-left: 20px;
+        text-align: left;
+    }
+}
+
 @media (max-width: 768px) {
-
-
     .blog-section {
         padding: 30px 0;
-        margin-bottom: 0; /* Remove negative margin */
+        margin-bottom: 0;
     }
 
     h1.text-center {
@@ -69,13 +134,14 @@
     .blog-post {
         text-align: center;
     }
-
+/*
     .blog-post img,
     .blog-post iframe {
+        object-fit: contain;
         width: 100% !important;
         height: auto !important;
         max-height: 200px;
-    }
+    }*/
 
     .blog-title {
         font-size: 20px;

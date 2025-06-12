@@ -51,8 +51,8 @@
             </div>
             <ul>
                 @guest
-                    <li></li>
-                    <li></li>
+                    <li class="hide-on-mobile"></li>
+                    <li class="hide-on-mobile"></li>
                     <li><a href="/product">Shop</a></li>
                     <li><a href="/about">About</a></li>
                 @else
@@ -124,6 +124,10 @@
 @media (max-width: 768px) {
     header {
         padding-bottom: 15px;
+    }
+
+    .hide-on-mobile {
+        display: none;
     }
 
     .account {

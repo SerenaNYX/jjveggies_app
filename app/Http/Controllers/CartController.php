@@ -18,6 +18,9 @@ class CartController extends Controller
 
         $cartItems = $cart->items()
             ->with(['product', 'option'])
+            ->whereHas('product', function($query) {
+                $query->where('status', 'available');
+            })
             ->orderBy('updated_at', 'DESC')  // Sort by last modification time
             ->get();
         
@@ -131,6 +134,40 @@ class CartController extends Controller
 
         $cartItems = CartItem::where('user_id', Auth::id())
             ->whereIn('id', $request->selected_items)
+            ->with(['product' => function($query) {
+                $query->where('status', 'available');
+            }, 'option'])
+            ->get();
+
+        // Filter out any items that might have become unavailable
+        $availableItems = $cartItems->filter(function($item) {
+            return $item->product && $item->product->status === 'available';
+        });
+
+        if ($availableItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'No available items selected');
+        }
+
+        $totalPrice = $availableItems->sum(function ($item) {
+            return $item->option->price * $item->quantity;
+        });
+
+        return view('checkout.index', [
+            'cartItems' => $availableItems,
+            'totalPrice' => $totalPrice,
+            'selected_items' => $availableItems->pluck('id')->toArray()
+        ]);
+    }
+
+/*    public function checkout(Request $request)
+    {
+        $request->validate([
+            'selected_items' => 'required|array',
+            'selected_items.*' => 'exists:cart_items,id,user_id,'.Auth::id()
+        ]);
+
+        $cartItems = CartItem::where('user_id', Auth::id())
+            ->whereIn('id', $request->selected_items)
             ->with(['product', 'option'])
             ->get();
 
@@ -147,5 +184,5 @@ class CartController extends Controller
             'totalPrice' => $totalPrice,
             'selected_items' => $request->selected_items
         ]);
-    }
+    }*/
 }

@@ -20,7 +20,7 @@ class UsersTableSeeder extends Seeder
                 'uid' => User::generateUniqueUid(),
                 'name' => 'Serena Ng Yen Xin',
                 'email' => 'yenxinng@gmail.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('password123'),
                 'contact' => '01154719225',
                 'remember_token' => Str::random(10),
             ],

@@ -36,7 +36,7 @@
 
     <!-- Frequently Bought Together & Same Category Recommendations -->
     <div class="recommendations-container">
-        <h2>Recommended For You</h2>
+        <h2>Frequently Bought Together</h2>
         <div class="recommendations-grid">
             @foreach($recommendedProducts as $recommended)
                 <div class="recommended-product">

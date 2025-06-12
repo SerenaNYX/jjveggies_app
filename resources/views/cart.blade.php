@@ -22,15 +22,15 @@
                 <table class="clean-table"> <!-- or cart-table -->
                     <thead>
                         <tr>
-                            <th><!--Select--></th>
-                            <th class="column-image">Image</th>
-                            <th class="column-product">Product</th>
+                            <th style="width: 5%;"><!--Select--></th>
+                            <th class="column-image" style="width: 15%;">Image</th>
+                            <th class="column-product" style="width: 30%;">Product</th>
                     <!--     <th class="column-option">Option</th>-->
                             <th>Price (per unit)</th>
                             <th class="column-quantity">Quantity</th>
                          
                     <!--       <th>Subtotal</th>-->
-                            <th>Actions</th>
+                            <th style="width: 10%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +60,7 @@
                                 
                     <!--           <td id="subtotal-{{ $item->id }}">RM{{ number_format($item->option->price * $item->quantity, 2) }}</td>-->
                                 <td>                  
-                                    <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})">Remove</button>
+                                    <button type="button" class="btn-remove" onclick="removeItem({{ $item->id }})"><i class="fa fa-trash-o"></i></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -190,6 +190,13 @@
 @endsection
 
 <style>
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .column-quantity {
+        width: 20%;
+    }
+}
+
 @media (max-width: 768px) {
     /* First column - checkbox */
     .clean-table td:first-child {
