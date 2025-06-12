@@ -6,7 +6,7 @@
     <h1 class="text-center">Manage Products</h1>
 
     <!-- Search Bar and Category Filter -->
-    <div class="flex-container">
+    <div class="flex-container search-container">
         <!-- Search Form -->
         <input type="text" id="searchQuery" class="form-control" placeholder="Search for products..." onkeyup="searchProducts()">
         <!-- Category Filter -->
@@ -120,6 +120,13 @@ function filterByCategory() {
 </script>
 
 <style>
+    .search-container {
+        margin-bottom: 0.5rem;
+    }
+
+    .button-add {
+        margin-bottom: 0rem;
+    }
 
     img {
         object-fit: scale-down;
