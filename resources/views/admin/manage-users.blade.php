@@ -90,13 +90,6 @@
                                 @endif
                             </td>
                             <td>{{ $customer->contact }}</td>
-                        <!--    <td>
-                                @if ($customer->banned_at)
-                                    <span class="badge badge-danger">Banned</span>
-                                @else
-                                    <span class="badge badge-success">Active</span>
-                                @endif
-                            </td>-->
 
                             <td class="actions-column">
                                 @if ($customer->banned_at)
@@ -144,11 +137,11 @@ function toggleBan(userId, action, buttonElement) {
             if (response.success) {
                 // Update the status cell
                 const row = $(buttonElement).closest('tr');
-                const statusCell = row.find('td:nth-child(5)'); // Update to correct column index
+             //   const statusCell = row.find('td:nth-child(5)'); // Update to correct column index
                 
                 // Update the status badge
                 if (action === 'ban') {
-                    statusCell.html('<span class="badge badge-danger">Banned</span>');
+             //       statusCell.html('<span class="badge badge-danger">Banned</span>');
                     // Replace the button with unban button
                     $(buttonElement).replaceWith(`
                         <button class="button-danger2" 
@@ -157,7 +150,7 @@ function toggleBan(userId, action, buttonElement) {
                         </button>
                     `);
                 } else {
-                    statusCell.html('<span class="badge badge-success">Active</span>');
+              //      statusCell.html('<span class="badge badge-success">Active</span>');
                     // Replace the button with ban button
                     $(buttonElement).replaceWith(`
                         <button class="button-danger" 
