@@ -46,7 +46,7 @@
                     <tbody>
                         @forelse($orders as $order)
                         <tr class="hover-row">
-                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;"># {{ $order->order_number }}</td>
+                            <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->order_number }}</td>
                             <td>
                                 <a href="#" class="customer-name-link" 
                                     data-customer-name="{{ $order->user->name }}"
@@ -55,7 +55,7 @@
                                     data-order-address="{{ $order->address->address ?? 'N/A' }}"
                                     data-order-postal="{{ $order->address->postal_code ?? 'N/A' }}"
                                     data-order-phone="{{ $order->address->phone ?? 'N/A' }}">
-                                    {{ $order->user->name }} (ID: # {{$order->user->uid}})</td>
+                                    {{ $order->user->name }} ({{$order->user->uid}})</td>
                                 </a>
                             <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->created_at->format("d/m/Y H:i:s") }}</td>
                             <td onclick="window.location='{{ route(auth('employee')->user()->role . '.orders.show', $order->id) }}'" style="cursor: pointer;">{{ $order->items->sum('quantity') }}</td>
@@ -295,6 +295,22 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+
+    .clean-table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    .clean-table th,
+    .clean-table td {
+        padding: 8px 12px;
+        text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+
     #map-link {
         color: #4c7552;
         text-decoration: none;

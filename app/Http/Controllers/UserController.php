@@ -64,20 +64,38 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
+        $validationRules = [
             'name' => 'required|string|min:3|max:25',
             'contact' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
             'password' => 'nullable|string|min:8|confirmed',
-        ]);
+        ];
+
+        // Only add email validation if user is unverified
+        if (!$user->hasVerifiedEmail()) {
+            $validationRules['email'] = [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id)
+            ];
+        }
+
+        $request->validate($validationRules);
 
         $user->name = $request->name;
         $user->contact = $request->contact;
+
+        // Update email only if unverified
+        if (!$user->hasVerifiedEmail() && $request->email !== $user->email) {
+            $user->email = $request->email;
+            $user->email_verified_at = null; // Reset verification status if email changed
+            $user->sendEmailVerificationNotification(); // Send new verification email
+        }
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
         }
 
-        $user->save(); // DON'T REMOVE!
+        $user->save();
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }

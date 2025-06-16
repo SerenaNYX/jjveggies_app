@@ -19,18 +19,18 @@
             <form action="{{ route('address.store') }}" method="POST" id="address-form">
                 @csrf
                 <div class="form-group">
-                    <label for="new_address">Address</label>
+                    <label for="new_address">Address <span class="required-asterisk">*</span></label>
                     <input type="text" name="address" id="new_address" class="form-control" required>
                     <small id="address-help" class="form-text text-muted">Please enter an address in Permas Jaya, Johor Bahru, Austin Heights, Skudai, or Iskandar Puteri</small>
                 </div>
                 <div class="form-group">
-                    <label for="postal_code">Postal Code</label>
+                    <label for="postal_code">Postal Code <span class="required-asterisk">*</span></label>
                     <input type="text" name="postal_code" id="postal_code" class="form-control" maxlength="5" oninput="validateContact(this)" required>
                     <small id="postcode-help" class="form-text text-muted">Valid postcodes: 81750 (Permas Jaya), 80000-81300 (JB), 81100 (Austin Heights), 81300 (Skudai), 79100 (Iskandar Puteri)</small>
                     <div id="postcode-error" class="invalid-feedback"></div>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
+                    <label for="phone">Phone Number <span class="required-asterisk">*</span></label>
                     <input type="tel" name="phone" id="phone" class="form-control" maxlength="12" required oninput="validateContact(this)" required>
                     <script>
                         function validateContact(input) {
@@ -76,15 +76,15 @@
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <label for="address-{{ $address->id }}">Address</label>
+                                <label for="address-{{ $address->id }}">Address <span class="required-asterisk">*</span></label>
                                 <input type="text" name="address" id="address-{{ $address->id }}" class="form-control" value="{{ $address->address }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="postal_code-{{ $address->id }}">Postal Code</label>
+                                <label for="postal_code-{{ $address->id }}">Postal Code <span class="required-asterisk">*</span></label>
                                 <input type="text" name="postal_code" id="postal_code-{{ $address->id }}" class="form-control" value="{{ $address->postal_code }}" maxlength="5" oninput="validateContact(this)" required>
                             </div>
                             <div class="form-group">
-                                <label for="phone-{{ $address->id }}">Phone Number</label>
+                                <label for="phone-{{ $address->id }}">Phone Number <span class="required-asterisk">*</span></label>
                                 <input type="tel" name="phone" id="phone-{{ $address->id }}" class="form-control"  maxlength="12" required oninput="validateContact(this)"
                                        value="{{ $address->phone }}" required>
                                 <script>
@@ -224,6 +224,10 @@ function toggleAddAddressForm() {
 </script>
 
 <style>
+    .required-asterisk {
+        color: red;
+    }
+
     .button-container {
         display: flex;
         align-items: center;

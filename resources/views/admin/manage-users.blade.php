@@ -235,7 +235,21 @@ function searchUsers() {
 
 <style>
 
+    .clean-table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
 
+    .clean-table th,
+    .clean-table td {
+        padding: 8px 12px;
+        text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+    
     .badge-success {
         background-color: #a2cb97;;
         border-radius: 18px;

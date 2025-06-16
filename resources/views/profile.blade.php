@@ -57,22 +57,36 @@
 
             <!-- Name -->
             <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Name <span class="required-asterisk">*</span></label>
                 <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $user->name) }}" required>
                 @error('name')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Email (display only) -->
+            <!-- Replace your current email field with this -->
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" class="form-control" value="{{ $user->email }}" readonly disabled>
+                <label for="email">Email 
+                    @if($user->hasVerifiedEmail())
+                        <span class="text-muted" style="color: green;">(Verified)</span>
+                    @else
+                        <span class="required-asterisk">* </span><span class="text-muted" style="color: red;">(Not verified)</span>
+                    @endif
+                </label>
+                
+                @if($user->hasVerifiedEmail())
+                    <input type="email" id="email" class="form-control" value="{{ $user->email }}" readonly disabled>
+                @else
+                    <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                    @error('email')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                @endif
             </div>
 
             <!-- Contact -->
             <div class="form-group">
-                <label for="contact">Contact</label>
+                <label for="contact">Contact <span class="required-asterisk">*</span></label>
                 <input type="tel" name="contact" id="contact" class="form-control" value="{{ old('contact', $user->contact) }}" maxlength="12" required oninput="validateContact(this)">
                 <script>
                     function validateContact(input) {
@@ -107,6 +121,14 @@
 @endsection
 
 <style>
+
+    .required-asterisk {
+        color: red;
+    }
+
+    .text-muted {
+        font-size: 0.8em;
+    }
 
     .profile-container {
         padding: 1rem 2rem;

@@ -151,16 +151,16 @@
                 <form id="save-address-form">
                     @csrf
                     <div class="form-group">
-                        <label>Address</label>
+                        <label>Address <span class="required-asterisk">*</span></label>
                         <input type="text" name="address" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Postal Code</label>
+                        <label>Postal Code <span class="required-asterisk">*</span></label>
                         <input type="text" name="postal_code" class="form-control" maxlength="5" oninput="validateContact(this)" required>
                         
                     </div>
                     <div class="form-group">
-                        <label>Phone</label>
+                        <label>Phone <span class="required-asterisk">*</span></label>
                         <input type="text" name="phone" class="form-control" maxlength="12" oninput="validateContact(this)" required>
                         <script>
                             function validateContact(input) {
@@ -333,6 +333,9 @@ document.addEventListener('DOMContentLoaded', function() {
     position: static;
 }
 
+.required-asterisk {
+    color: red;
+}
 
 </style>
 <script>
