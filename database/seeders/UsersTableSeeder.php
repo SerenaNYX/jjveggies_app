@@ -21,23 +21,7 @@ class UsersTableSeeder extends Seeder
                 'name' => 'Serena Ng Yen Xin',
                 'email' => 'yenxinng@gmail.com',
                 'password' => Hash::make('password123'),
-                'contact' => '01154719225',
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'uid' => User::generateUniqueUid(),
-                'name' => 'Saera NYX',
-                'email' => 'saera@example.com',
-                'password' => Hash::make('password'),
-                'contact' => '01742145779',
-                'remember_token' => Str::random(10),
-            ],
-            [
-                'uid' => User::generateUniqueUid(),
-                'name' => 'Risa NMX',
-                'email' => 'risa@example.com',
-                'password' => Hash::make('password'),
-                'contact' => '01845612345',
+                'contact' => '01154325432',
                 'remember_token' => Str::random(10),
             ],
             [
@@ -45,7 +29,7 @@ class UsersTableSeeder extends Seeder
                 'name' => 'Customer User',
                 'email' => 'customer@example.com',
                 'password' => Hash::make('password'),
-                'contact' => '01172534174',
+                'contact' => '01123452345',
                 'remember_token' => Str::random(10),
             ],
         ];

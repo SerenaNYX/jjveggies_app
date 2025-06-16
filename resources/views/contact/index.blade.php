@@ -13,7 +13,7 @@
             81750 Masai, Johor.</p>
             <p>Tel: +607-366 5191<br>
                 Fax: +607-388 2034<br>
-            Email: jnjvege@gmail.com</p>
+            Email: jnj.vegetablesmarketing@gmail.com</p>
             <hr>
             <a href="{{ route('enquiries.index') }}" class="btn">View your enquiries</a>
         </div>

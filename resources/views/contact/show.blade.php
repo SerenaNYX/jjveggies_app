@@ -48,7 +48,7 @@
                 <ul>
                     <li>Phone: +6012-598 5295</li>
                     <li>WhatsApp: <a href="https://wa.me/####" target="_blank">+60XXXXX</a></li>
-                    <li>Email: jjveggies@gmail.com</li>
+                    <li>Email: jnj.vegetablesmarketing@gmail.com</li>
                 </ul>
             </div>
         @endif
@@ -123,7 +123,7 @@
 </style>
 
 <style>
-    /* Mobile Enquiry Details Styles */
+
 @media (max-width: 768px) {
     .enquiry-detail {
         padding: 1rem;
