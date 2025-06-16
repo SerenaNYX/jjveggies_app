@@ -29,7 +29,7 @@
                 
                 <div class="form-group">
                     <label for="contact">Contact Number:</label>
-                    <input type="tel" name="phone" id="phone" class="form-control" maxlength="12" required oninput="validateContact(this)" required>
+                    <input type="tel" name="phone" id="phone" class="form-control" maxlength="12" value="{{ Auth::user()->contact }}" required oninput="validateContact(this)" required>
                     <script>
                         function validateContact(input) {
                             input.value = input.value.replace(/[^0-9]/g, '');
