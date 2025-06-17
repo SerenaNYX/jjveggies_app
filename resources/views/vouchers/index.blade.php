@@ -404,4 +404,10 @@
         margin: 10px 0;
         color: #212121;
     }
+
+    @media (max-width: 768px) {
+        .btn {
+            font-size: 14px !important;
+        }
+    }
 </style>

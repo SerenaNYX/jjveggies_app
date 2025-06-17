@@ -45,7 +45,7 @@
                                 @if($employee->name == 'Admin User') <!-- Disable Edit button for "Admin User" -->
                                     <button class="button button-edit" style="background-color: gray; cursor: default; margin-bottom: 4px;" disabled>Edit</button>
                                 @else
-                                    <a href="{{ route('admin.employees.edit', $employee) }}" class="button button-edit" style="margin-bottom: 4px;">Edit</a>
+                                    <a href="{{ route('admin.employees.edit', $employee) }}" style="font-weight: normal;" class="button button-edit" style="margin-bottom: 4px;">Edit</a>
                                 @endif
                                 @if($employee->name == 'Admin User') <!-- Disable the delete button for Admin User -->
                                     <button class="button button-danger" style="background-color: gray; cursor: default;" disabled>Delete</button>
