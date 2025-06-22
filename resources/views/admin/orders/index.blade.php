@@ -34,9 +34,9 @@
                     <thead>
                         <tr>
                             <th>Order</th>
-                            <th style="width: 20%;">Customer</th>
+                            <th>Customer</th>
                             <th>Date</th>
-                            <th style="width: 10%;">Items</th>
+                            <th>Items</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Driver</th>
