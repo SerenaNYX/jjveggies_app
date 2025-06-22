@@ -34,9 +34,9 @@
                     <thead>
                         <tr>
                             <th>Order</th>
-                            <th>Customer</th>
+                            <th style="width: 18%;">Customer</th>
                             <th>Date</th>
-                            <th>Items</th>
+                            <th style="width: 10%;">Items</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Driver</th>
@@ -295,6 +295,19 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+
+    .form-select-sm {
+        margin-top: 2px;
+        margin-bottom: -10px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    /*  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2363966b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); 
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 12px;*/
+        max-width: 100%;
+    }
     .clean-table {
         width: 100%;
         table-layout: fixed;
