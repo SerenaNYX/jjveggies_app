@@ -1135,7 +1135,7 @@ h2 {
 .form-select-sm {
     font-family: 'Roboto', Arial, sans-serif;
     font-size: 15px;
-    padding: 6px 12px;
+    padding: 6px 4px;
     border: 1px solid #63966b;
     border-radius: 5px;
     background-color: #f9f9f9;
@@ -1149,7 +1149,7 @@ h2 {
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 12px;*/
-    min-width: 120px;
+    max-width: 100%;
 }
 
 .form-select-sm:hover {

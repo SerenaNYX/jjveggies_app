@@ -34,9 +34,9 @@
                     <thead>
                         <tr>
                             <th>Order</th>
-                            <th>Customer</th>
+                            <th style="width: 20%;">Customer</th>
                             <th>Date</th>
-                            <th>Items</th>
+                            <th style="width: 10%;">Items</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Driver</th>
@@ -295,7 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-
     .clean-table {
         width: 100%;
         table-layout: fixed;
