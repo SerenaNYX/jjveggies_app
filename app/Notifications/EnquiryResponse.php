@@ -27,7 +27,7 @@ class EnquiryResponse extends Notification /*implements ShouldQueue*/
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Response to Your Enquiry #' . $this->enquiry->id)
+            ->subject('Response to Your Enquiry #' . $this->enquiry->enquiry_number)
             ->line('Your enquiry has been responded to by our staff.')
             ->line('Enquiry: ' . $this->enquiry->message)
             ->line('Response: ' . $this->enquiry->response)
